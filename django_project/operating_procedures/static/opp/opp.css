@@ -1,0 +1,27 @@
+/* opp.css */
+
+ul.toc {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 12pt;
+}
+
+ul.toc.root {
+    padding-left: 22pt;
+}
+
+/*
+ul.toc.root > li.toc > ul.toc {
+    padding-left: 32pt;
+}
+*/
+
+li.toc {
+    text-indent: -22pt;
+}
+
+/*
+ul.toc.root > li.toc {
+    text-indent: 0;
+}
+*/

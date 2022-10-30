@@ -1,0 +1,7 @@
+{% extends "opp/base.html" %}
+
+{% block title %}Table of Contents{% endblock %}
+
+{% block content %}
+{% include "opp/tree.html" with class="toc" root_class="root" %}
+{% endblock %}
