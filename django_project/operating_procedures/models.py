@@ -2,6 +2,12 @@ from django.db import models
 
 # Create your models here.
 
+from itertools import chain
+
+from operating_procedures.chunks import (
+    chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table, get_block
+)
+
 
 class Version(models.Model):
     upload_date = models.DateField(auto_now_add=True)
@@ -28,7 +34,18 @@ class Item(models.Model):
     def get_title(self):
         r'''Returns the Paragraph object.
         '''
-        return self.paragraph_set.get(body_order=0)
+        if self.has_title:
+            return self.paragraph_set.get(body_order=0)
+        return None
+
+    def get_body(self):
+        r'''Return an iterator over all body objects.
+
+        Important!  Caller must sort by body_order.
+        '''
+        return chain(item.paragraph_set.filter(body_order__ne=0).all(),
+                     item.table_set.all(),
+                     item.item_set.all())
 
     def get_note(self, number):
         r'''Returns the text of the note.
@@ -36,11 +53,17 @@ class Item(models.Model):
         i = self
         while True:
             try:
-                return Note.objects.get(item=i, number=number)
+                return Note.objects.get(item=i, number=number).text
             except self.DoesNotExist:
                 if i.parent is None:
                     raise self.DoesNotExist(f"note {self.citation}")
                 i = i.parent
+
+    def get_block(self, with_body=True):
+        return chunk_item(self, with_body)
+
+    def get_body_blocks(self):
+        return chunkify_item_body(self)
 
     class Meta:
         constraints = [
@@ -64,85 +87,24 @@ class Paragraph(models.Model):
     body_order = models.PositiveSmallIntegerField()  # 0 for Item title
     text = models.CharField(max_length=4000)
 
-    def with_annotations(self):
-        r'''Returns spans.
-
-        A span is [type, info, spans] or ['text', None, text].
+    def parent_item(self):
+        r'''Returns the item directly containing this paragraph.
         '''
+        if self.item is not None:
+            return self.item
+        return self.cell.table.item
 
-        text = self.text
-        start = 0
-        end = len(text)
-        annotations = self.annotation_set.all()
+    def get_block(self):
+        return chunk_paragraph(self)
+
+    def with_annotations(self):
+        return chunkify_text(self.parent_item(), self.text, self.annotation_set.all())
 
     class Meta:
         ordering = ['body_order']
         constraints = [
             models.UniqueConstraint(fields=['item', 'body_order'], name='unique_paragraph'),
         ]
-
-
-class chunk:
-    def __init__(self, tag, **attrs):
-        self.tag = tag
-        for name, value in attrs.items():
-            setattr(self, name, value)
-
-def chunkify_text(text, annotations, start=0, end=None):
-    r'''Returns a list of chunks.
-    '''
-    if end is None:
-        end = len(text)
-    ans = []
-
-    def make_annotation(annotations):
-        #nonlocal annotations
-        nested_annotations = []
-        this_annotation = annotations[0]
-
-        # local start, end
-        start = this_annotation.char_offset
-        end = start + this_annotation.length
-
-        for i, annotation in enumerate(annotations):
-            if annotation.char_offset < end:
-                if annotation.char_offset + annotation.length <= end:
-                    nested_annotations.append(annotation)
-                    continue
-                # This annotation overlaps the first annotation.  We cut the first
-                # annotation short in this case...
-                end = annotation.char_offset
-                for j in range(len(nested_annotations) - 1, -1, -1):
-                    if nested_annotations[j].char_offset >= end:
-                        del nested_annotations[j]
-                    else:
-                        break
-            break
-        ans.append(make_chunk(this_annotation,
-                              chunkify_text(text, nested_annotations, start, end)))
-        del annotations[0: len(nested_annotations) + 1]
-        return end  # this will be the new start in text
-
-    while start < len(text):
-        if not annotations:
-            ans.append(chunk('text', text=text[start: end]))
-            break
-        assert annotations[0].char_offset >= start
-        if annotations[0].char_offset > start:
-            ans.append(chunk('text', text=text[start: annotations[0].char_offset]))
-        start = make_annotation(annotations)  # includes nested annotations
-    assert not annotations
-    return ans
-
-def make_chunk(annotation, body):
-    if annotation.tag == 's_link':
-        return chunk('s_link', citation=annotation.info, body=body)
-    if annotation.tag == 'note':
-        pass
-    elif annotation.tag == 'definition':
-        pass
-    else:
-        raise AssertionError(f"Unknown annotation type {annotation.type!r}")
 
 class Annotation(models.Model):
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)
@@ -162,7 +124,11 @@ class Annotation(models.Model):
 
 class Table(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    has_header = models.BooleanField(default=False)
     body_order = models.PositiveSmallIntegerField()
+
+    def get_block(self):
+        return chunk_table(self)
 
     class Meta:
         ordering = ['body_order']
@@ -172,10 +138,12 @@ class Table(models.Model):
 
 class TableCell(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    head = models.BooleanField(default=False)
     row = models.PositiveSmallIntegerField()
     col = models.PositiveSmallIntegerField()
   # text is in Paragraph that points back to this TableCell
+
+    def get_blocks(self):
+        return list(map(get_block, self.paragraph_set.all()))
 
     class Meta:
         ordering = ['row', 'col']

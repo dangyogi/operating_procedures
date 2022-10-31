@@ -1,0 +1,6 @@
+{% if blocks %}
+{% include "block.html" with block=blocks[0], first=first %}
+{% for block in blocks[1:] %}
+{% include "block.html" with block=block, first='' %}
+{% endfor %}
+{% endif %}

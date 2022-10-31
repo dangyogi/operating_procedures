@@ -1,0 +1,12 @@
+{% if item.has_title %}
+<div class="title"><a href="{{ item.url }}">{{ item.number }}</a>:
+{% include "chunks.html" with chunk=item.title %}</div>
+<div class="body">
+{% include "blocks.html" with blocks=item.body, first='' %}
+</div>
+{% else %}
+<div class="notitle">
+{% include "blocks.html" with blocks=item.body,
+                              first='<a href="{{ item.url }}">{{ item.number }}</a>: ' %}
+</div>
+{% endif %}

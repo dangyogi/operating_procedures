@@ -1,0 +1,40 @@
+{% if block.tag == 'items' %}
+{{ first }}
+{% for item in block.items %}
+{% include "item.html" %}
+{% endfor %}
+{% elif block.tag == 'paragraph' %}
+{% if first %}
+<div class="notitle">{{ first }}{% include "chunks.html" with chunks=block.chunks %}
+{% else %}
+<div>{% include "chunks.html" with chunks=block.chunks %}</div>
+{% endif %}
+{% elif block.tag == 'table' %}
+{% if first %}
+<div class="notitle">{{ first }}
+{% endif %}
+<table>
+{% if block.has_header %}
+<thead><tr>
+{% for cell in block.rows[0] %}
+<td>{% include "blocks.html" with blocks=cell %}</td>
+{% endfor %}
+</tr></thead>
+<tbody>
+{% for row in block.rows[1:] %}
+<tr>{% for cell in row %}
+<td>{% include "blocks.html" with blocks=cell %}</td>
+{% endfor %}</tr>
+</tbody>
+{% else %}
+<tbody>
+{% for row in block.rows %}
+<tr>{% for cell in row %}
+<td>{% include "blocks.html" with blocks=cell %}</td>
+{% endfor %}</tr>
+</tbody>
+{% endif %}
+</table>
+{% else %}
+ERROR: block.html: Unknown block.tag {{ block.tag }}.
+{% endif %}

@@ -514,7 +514,7 @@ def get_history(tag):
     return get_string(find1(tag, 'span', class_='HistoryText'))
 
 def process_table(parent, child, body_order):
-    table = models.Table(item=parent, body_order=body_order)
+    table = models.Table(item=parent, has_header=False, body_order=body_order)
     table.save()
     row = 1
     def load_row(tr, head=False):
@@ -523,8 +523,11 @@ def process_table(parent, child, body_order):
             text = get_string(col)
             #print(f"process_table: inserting TableCell {table.id=}, {head=}, {row=}, "
             #      f"col={i}, {text=}")
-            cell = models.TableCell(table=table, head=head, row=row, col=i)
+            cell = models.TableCell(table=table, row=row, col=i)
             cell.save()
+            if head and not table.has_header:
+                table.has_header = True
+                table.save()
             p = models.Paragraph(cell=cell, body_order=1, text=text)
             p.save()
         row += 1

@@ -1,0 +1,14 @@
+{% for chunk in chunks %}
+{% if chunk.tag == 'text' %}
+{{ chunk.text }}
+{% elif chunk.tag == 'cite' %}
+<a href="{{ chunk.url }}">{% include "chunks.html" with chunks=chunk.chunks %}</a>
+{% elif chunk.tag == 'note' %}
+<span class="tooltip">{% include "chunks.html" with chunks=chunk.term %}<span class="tooltiptext">{{ chunk.note }}</span></span>
+{% elif chunk.tag == 'definition' %}
+<span class="tooltip">{% include "chunks.html" with chunks=chunk.term %}
+<div class="tooltiptext">{% include "blocks.html" with blocks=chunk.definition %}</div></span>
+{% else %}
+ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.
+{% endif %}
+{% endfor %}

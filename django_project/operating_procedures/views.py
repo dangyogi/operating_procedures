@@ -18,22 +18,21 @@ def toc(request):
         node is [citation, title, [node]]
     '''
     latest_law = models.Version.latest('leg.state.fl.us')
-    roots = []
+    blocks = []
     for item in models.Item.objects.filter(version_id=latest_law,
                                            has_title=True).order_by('item_order'):
         title = item.get_title().text
 
-        my_children = []
-
-        my_row = [item.number, title, my_children]
+        my_block = item.get_block(with_body=False)
+        my_children = my_block.body
 
         if item.parent_id is None:
-            roots.append(my_row)
+            blocks.append(my_block)
             path = {item.id: my_children}
         else:
-            path[item.parent_id].append(my_row)
+            path[item.parent_id].append(my_block)
             path[item.id] = my_children
-    return render(request, 'opp/toc.html', context={'roots': roots})
+    return render(request, 'opp/toc.html', context={'blocks': blocks})
 
 
 @require_safe

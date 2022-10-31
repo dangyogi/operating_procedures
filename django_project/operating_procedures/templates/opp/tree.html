@@ -1,9 +1,0 @@
-<ul class="{{ class }} {{ root_class }}">
-{% for root in roots %}
-<li class="{{ class }}">{{ root.0 }}: {{ root.1 }}
-{% if root.2 %}
-{% include "opp/tree.html" with roots=root.2 root_class='' %}
-{% endif %}
-</li>
-{% endfor %}
-</ul>
