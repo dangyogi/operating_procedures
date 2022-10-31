@@ -40,6 +40,7 @@ from itertools import groupby
 from operator import attrgetter
 
 from django.urls import reverse
+from operating_procedures import models
 
 
 class chunk:
@@ -53,25 +54,86 @@ class chunk:
         self.tag = tag
         for name, value in attrs.items():
             setattr(self, name, value)
+        self._attrs = attrs
+        if tag == 'item' and self.body and self.body[0].tag == 'item':
+            assert False
+        if False:
+            if tag == 'text':
+                print(f"chunk('text', text={attrs['text'][:25]!r})")
+            else:
+                print(f"chunk({tag!r}", end='')
+                for name, value in attrs.items():
+                    if hasattr(value, 'as_str'):
+                        print(f", {name}={value.as_str()}", end='')
+                    else:
+                        print(f", {name}={value!r}", end='')
+                print(")")
 
+    def __repr__(self):
+        return f"<chunk {self.tag}>"
+
+    def dump(self, depth=3, indent=0):
+        print(f"{' ' * indent}{self.tag}: ", end='')
+        sep = ''
+        for a in self._attrs:
+            value = getattr(self, a)
+            if value is None or isinstance(value, (int, str, float, tuple)) or not value:
+                print(f"{sep}{a}={value!r}", end='')
+                sep = ', '
+            else:
+                assert isinstance(value, list), \
+                       f"dump: expected list in {self.tag}.{a}, got {value!r}"
+        print()
+        if depth > 0:
+            for a in self._attrs:
+                value = getattr(self, a)
+                if isinstance(value, list) and value:
+                    print(f"{' ' * indent}  {a}=[")
+                    for x in value:
+                        if isinstance(x, chunk):
+                            x.dump(depth - 1, indent + 4)
+                        else:
+                            print(f"{' ' * (indent + 4)}{x}")
+                    print(f"{' ' * indent}  ]")
+
+
+Annotations_seen = []
+
+def check_annotations_seen():
+    assert not Annotations_seen
 
 def chunkify_text(parent_item, text, annotations, start=0, end=None):
     r'''Returns a list of text-chunks.
     '''
+    annotations = list(annotations)
+    #print(f"chunkify_text({parent_item=}, text={text[:25]}, {annotations=}, "
+    #      f"{start=}, {end=})")
     if end is None:
         end = len(text)
     ans = []
 
     def make_annotation(my_annotations):
         nonlocal annotations
-        nested_annotations = []
         my_annotation = my_annotations[0]
 
         # local start, end
         start = my_annotation.char_offset
         end = start + my_annotation.length
 
-        for i, annotation in enumerate(my_annotations):
+        if my_annotation.paragraph.parent_item() == parent_item:
+            #print(f"make_annotation: {my_annotation=} points to itself -- ignored")
+            del annotations[0]
+            return start
+
+        if my_annotation in Annotations_seen:
+            print(f"make_annotation: {my_annotation=} already seen")
+            del annotations[0]
+            return start
+
+        #print(f"make_annotation(len={len(my_annotations)}, {my_annotations=})")
+        nested_annotations = []
+
+        for i, annotation in enumerate(my_annotations[1:]):
             if annotation.char_offset >= end:
                 break
             if annotation.char_offset + annotation.length <= end:
@@ -82,11 +144,16 @@ def chunkify_text(parent_item, text, annotations, start=0, end=None):
                 end = annotation.char_offset
 
                 # removed nested_annotations after the cutoff (in reverse order)
-                while nested_annotations[-1].char_offset >= end:
+                while nested_annotations and nested_annotations[-1].char_offset >= end:
                     del nested_annotations[-1]
-        ans.extend(make_chunk(parent_item, my_annotation,
-                              chunkify_text(parent_item, text, nested_annotations,
-                                            start, end)))
+        Annotations_seen.append(my_annotation)
+        try:
+            ans.extend(make_chunk(parent_item, my_annotation,
+                                  chunkify_text(parent_item, text, nested_annotations,
+                                                start, end)))
+        finally:
+            assert Annotations_seen[-1] == my_annotation
+            del Annotations_seen[-1]
         del annotations[0: len(nested_annotations) + 1]
         return end  # this will be the new start in text
 
@@ -123,20 +190,24 @@ def make_fl_leg_url(citation):
 def make_chunk(parent_item, annotation, text_chunks):
     r'''Called by chunkify_text.
     '''
-    if annotation.tag == 's_link':
+    #print(f"make_chunk({parent_item.as_str()}, {annotation.as_str()}, {text_chunks})")
+    if annotation.type == 's_link':
         citation = annotation.info
         if citation.startswith('719'):
-            url = reverse('cite', citation=citation)
+            url = reverse('cite', args=[citation])
         elif '-' in citation:
             print("WARNING: Could not make url for '-' in citation:", citation)
             return text_chunks
         else:
             url = make_fl_leg_url(citation)
         return [chunk('cite', citation=citation, url=url, chunks=text_chunks)]
-    if annotation.tag == 'note':
-        return [chunk('note', note=parent_item.get_note(annotation.info), term=text_chunks)]
-    elif annotation.tag == 'definition':
+    if annotation.type == 'note':
+        return [chunk('note',
+                      note=parent_item.get_note(annotation.info),
+                      term=text_chunks)]
+    elif annotation.type == 'definition':
         return [chunk('definition', term=text_chunks,
+                      # FIX: getting definition, calling chunkify_item_body
                       definition=chunkify_item_body(
                                    models.Item.objects.get(citation=annotation.info)))]
     else:
@@ -144,13 +215,14 @@ def make_chunk(parent_item, annotation, text_chunks):
 
 
 def chunk_item(item, with_body=True):
-    ans = chunk(tag='item',
+    #print(f"chunk_item({item.as_str()}, {with_body=})")
+    ans = chunk('item',
                 citation=item.citation,
                 number=item.number,
                 title=None,
                 history=item.history,
                 notes=[],
-                url=reverse('cite', citation=item.citation),
+                url=reverse('cite', args=[item.citation]),
                 body=[],
                 body_order=item.body_order)
     if item.has_title:
@@ -165,24 +237,30 @@ def chunk_item(item, with_body=True):
 def chunkify_item_body(item):
     r'''Returns a list of blocks.
     '''
+    print(f"chunkify_item_body({item.as_str()})")
     ans = sorted(map(get_block, item.get_body()), key=attrgetter('body_order'))
+    print(f"chunkify_item_body: body is {ans})")
 
     # put all children (if any) into a single 'items' chunk:
     for i, block in enumerate(ans):
         if block.tag == 'item':
             children = []
             for j in range(i, len(ans)):
-                if ans[j].tag != 'item':
+                if ans[j].tag == 'item':
+                    children.append(ans[j])
+                elif children: 
                     break
-                children.append(ans[j])
             else:
                 assert not children
+                print("chunkify_item_body: no items found")
                 break
             assert children
+            print(f"chunkify_item_body: found {len(children)} items")
             ans[i: i + len(children)] = [chunk('items', items=children,
                                                body_order=children[0].body_order)]
             break
 
+    print(f"chunkify_item_body: returning {ans}")
     return ans
 
 

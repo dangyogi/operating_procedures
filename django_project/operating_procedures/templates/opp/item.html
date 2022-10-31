@@ -1,12 +1,16 @@
-{% if item.has_title %}
+{# item.html citation {{ item.citation }}, body {{ item.body }} <br/> #}
+{% if item.title %}
+{# title #}
 <div class="title"><a href="{{ item.url }}">{{ item.number }}</a>:
-{% include "chunks.html" with chunk=item.title %}</div>
+{% include "opp/chunks.html" with chunks=item.title %}</div>
 <div class="body">
-{% include "blocks.html" with blocks=item.body, first='' %}
+{% include "opp/blocks.html" with blocks=item.body first='' %}
 </div>
 {% else %}
 <div class="notitle">
-{% include "blocks.html" with blocks=item.body,
-                              first='<a href="{{ item.url }}">{{ item.number }}</a>: ' %}
+{# notitle #}
+{% include "opp/blocks.html" with blocks=item.body
+                                  first='<a href="{{ item.url }}">{{ item.number }}</a>: ' %}
 </div>
 {% endif %}
+{# end item.html <br/> #}

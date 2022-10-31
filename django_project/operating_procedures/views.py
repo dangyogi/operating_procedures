@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_safe
 
 from operating_procedures import models
+from operating_procedures.chunks import chunk, check_annotations_seen
 
 
 
@@ -18,7 +19,7 @@ def toc(request):
         node is [citation, title, [node]]
     '''
     latest_law = models.Version.latest('leg.state.fl.us')
-    blocks = []
+    items = []
     for item in models.Item.objects.filter(version_id=latest_law,
                                            has_title=True).order_by('item_order'):
         title = item.get_title().text
@@ -27,12 +28,18 @@ def toc(request):
         my_children = my_block.body
 
         if item.parent_id is None:
-            blocks.append(my_block)
+            items.append(my_block)
             path = {item.id: my_children}
         else:
-            path[item.parent_id].append(my_block)
+            if not path[item.parent_id]:
+                path[item.parent_id].append(chunk('items', items=[]))
+            path[item.parent_id][0].items.append(my_block)
             path[item.id] = my_children
-    return render(request, 'opp/toc.html', context={'blocks': blocks})
+    check_annotations_seen()
+    blocks = [chunk('items', items=items, body_order=0)]
+    #blocks[0].dump()
+    return render(request, 'opp/toc.html',
+                  context={'blocks': blocks})
 
 
 @require_safe
@@ -53,3 +60,4 @@ def cite(request, citation='719'):
         else:
             citation = item.citation.replace(' ', '')
         lines.append(f"{' ' * (len(path) - 1)}{citation}: {item.title}")
+    check_annotations_seen()

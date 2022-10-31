@@ -1,13 +1,14 @@
+{# block.html <br/> #}
 {% if block.tag == 'items' %}
 {{ first }}
 {% for item in block.items %}
-{% include "item.html" %}
+{% include "opp/item.html" %}
 {% endfor %}
 {% elif block.tag == 'paragraph' %}
 {% if first %}
-<div class="notitle">{{ first }}{% include "chunks.html" with chunks=block.chunks %}
+<div class="notitle">{{ first }}{% include "opp/chunks.html" with chunks=block.chunks %}
 {% else %}
-<div>{% include "chunks.html" with chunks=block.chunks %}</div>
+<div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
 {% endif %}
 {% elif block.tag == 'table' %}
 {% if first %}
@@ -16,22 +17,24 @@
 <table>
 {% if block.has_header %}
 <thead><tr>
-{% for cell in block.rows[0] %}
-<td>{% include "blocks.html" with blocks=cell %}</td>
+{% for cell in block.rows.0 %}
+<td>{% include "opp/blocks.html" with blocks=cell %}</td>
 {% endfor %}
 </tr></thead>
 <tbody>
-{% for row in block.rows[1:] %}
+{% for row in block.rows|slice:"1:" %}
 <tr>{% for cell in row %}
-<td>{% include "blocks.html" with blocks=cell %}</td>
+<td>{% include "opp/blocks.html" with blocks=cell %}</td>
 {% endfor %}</tr>
+{% endfor %}
 </tbody>
 {% else %}
 <tbody>
 {% for row in block.rows %}
 <tr>{% for cell in row %}
-<td>{% include "blocks.html" with blocks=cell %}</td>
+<td>{% include "opp/blocks.html" with blocks=cell %}</td>
 {% endfor %}</tr>
+{% endfor %}
 </tbody>
 {% endif %}
 </table>

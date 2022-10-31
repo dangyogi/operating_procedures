@@ -20,6 +20,13 @@ class Version(models.Model):
     def latest(cls, source):
         return cls.objects.filter(source=source).order_by('-upload_date')[0].id
 
+    def as_str(self):
+        return f"<Version({self.id}) {self.upload_date=}>"
+
+    def __repr__(self):
+        return self.as_str()
+
+
 class Item(models.Model):
     version = models.ForeignKey(Version, on_delete=models.CASCADE)
     citation = models.CharField(max_length=20)
@@ -30,6 +37,12 @@ class Item(models.Model):
     # title is in Paragraph that points back to this Item with body_order == 0
     has_title = models.BooleanField(default=False)
     history = models.CharField(max_length=200, null=True, blank=True)
+
+    def as_str(self):
+        return f"<Item({self.id}) {self.citation}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     def get_title(self):
         r'''Returns the Paragraph object.
@@ -43,9 +56,9 @@ class Item(models.Model):
 
         Important!  Caller must sort by body_order.
         '''
-        return chain(item.paragraph_set.filter(body_order__ne=0).all(),
-                     item.table_set.all(),
-                     item.item_set.all())
+        return chain(self.paragraph_set.exclude(body_order=0).all(),
+                     self.table_set.all(),
+                     self.item_set.all())
 
     def get_note(self, number):
         r'''Returns the text of the note.
@@ -63,6 +76,7 @@ class Item(models.Model):
         return chunk_item(self, with_body)
 
     def get_body_blocks(self):
+        print(f"{self}.get_body_blocks()")
         return chunkify_item_body(self)
 
     class Meta:
@@ -74,6 +88,12 @@ class Note(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     number = models.PositiveSmallIntegerField()
     text = models.CharField(max_length=200)
+
+    def as_str(self):
+        return f"<Note({self.id}) {self.number} {self.item.as_str()}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     class Meta:
         ordering = ['number']
@@ -87,6 +107,12 @@ class Paragraph(models.Model):
     body_order = models.PositiveSmallIntegerField()  # 0 for Item title
     text = models.CharField(max_length=4000)
 
+    def as_str(self):
+        return f"<Paragraph({self.id}) {self.item.as_str()} {self.text[:25]!r}>"
+
+    def __repr__(self):
+        return self.as_str()
+
     def parent_item(self):
         r'''Returns the item directly containing this paragraph.
         '''
@@ -98,7 +124,9 @@ class Paragraph(models.Model):
         return chunk_paragraph(self)
 
     def with_annotations(self):
-        return chunkify_text(self.parent_item(), self.text, self.annotation_set.all())
+        annotations = list(self.annotation_set.all())
+        #print(f"{self.as_str()}.with_annotations got {annotations}")
+        return chunkify_text(self.parent_item(), self.text, annotations)
 
     class Meta:
         ordering = ['body_order']
@@ -119,6 +147,12 @@ class Annotation(models.Model):
     length = models.PositiveSmallIntegerField()
     info = models.CharField(max_length=20, null=True, blank=True)
 
+    def as_str(self):
+        return f"<Annotation({self.id}) {self.type} paragraph={self.paragraph.as_str()} info={self.info!r}>"
+
+    def __repr__(self):
+        return self.as_str()
+
     class Meta:
         ordering = ['char_offset']
 
@@ -126,6 +160,12 @@ class Table(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     has_header = models.BooleanField(default=False)
     body_order = models.PositiveSmallIntegerField()
+
+    def as_str(self):
+        return f"<Table({self.id}) {self.item.as_str()}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     def get_block(self):
         return chunk_table(self)
@@ -154,6 +194,12 @@ class TableCell(models.Model):
 
 class Word(models.Model):
     text = models.CharField(max_length=50, unique=True)  # always all lowercase
+
+    def as_str(self):
+        return f"<Word({self.id}) {self.text}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     @classmethod
     def get_text(cls, id):
