@@ -1,16 +1,21 @@
 {# item.html citation {{ item.citation }}, body {{ item.body }} <br/> #}
 {% if item.title %}
-{# title #}
-<div class="title"><a href="{{ item.url }}">{{ item.number }}</a>:
-{% include "opp/chunks.html" with chunks=item.title %}</div>
-<div class="body">
-{% include "opp/blocks.html" with blocks=item.body first='' %}
-</div>
+  {# title #}
+  <div class="title">{% include "opp/item_link.html" with item_first=item %}
+    {% include "opp/chunks.html" with chunks=item.title %}
+  </div>
+  <div class="body">
+    {% include "opp/blocks.html" with blocks=item.body item_first='' nested=True %}
 {% else %}
-<div class="notitle">
-{# notitle #}
-{% include "opp/blocks.html" with blocks=item.body
-                                  first='<a href="{{ item.url }}">{{ item.number }}</a>: ' %}
-</div>
+  <div class="notitle item">
+    {# notitle #}
+    {% include "opp/blocks.html" with blocks=item.body item_first=item %}
 {% endif %}
+    {% if item.history %}
+      <div><span class="history"><span class="history-tag">History.</span> {{ item.history }}</span></div>
+    {% endif %}
+    {% for n, text in item.notes %}
+      <div><span class="note"><sup>{{ n }}</sup><span class="note-tag">Note.</span> {{ text }}</span></div>
+    {% endfor %}
+  </div>
 {# end item.html <br/> #}

@@ -36,31 +36,24 @@ div {
 } 
 
 
-/* old stuff: */
-ul.toc {
-  list-style-type: none;
-  margin: 0;
-  padding-left: 12pt;
+/* History */
+
+.history {
+    font-size: smaller;
 }
 
-ul.toc.root {
-  padding-left: 22pt;
+.history-tag {
+    font-weight: bold;
 }
 
-/*
-ul.toc.root > li.toc > ul.toc {
-  padding-left: 32pt;
-}
-*/
+/* Notes */
 
-li.toc {
-  text-indent: -22pt;
+.note {
+    font-size: smaller;
 }
 
-/*
-ul.toc.root > li.toc {
-  text-indent: 0;
+.note-tag {
+    font-weight: bold;
 }
-*/
 
 /* vim: set sw=2 */

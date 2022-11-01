@@ -1,0 +1,11 @@
+{% if item_first %}
+  {% if nested %}
+    <a href="{{ item_first.url }}">{{ item_first.number }}</a>
+  {% elif item_first.parent_citation %}
+    <a href="{{ item_first.parent_url }}">{{ item_first.parent_citation }}</a>{{ item_first.number }}
+  {% elif item_first.citation|slice:":3" == '719' %}
+    <a href="{{ item_first.parent_url }}">719</a>{{ item_first.number|slice:"3:" }}
+  {% else %}
+    <a href="{{ item_first.parent_url }}">{{ item_first.citation }}</a>
+  {% endif %}
+{% endif %}

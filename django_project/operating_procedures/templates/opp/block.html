@@ -1,43 +1,55 @@
 {# block.html <br/> #}
 {% if block.tag == 'items' %}
-{{ first }}
-{% for item in block.items %}
-{% include "opp/item.html" %}
-{% endfor %}
+  {% include "opp/item_link.html" %}
+  {% for item in block.items %}
+    {% if item_first %}
+      {% include "opp/item.html" with nested=True %}
+    {% else %}
+      {% include "opp/item.html" %}
+    {% endif %}
+  {% endfor %}
 {% elif block.tag == 'paragraph' %}
-{% if first %}
-<div class="notitle">{{ first }}{% include "opp/chunks.html" with chunks=block.chunks %}
-{% else %}
-<div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
-{% endif %}
+  {% if item_first %}
+    {% include "opp/item_link.html" %}
+    {% include "opp/chunks.html" with chunks=block.chunks item_first='' %}
+  {% else %}
+    <div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
+  {% endif %}
 {% elif block.tag == 'table' %}
-{% if first %}
-<div class="notitle">{{ first }}
-{% endif %}
-<table>
-{% if block.has_header %}
-<thead><tr>
-{% for cell in block.rows.0 %}
-<td>{% include "opp/blocks.html" with blocks=cell %}</td>
-{% endfor %}
-</tr></thead>
-<tbody>
-{% for row in block.rows|slice:"1:" %}
-<tr>{% for cell in row %}
-<td>{% include "opp/blocks.html" with blocks=cell %}</td>
-{% endfor %}</tr>
-{% endfor %}
-</tbody>
+  {% if item_first %}
+    <div class="notitle table">{% include "opp/item_link.html" %}
+  {% endif %}
+  <table>
+  {% if block.has_header %}
+    <thead><tr>
+    {% for cell in block.rows.0 %}
+      <td>{% include "opp/blocks.html" with blocks=cell item_first='' %}</td>
+    {% endfor %}
+    </tr></thead>
+    <tbody>
+      {% for row in block.rows|slice:"1:" %}
+        <tr>
+          {% for cell in row %}
+            <td>{% include "opp/blocks.html" with blocks=cell item_first='' %}</td>
+          {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+  {% else %}
+    <tbody>
+      {% for row in block.rows %}
+        <tr>
+          {% for cell in row %}
+            <td>{% include "opp/blocks.html" with blocks=cell item_first='' %}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  {% endif %}
+  </table>
+  {% if item_first %}
+    </div>
+  {% endif %}
 {% else %}
-<tbody>
-{% for row in block.rows %}
-<tr>{% for cell in row %}
-<td>{% include "opp/blocks.html" with blocks=cell %}</td>
-{% endfor %}</tr>
-{% endfor %}
-</tbody>
-{% endif %}
-</table>
-{% else %}
-ERROR: block.html: Unknown block.tag {{ block.tag }}.
+  ERROR: block.html: Unknown block.tag {{ block.tag }}.
 {% endif %}

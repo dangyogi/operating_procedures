@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_safe
 
 from operating_procedures import models
-from operating_procedures.chunks import chunk, check_annotations_seen
+from operating_procedures.chunks import chunk, check_annotations_seen, get_block
 
 
 
@@ -35,29 +35,38 @@ def toc(request):
                 path[item.parent_id].append(chunk('items', items=[]))
             path[item.parent_id][0].items.append(my_block)
             path[item.id] = my_children
-    check_annotations_seen()
     blocks = [chunk('items', items=items, body_order=0)]
+    check_annotations_seen()
     #blocks[0].dump()
     return render(request, 'opp/toc.html',
-                  context={'blocks': blocks})
+                  context=dict(blocks=blocks))
 
 
 @require_safe
 def cite(request, citation='719'):
     assert citation.startswith('719')
     latest_law = models.Version.latest('leg.state.fl.us')
-    path = []
-    lines = []
-    for item in models.Item.objects.filter(version_id=latest_law,
-                                           title__isnull=False).order_by('item_order'):
-        if item.parent_id is None:
-            path = [item.id]
-        else:
-            i = path.index(item.parent_id)
-            path[i + 1:] = [item.id]
-        if item.citation.startswith('PART'):
-            citation = item.citation
-        else:
-            citation = item.citation.replace(' ', '')
-        lines.append(f"{' ' * (len(path) - 1)}{citation}: {item.title}")
+    citation = citation.replace(' ', '')
+    def add_space(cite):
+        if '(' in cite:
+            i = cite.index('(')
+            return cite[:i] + ' ' + cite[i:]
+        if '.' in cite:
+            return cite + ' '
+        return cite + '.'
+
+    if '-' in citation:
+        first, last = map(add_space, citation.split('-'))
+    else:
+        first = add_space(citation)
+        last = first
+
+    items = map(get_block, models.Item.objects.filter(version_id=latest_law,
+                                                      citation__gte=first,
+                                                      citation__lte=last)
+                                              .order_by('item_order'))
+    blocks = [chunk('items', items=list(items), body_order=0)]
     check_annotations_seen()
+    blocks[0].dump(depth=10)
+    return render(request, 'opp/cite.html',
+                  context=dict(citation=citation, blocks=blocks))

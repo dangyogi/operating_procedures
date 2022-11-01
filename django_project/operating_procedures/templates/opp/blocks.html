@@ -1,7 +1,7 @@
-{# blocks.html first is -{{ first }}-<br/> #}
+{# blocks.html item_first is -{{ item_first }}-<br/> #}
 {% if blocks %}
-{% include "opp/block.html" with block=blocks.0 first=first %}
-{% for block in blocks|slice:"1:" %}
-{% include "opp/block.html" with block=block first='' %}
-{% endfor %}
+  {% include "opp/block.html" with block=blocks.0 %}
+  {% for block in blocks|slice:"1:" %}
+    {% include "opp/block.html" with block=block item_first='' %}
+  {% endfor %}
 {% endif %}

@@ -77,7 +77,10 @@ class chunk:
         sep = ''
         for a in self._attrs:
             value = getattr(self, a)
-            if value is None or isinstance(value, (int, str, float, tuple)) or not value:
+            if isinstance(value, str):
+                print(f"{sep}{a}={value[:25]!r}", end='')
+                sep = ', '
+            elif value is None or isinstance(value, (int, float, tuple)) or not value:
                 print(f"{sep}{a}={value!r}", end='')
                 sep = ', '
             else:
@@ -227,40 +230,54 @@ def chunk_item(item, with_body=True):
                 body_order=item.body_order)
     if item.has_title:
         ans.title = item.get_title().with_annotations()
-    for note in item.note_set.all():
-        ans.notes.append((note.number, note.text))
+    if item.parent_id is None or item.parent.citation.startswith('PART '):
+        ans.parent_citation = None
+        ans.parent_url = reverse('toc')
+    else:
+        ans.parent_citation = item.parent.citation
+        ans.parent_url = reverse('cite', args=[item.parent.citation])
     if with_body:
         ans.body = chunkify_item_body(item)
+        for note in item.note_set.all():
+            ans.notes.append((note.number, note.text))
+    else:
+        ans.history = None
     return ans
 
 
 def chunkify_item_body(item):
     r'''Returns a list of blocks.
     '''
-    print(f"chunkify_item_body({item.as_str()})")
-    ans = sorted(map(get_block, item.get_body()), key=attrgetter('body_order'))
-    print(f"chunkify_item_body: body is {ans})")
+    #print(f"chunkify_item_body({item.as_str()})")
+    items = sorted(map(get_block, item.get_body()), key=attrgetter('body_order'))
+    #print(f"chunkify_item_body: body is {items})")
 
     # put all children (if any) into a single 'items' chunk:
-    for i, block in enumerate(ans):
-        if block.tag == 'item':
-            children = []
-            for j in range(i, len(ans)):
-                if ans[j].tag == 'item':
-                    children.append(ans[j])
-                elif children: 
-                    break
-            else:
-                assert not children
-                print("chunkify_item_body: no items found")
-                break
-            assert children
-            print(f"chunkify_item_body: found {len(children)} items")
-            ans[i: i + len(children)] = [chunk('items', items=children,
-                                               body_order=children[0].body_order)]
-            break
+    children = []
+    ans = []
+    state = 'before_children'
 
-    print(f"chunkify_item_body: returning {ans}")
+    def check_children():
+        nonlocal state
+        if state == 'doing_children':
+            #print(f"chunkify_item_body: found {len(children)} items")
+            ans.append(chunk('items', items=children,
+                             body_order=children[0].body_order))
+            state = 'after_children'
+
+    for block in items:
+        if block.tag == 'item':
+            assert state != 'after_children', \
+                   f"chunkify_item_body({item=}): got non-item {ans[-1]} " \
+                   f"between subordinate items {children[-1]} and {block}"
+            children.append(block)
+            state = 'doing_children'
+        else:
+            check_children()
+            ans.append(block)
+
+    check_children()
+    #print(f"chunkify_item_body: returning {ans}")
     return ans
 
 
