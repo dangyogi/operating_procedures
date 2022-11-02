@@ -1,15 +1,13 @@
-{# chunks.html <br/> #}
-{% for chunk in chunks %}
-{% if chunk.tag == 'text' %}
-{{ chunk.text }}
-{% elif chunk.tag == 'cite' %}
-<a href="{{ chunk.url }}">{% include "opp/chunks.html" with chunks=chunk.chunks %}</a>
-{% elif chunk.tag == 'note' %}
+{% for chunk in chunks %}{% if chunk.tag == 'text' %}{{ chunk.text }}{% elif chunk.tag == 'cite' %}{% spaceless %}
+<a href="{{ chunk.url }}" class="cite-link">{% include "opp/chunks.html" with chunks=chunk.chunks %}</a>
+{% endspaceless %}{% elif chunk.tag == 'note' %}{% spaceless %}
 <span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}<span class="tooltiptext">{{ chunk.note }}</span></span>
-{% elif chunk.tag == 'definition' %}
-<span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}
-<div class="tooltiptext">{% include "opp/blocks.html" with blocks=chunk.definition %}</div></span>
-{% else %}
-ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.
-{% endif %}
-{% endfor %}
+{% endspaceless %}{% elif chunk.tag == 'definition' %}{% spaceless %}
+<span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}<div class="tooltiptext">{% spaceless %}{% include "opp/blocks.html" with blocks=chunk.definition %}{% endspaceless %}</div></span>
+{% endspaceless %}{% elif chunk.tag == 'definition_link' %}{% spaceless %}
+<a href="{{ chunk.link }}" class="definition-link">{% include "opp/chunks.html" with chunks=chunk.term %}</a>
+{% endspaceless %}{% else %}
+<div class="error">ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.</div>
+{% endif %}{% comment %}
+  vim: sw=2 nofixendofline
+{% endcomment %}{% endfor %}

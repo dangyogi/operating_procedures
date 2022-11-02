@@ -1,3 +1,10 @@
 {% extends "opp/blocks_base.html" %}
 
 {% block title %}Cite: {{ citation }}{% endblock %}
+{% comment %}
+{% block trace %}start{% spaceless %}
+   a <span>  c d  </span> {{ blocks.0.items.0.parent_citation }} b  
+{% endspaceless %}end
+[{% include "opp/foobar.html" %}]
+{% endblock %}
+{% endcomment %}

@@ -1,11 +1,16 @@
+{% spaceless %}
 {% if item_first %}
   {% if nested %}
-    <a href="{{ item_first.url }}">{{ item_first.number }}</a>
+    <a href="{{ item_first.url }}">{{ item_first.number }}</a><span>: </span>
   {% elif item_first.parent_citation %}
-    <a href="{{ item_first.parent_url }}">{{ item_first.parent_citation }}</a>{{ item_first.number }}
+    <a href="{{ item_first.parent_url }}">{{ item_first.parent_citation }}</a>{{ item_first.number }}<span>: </span>
   {% elif item_first.citation|slice:":3" == '719' %}
-    <a href="{{ item_first.parent_url }}">719</a>{{ item_first.number|slice:"3:" }}
+    <a href="{{ item_first.parent_url }}">719</a>{{ item_first.number|slice:"3:" }}<span>: </span>
   {% else %}
-    <a href="{{ item_first.parent_url }}">{{ item_first.citation }}</a>
+    <a href="{{ item_first.parent_url }}">{{ item_first.citation }}</a><span>: </span>
   {% endif %}
 {% endif %}
+{% comment %}
+  vim: sw=2 nofixendofline
+{% endcomment %}
+{% endspaceless %}

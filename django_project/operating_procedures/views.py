@@ -2,11 +2,13 @@ from django.shortcuts import render
 
 # Create your views here.
 
+from operator import methodcaller
+
 from django.http import HttpResponse
 from django.views.decorators.http import require_GET, require_safe
 
 from operating_procedures import models
-from operating_procedures.chunks import chunk, check_annotations_seen, get_block
+from operating_procedures.chunks import chunk
 
 
 
@@ -36,7 +38,6 @@ def toc(request):
             path[item.parent_id][0].items.append(my_block)
             path[item.id] = my_children
     blocks = [chunk('items', items=items, body_order=0)]
-    check_annotations_seen()
     #blocks[0].dump()
     return render(request, 'opp/toc.html',
                   context=dict(blocks=blocks))
@@ -61,12 +62,12 @@ def cite(request, citation='719'):
         first = add_space(citation)
         last = first
 
-    items = map(get_block, models.Item.objects.filter(version_id=latest_law,
-                                                      citation__gte=first,
-                                                      citation__lte=last)
-                                              .order_by('item_order'))
+    items = map(methodcaller('get_block'),
+                models.Item.objects.filter(version_id=latest_law,
+                                           citation__gte=first,
+                                           citation__lte=last)
+                                   .order_by('item_order'))
     blocks = [chunk('items', items=list(items), body_order=0)]
-    check_annotations_seen()
     blocks[0].dump(depth=10)
     return render(request, 'opp/cite.html',
                   context=dict(citation=citation, blocks=blocks))

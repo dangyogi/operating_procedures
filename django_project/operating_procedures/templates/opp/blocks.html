@@ -1,3 +1,4 @@
+{% spaceless %}
 {# blocks.html item_first is -{{ item_first }}-<br/> #}
 {% if blocks %}
   {% include "opp/block.html" with block=blocks.0 %}
@@ -5,3 +6,7 @@
     {% include "opp/block.html" with block=block item_first='' %}
   {% endfor %}
 {% endif %}
+{% comment %}
+  vim: sw=2 nofixendofline
+{% endcomment %}
+{% endspaceless %}

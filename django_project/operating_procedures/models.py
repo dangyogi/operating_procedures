@@ -5,7 +5,7 @@ from django.db import models
 from itertools import chain
 
 from operating_procedures.chunks import (
-    chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table, get_block
+    chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table
 )
 
 
@@ -72,8 +72,8 @@ class Item(models.Model):
                     raise self.DoesNotExist(f"note {self.citation}")
                 i = i.parent
 
-    def get_block(self, with_body=True):
-        return chunk_item(self, with_body)
+    def get_block(self, with_body=True, def_as_link=False):
+        return chunk_item(self, with_body, def_as_link)
 
     def get_body_blocks(self):
         print(f"{self}.get_body_blocks()")
@@ -120,13 +120,14 @@ class Paragraph(models.Model):
             return self.item
         return self.cell.table.item
 
-    def get_block(self):
-        return chunk_paragraph(self)
+    def get_block(self, def_as_link=False):
+        return chunk_paragraph(self, def_as_link)
 
-    def with_annotations(self):
+    def with_annotations(self, def_as_link=False):
         annotations = list(self.annotation_set.all())
         #print(f"{self.as_str()}.with_annotations got {annotations}")
-        return chunkify_text(self.parent_item(), self.text, annotations)
+        return chunkify_text(self.parent_item(), self.text, annotations,
+                             def_as_link=def_as_link)
 
     class Meta:
         ordering = ['body_order']
@@ -137,7 +138,7 @@ class Paragraph(models.Model):
 class Annotation(models.Model):
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)
 
-    # 's_link' -- an ss. or s. link.  Info is the cite, which could either be a single site
+    # 's_cite' -- an ss. or s. link.  Info is the cite, which could either be a single site
     #             (e.g., '719.106(1)') or a range of cites (e.g., '719.106-719.108').
     # 'note' -- a footnote in the text.  The footnote number is in info, the footnote
     #           itself is in the Note table.
@@ -167,8 +168,8 @@ class Table(models.Model):
     def __repr__(self):
         return self.as_str()
 
-    def get_block(self):
-        return chunk_table(self)
+    def get_block(self, def_as_link=False):
+        return chunk_table(self, def_as_link)
 
     class Meta:
         ordering = ['body_order']
@@ -182,8 +183,9 @@ class TableCell(models.Model):
     col = models.PositiveSmallIntegerField()
   # text is in Paragraph that points back to this TableCell
 
-    def get_blocks(self):
-        return list(map(get_block, self.paragraph_set.all()))
+    def get_blocks(self, def_as_link=False):
+        return list(map(methodcaller('get_block', def_as_link=def_as_link),
+                        self.paragraph_set.all()))
 
     class Meta:
         ordering = ['row', 'col']

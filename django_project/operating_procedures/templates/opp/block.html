@@ -1,3 +1,4 @@
+{% spaceless %}
 {# block.html <br/> #}
 {% if block.tag == 'items' %}
   {% include "opp/item_link.html" %}
@@ -10,8 +11,7 @@
   {% endfor %}
 {% elif block.tag == 'paragraph' %}
   {% if item_first %}
-    {% include "opp/item_link.html" %}
-    {% include "opp/chunks.html" with chunks=block.chunks item_first='' %}
+    {% include "opp/item_link.html" %}{% include "opp/chunks.html" with chunks=block.chunks item_first='' %}
   {% else %}
     <div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
   {% endif %}
@@ -53,3 +53,7 @@
 {% else %}
   ERROR: block.html: Unknown block.tag {{ block.tag }}.
 {% endif %}
+{% comment %}
+  vim: sw=2 nofixendofline
+{% endcomment %}
+{% endspaceless %}
