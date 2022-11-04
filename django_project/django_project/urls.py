@@ -24,4 +24,5 @@ urlpatterns = [
     path('toc', views.toc, name='toc'),
     path('cite', views.cite, name='cite'),
     path('cite/<citation>', views.cite, name='cite'),
+    path('search/<words>', views.search, name='search'),
 ]

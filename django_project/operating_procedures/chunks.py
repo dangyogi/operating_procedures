@@ -14,6 +14,7 @@ Tags for text chunks (aka "text-chunks" in this description):
     'note': term<[text-chunk]>, note<string>
     'definition': term<[text-chunk]>, definition<[block]> (definition could have items)
     'definition_link': term<[text-chunk]>, link=<url>
+    'search_term': term<text-chunk>, word_group_number<int>
 
 Tags for larger blocks of text:
     'items': items<[item]>
@@ -25,6 +26,7 @@ Tags for larger blocks of text:
                                 # each row a list of columns,
                                 # each column a list of blocks (no items here!).
              body_order
+    'omitted': <no attrs>
 
 And finally the item itself!  (only appears in 'items' chunk)
     'item': citation<string>
@@ -237,6 +239,8 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
                           definition=chunkify_item_body(
                                        models.Item.objects.get(citation=annotation.info),
                                        def_as_link=True))]
+    elif annotation.type == 'search_highlight':
+        return [chunk('search_term', term=text_chunks, word_group_number=annotation.info)]
     else:
         raise AssertionError(f"Unknown annotation type {annotation.type!r}")
 
@@ -306,8 +310,9 @@ def chunkify_item_body(item, def_as_link=False):
     return ans
 
 
-def chunk_paragraph(paragraph, def_as_link=False):
-    return chunk('paragraph', chunks=paragraph.with_annotations(def_as_link),
+def chunk_paragraph(paragraph, wordrefs=(), def_as_link=False):
+    return chunk('paragraph', chunks=paragraph.with_annotations(wordrefs=wordrefs,
+                                                                def_as_link=def_as_link),
                  body_order=paragraph.body_order)
 
 

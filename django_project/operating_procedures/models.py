@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 
 from itertools import chain
+from operator import attrgetter
 
 from operating_procedures.chunks import (
     chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table
@@ -34,6 +35,7 @@ class Item(models.Model):
     parent = models.ForeignKey('Item', on_delete=models.CASCADE, null=True, blank=True)
     item_order = models.PositiveSmallIntegerField()
     body_order = models.PositiveSmallIntegerField(null=True, blank=True)
+    num_elements = models.PositiveSmallIntegerField() # not including title
     # title is in Paragraph that points back to this Item with body_order == 0
     has_title = models.BooleanField(default=False)
     history = models.CharField(max_length=200, null=True, blank=True)
@@ -120,11 +122,15 @@ class Paragraph(models.Model):
             return self.item
         return self.cell.table.item
 
-    def get_block(self, def_as_link=False):
-        return chunk_paragraph(self, def_as_link)
+    def get_block(self, wordrefs=(), def_as_link=False):
+        return chunk_paragraph(self, wordrefs=wordrefs, def_as_link=def_as_link)
 
-    def with_annotations(self, def_as_link=False):
+    def with_annotations(self, wordrefs=(), def_as_link=False):
         annotations = list(self.annotation_set.all())
+        if wordrefs:
+            print(f"with_annotations got {wordrefs=}")
+            annotations.extend(wordrefs)
+            annotations.sort(key=attrgetter('char_offset'))
         #print(f"{self.as_str()}.with_annotations got {annotations}")
         return chunkify_text(self.parent_item(), self.text, annotations,
                              def_as_link=def_as_link)
@@ -143,6 +149,8 @@ class Annotation(models.Model):
     # 'note' -- a footnote in the text.  The footnote number is in info, the footnote
     #           itself is in the Note table.
     # 'definition' -- The citation of the definition is in info.
+    #
+    # Wordrefs appear to be 'search_highlight' annotations with info = word_group_index.
     type = models.CharField(max_length=20)
     char_offset = models.PositiveSmallIntegerField()
     length = models.PositiveSmallIntegerField()
@@ -224,6 +232,8 @@ class Word(models.Model):
         return w
 
     def get_synonyms(self, seen=None):
+        r'''Returns a set of Word.ids.
+        '''
         if seen is None:
             seen = set((self.id,))
         for s in Synonym.objects.filter(word=self).all():
@@ -237,6 +247,8 @@ class Synonym(models.Model):
     synonym = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='+')
 
 class WordRef(models.Model):
+    type = 'search_highlight'  # word_group_index inserted as 'info' to make this look like
+                               # an annotation with type 'search_highlight'.
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
     sentence_number = models.PositiveSmallIntegerField()

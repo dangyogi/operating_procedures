@@ -7,6 +7,7 @@ law statute
 use utilize
 write written
 warrant warranty
+hotel motel cabin lodge
 
 abandon abandoned abandons
 abstain abstains abstained

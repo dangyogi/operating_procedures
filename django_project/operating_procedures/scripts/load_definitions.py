@@ -4,7 +4,6 @@ from itertools import chain
 import re
 
 from django.db import transaction
-from django.db.models import Q
 
 from operating_procedures import models
 

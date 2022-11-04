@@ -6,6 +6,8 @@
 <span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}<div class="tooltiptext">{% spaceless %}{% include "opp/blocks.html" with blocks=chunk.definition %}{% endspaceless %}</div></span>
 {% endspaceless %}{% elif chunk.tag == 'definition_link' %}{% spaceless %}
 <a href="{{ chunk.link }}" class="definition-link">{% include "opp/chunks.html" with chunks=chunk.term %}</a>
+{% endspaceless %}{% elif chunk.tag == 'search_term' %}{% spaceless %}
+<span class="search-term-{{ chunk.word_group_number }}">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
 {% endspaceless %}{% else %}
 <div class="error">ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.</div>
 {% endif %}{% comment %}

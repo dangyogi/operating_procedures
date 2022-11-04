@@ -139,15 +139,20 @@ def process_part(part, trace):
     title = get_string(find1(pt, 'span', class_="PartTitle"))
     if trace:
         print(f"{type}: {item_order=}, {number=}, {title=}")
-    part_obj = models.Item(version=version_obj, item_order=item_order, citation=number,
-                           number=number, has_title=True)
+    part_obj = models.Item(version=version_obj, item_order=item_order, num_elements=0,
+                           citation=number, number=number, has_title=True)
     part_obj.save()
     p = models.Paragraph(item=part_obj, body_order=0, text=title)
     p.save()
     item_order += 1
+    body_order = 0  # in case there are no children...
     for body_order, section \
      in enumerate(part.find_all('div', recursive=False, class_='Section'), 1):
         process_section(section, part_obj, body_order, trace)
+    if body_order:
+        part_obj.num_elements = body_order
+        part_obj.save()
+    
 
 def process_section(section, parent, body_order, trace):
     r'''
@@ -195,7 +200,7 @@ def process_section(section, parent, body_order, trace):
     # omitting part number from citation
     section_obj = models.Item(version=version_obj, citation=number, number=number.strip(),
                               parent=parent, item_order=item_order, body_order=body_order,
-                              has_title=True)
+                              num_elements=0, has_title=True)
 
     section_obj.save()
     p = models.Paragraph(item=section_obj, body_order=0, text=title)
@@ -422,6 +427,9 @@ def get_body(tag, parent=None, allow_title=True, skip=0, strip=0, trace=False):
 
     flatten(tag, skip=skip)
     end_span()
+    if body_order > 1:
+        parent.num_elements = body_order - 1
+        parent.save()
     return title
 
 
@@ -438,7 +446,7 @@ def process_child(parent, child, strip_number, body_order, trace):
         print(f"{type}: citation={my_number}, {item_order=}, {body_order=}, "
               f"{parent.citation=}")
     obj = models.Item(version=version_obj, citation=my_number, number=number, parent=parent,
-                      item_order=item_order, body_order=body_order)
+                      item_order=item_order, body_order=body_order, num_elements=0)
     obj.save()
     item_order += 1
     title = get_body(child, parent=obj, allow_title=allow_title, skip=skip,
