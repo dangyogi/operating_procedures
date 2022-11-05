@@ -66,23 +66,31 @@ div {
 /* search highlights */
 
 .search-term-1 {
-  background-color: yellow;
+  background-color: moccasin;
 }
 
 .search-term-2 {
-  background-color: green;
+  background-color: lightgreen;
 }
 
 .search-term-3 {
-  background-color: blue;
+  background-color: lightskyblue;
 }
 
 .search-term-4 {
-  background-color: cyan;
+  background-color: mistyrose;
 }
 
 .search-term-5 {
-  background-color: magenta;
+  background-color: plum;
+}
+
+
+/* omitted */
+
+.omitted {
+  font-weight: bold;
+  font-size: larger;
 }
 
 

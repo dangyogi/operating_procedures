@@ -15,6 +15,8 @@
   {% else %}
     <div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
   {% endif %}
+{% elif block.tag == 'omitted' %}
+  <div class="omitted">. . .</div>
 {% elif block.tag == 'table' %}
   {% if item_first %}
     <div class="notitle table">{% include "opp/item_link.html" %}

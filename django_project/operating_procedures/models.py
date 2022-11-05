@@ -78,7 +78,7 @@ class Item(models.Model):
         return chunk_item(self, with_body, def_as_link)
 
     def get_body_blocks(self):
-        print(f"{self}.get_body_blocks()")
+        #print(f"{self}.get_body_blocks()")
         return chunkify_item_body(self)
 
     class Meta:
@@ -128,7 +128,7 @@ class Paragraph(models.Model):
     def with_annotations(self, wordrefs=(), def_as_link=False):
         annotations = list(self.annotation_set.all())
         if wordrefs:
-            print(f"with_annotations got {wordrefs=}")
+            #print(f"with_annotations got {wordrefs=}")
             annotations.extend(wordrefs)
             annotations.sort(key=attrgetter('char_offset'))
         #print(f"{self.as_str()}.with_annotations got {annotations}")

@@ -27,11 +27,13 @@ def run(*args):
         synonym_file = args[0]
         with open(synonym_file, 'r') as synonyms:
             for line in synonyms:
-                words_in_line = line.split()
-                if words_in_line:
-                    first = models.Word.lookup_word(words_in_line[0])
-                    for w in words_in_line[1:]:
-                        second = models.Word.lookup_word(w)
-                        models.Synonym(word=first, synonym=second).save()
-                        models.Synonym(word=second, synonym=first).save()
+                line = line.strip()
+                if line and line[0] != '#':
+                    words_in_line = line.split()
+                    if words_in_line:
+                        first = models.Word.lookup_word(words_in_line[0])
+                        for w in words_in_line[1:]:
+                            second = models.Word.lookup_word(w)
+                            models.Synonym(word=first, synonym=second).save()
+                            models.Synonym(word=second, synonym=first).save()
         print(f"next: python manage.py runscript load_definitions --script-args <version>")

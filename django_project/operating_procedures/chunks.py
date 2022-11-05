@@ -109,15 +109,17 @@ class chunk:
 
 ct_depth = -1
 
-def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link=False):
+def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link=False,
+                  trace=False):
     r'''Returns a list of text-chunks.
     '''
     global ct_depth
     ct_depth += 1
     try:
         annotations = list(annotations)
-        print(f"{' ' * 2 * ct_depth}>chunkify_text({ct_depth=}, {parent_item=}, "
-              f"text={text[:25]}, {annotations=}, {start=}, {end=})")
+        if trace:
+            print(f"{' ' * 2 * ct_depth}>chunkify_text({ct_depth=}, {parent_item=}, "
+                  f"text={text[:25]}, {annotations=}, {start=}, {end=})")
         if end is None:
             end = len(text)
         ans = []
@@ -175,7 +177,8 @@ def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link
         while start < end:
             if not annotations:
                 ans.append(chunk('text', text=text[start: end]))
-                print(f"{' ' * 2 * ct_depth}<chunkify_text: no more annotations -> {ans}")
+                if trace:
+                    print(f"{' ' * 2 * ct_depth}<chunkify_text: no more annotations -> {ans}")
                 break
             assert annotations[0].char_offset >= start
             if annotations[0].char_offset > start:
@@ -183,7 +186,8 @@ def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link
             start = make_annotation(annotations)  # includes nested annotations
         else:
             # This never seems to get hit... ??
-            print(f"{' ' * 2 * ct_depth}<chunkify_text: end of text -> {ans}")
+            if trace:
+                print(f"{' ' * 2 * ct_depth}<chunkify_text: end of text -> {ans}")
         assert not annotations
     except Exception:
         ct_depth -= 1
@@ -205,7 +209,8 @@ def make_fl_leg_url(citation):
     chapter = int(chapter)
     hundreds_start = chapter - chapter % 100
     url_start = f"{fl_leg_url_prefix}{hundreds_start:04d}-{hundreds_start + 99:04d}/" \
-                f"{hundreds_start}/{chapter:04d}/"
+                f"{chapter:04d}/"
+    #print(f"make_fl_leg_url({citation}): {chapter=}, {hundreds_start=}, {url_start=}")
     if section is None:
         return f"{url_start}{chapter:04d}.html"
     return f"{url_start}Sections/{chapter:04d}.{int(section):02d}.html"

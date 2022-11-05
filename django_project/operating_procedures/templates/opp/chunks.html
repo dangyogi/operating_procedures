@@ -1,4 +1,5 @@
-{% for chunk in chunks %}{% if chunk.tag == 'text' %}{{ chunk.text }}{% elif chunk.tag == 'cite' %}{% spaceless %}
+{% load opp_extras %}
+{% for chunk in chunks %}{% if chunk.tag == 'text' %}{{ chunk.text|savespaces }}{% elif chunk.tag == 'cite' %}{% spaceless %}
 <a href="{{ chunk.url }}" class="cite-link">{% include "opp/chunks.html" with chunks=chunk.chunks %}</a>
 {% endspaceless %}{% elif chunk.tag == 'note' %}{% spaceless %}
 <span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}<span class="tooltiptext">{{ chunk.note }}</span></span>

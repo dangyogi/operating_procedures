@@ -70,19 +70,22 @@ def cite(request, citation='719'):
                                            citation__lte=last)
                                    .order_by('item_order'))
     blocks = [chunk('items', items=list(items), body_order=0)]
-    blocks[0].dump(depth=10)
+    #blocks[0].dump(depth=10)
     return render(request, 'opp/cite.html',
                   context=dict(citation=citation, blocks=blocks))
 
 
 @require_safe
 def search(request, words):
+    trace = False
+
     words = list(map(methodcaller('lower'), map(methodcaller('strip'), words.split(','))))
 
     word_groups = list(map(methodcaller('get_synonyms'),
                            models.Word.objects.filter(text__in=words).all()))
 
-    print(f"search got {words=}, {word_groups=}")
+    #if trace:
+    print(f"search got {words=}, expands to {word_groups=}")
 
     latest_law = models.Version.latest('leg.state.fl.us')
 
@@ -101,13 +104,28 @@ def search(request, words):
     if not para_list1:
         return HttpResponse(f"No results found for {words}.",
                             content_type='text/plain; charset=utf-8')
-    print(f"got {len(para_list1)} paragraphs")
+    if trace:
+        print(f"got {len(para_list1)} paragraphs")
     para_list1.sort(key=lambda x: (x[0].item.item_order, x[0].body_order))
 
+    def check_para_list1():
+        last_p = para_list1[0][0]
+        for p, _, _ in para_list1[1:]:
+            assert p.item.item_order >= last_p.item.item_order, \
+                   f"check_para_list1: ERROR {p.item.item_order=} < {last_p.item.item_order}"
+            if p.item.item_order == last_p.item.item_order:
+                assert p.body_order >= last_p.body_order, \
+                       f"check_para_list1: ERROR {p.body_order=} < {last_p.body_order}"
+            last_p = p
+
+    check_para_list1()
+
     # Store word_group_index in wordref objects as 'info'
-    print("para_list1:")
+    if trace:
+        print("para_list1:")
     for para, wordrefs, word_group_index in para_list1:
-        print(f"  {para=}, {wordrefs=}, {word_group_index=}")
+        if trace:
+            print(f"  {para=}, {wordrefs=}, {word_group_index=}")
         for wr in wordrefs:
             wr.info = word_group_index + 1
 
@@ -115,6 +133,7 @@ def search(request, words):
     # sorted by item_order, body_order with no duplicate items or paragraphs.
     wordrefs = []
     for item, paras in groupby(para_list1, key=lambda x: x[0].item):
+        #print(f"making wordrefs, next item is {item}, {item.as_str()}")
         item_word_groups = set()
         new_paras = []
         for para, para_wordrefs in groupby(paras, key=itemgetter(0)):
@@ -124,9 +143,30 @@ def search(request, words):
             item_word_groups.update(map(itemgetter(2), para_wordrefs))
         wordrefs.append((item, item_word_groups, new_paras))
 
-    print("wordrefs:")
-    for item, item_word_groups, paras in wordrefs:
-        print(f"  {item=}, {item_word_groups=}, {paras=}")
+    def check_wordrefs(wordrefs):
+        last_item = wordrefs[0][0]
+        def check_paras(item, paras):
+            last_p = paras[0][0]
+            for p, _ in paras[1:]:
+                assert p.id != last_p.id, f"check_wordrefs: ERROR {p.id=} == {last_p.id}"
+                assert p.body_order > last_p.body_order, \
+                       f"check_wordrefs: ERROR {p.body_order=} <= {last_p.body_order}"
+                last_p = p
+        check_paras(last_item, wordrefs[0][2])
+        for item, _, paras in wordrefs[1:]:
+            assert item.id != last_item.id, \
+                   f"check_wordrefs: ERROR {item.id=} == {last_item.id=}"
+            assert item.item_order > last_item.item_order, \
+                   f"check_wordrefs: ERROR {item.item_order=} <= {last_item.item_order=}"
+            check_paras(item, paras)
+            last_item = item
+
+    check_wordrefs(wordrefs)
+
+    if trace:
+        print("wordrefs:")
+        for item, item_word_groups, paras in wordrefs:
+            print(f"  {item=}, {item_word_groups=}, {paras=}")
 
     def connect_items(wordrefs):
         r'''Fills in empty item gaps between grandparent items and grandchild items.
@@ -138,21 +178,25 @@ def search(request, words):
         yield first_item, first_word_groups, first_paras
         for item, item_word_groups, paras in wordrefs:
             if item.citation.startswith(first_item.citation):
+                assert item.citation != first_item.citation
                 next_item = item
-                children.append((item, item_word_groups, paras))
+                children = [(item, item_word_groups, paras)]
                 while next_item.parent != first_item:
-                    children.append((next_item.parent, frozenset(), []))
+                    children.append((next_item.parent, set(), []))
                     next_item = next_item.parent
                 yield from reversed(children)
             else:
                 yield item, item_word_groups, paras
-                first_item = item
+            first_item = item
 
-    print(f"connect_items called with {len(wordrefs)} wordrefs")
-    for item, item_word_groups, paras in connect_items(wordrefs):
-        print(f"  {item=}, {item_word_groups=}, {len(paras)=}")
+    check_wordrefs(list(connect_items(wordrefs)))
 
-    def sift(wordrefs, word_groups_seen=frozenset()):
+    if trace:
+        print(f"connect_items called with {len(wordrefs)} wordrefs")
+        for item, item_word_groups, paras in connect_items(wordrefs):
+            print(f"  {item=}, {item_word_groups=}, {len(paras)=}")
+
+    def sift(wordrefs, word_groups_seen=frozenset(), trace=False):
         r'''Nests linear wordrefs structure.
 
         Also inserts ('omitted', None) paragraphs where one or more paragraphs were skipped.
@@ -161,37 +205,45 @@ def search(request, words):
         tree = []
         first_item, first_item_word_groups, first_paras = next(wordrefs)
         first_item_word_groups.update(word_groups_seen)
-        print(f"sift {first_item=}, {first_item_word_groups}, {first_paras=}")
+        if trace:
+            print(f"sift {first_item=}, {first_item_word_groups}, {first_paras=}")
         children = []
         for item, groups, paras in wordrefs:
             if item.citation.startswith(first_item.citation):
-                print(f"sift got {item=}, {paras=} -- appending")
+                if trace:
+                    print(f"sift got {item=}, {paras=} -- appending")
                 children.append((item, groups, paras))
             else:
-                print(f"sift got {item=}, {groups=}, {paras=} -- tying off {children=}")
+                if trace:
+                    print(f"sift got {item=}, {groups=}, {paras=} -- tying off {children=}")
                 if children:
-                    first_children = sift(children, first_item_word_groups)
+                    first_children = sift(children, first_item_word_groups, trace)
                     children = []
                 else:
                     first_children = []
                 if len(first_item_word_groups) == len(word_groups) or first_children:
-                    print(f"sift appending {first_paras=}, {first_children=} to tree")
+                    if trace:
+                        print(f"sift appending {first_paras=}, {first_children=} to tree")
                     tree.append((first_item, combine_elements(first_item, first_paras,
                                                               first_children)))
                 first_item, first_item_word_groups, first_paras = item, groups, paras
                 first_item_word_groups.update(word_groups_seen)
-                print(f"switching to {first_item=}, {first_item_word_groups=}, "
-                      f"{first_paras=}")
-        print(f"sift, no more items, checking last item {first_item=}")
+                if trace:
+                    print(f"switching to {first_item=}, {first_item_word_groups=}, "
+                          f"{first_paras=}")
+        if trace:
+            print(f"sift, no more items, checking last item {first_item=}")
         if children:
-            first_children = sift(children, first_item_word_groups)
+            first_children = sift(children, first_item_word_groups, trace)
         else:
             first_children = []
         if len(first_item_word_groups) == len(word_groups) or first_children:
-            print(f"sift, appending last item {first_paras=}, {first_children=}")
+            if trace:
+                print(f"sift, appending last item {first_paras=}, {first_children=}")
             tree.append((first_item, combine_elements(first_item, first_paras,
                                                       first_children)))
-        print(f"sift returning {tree}")
+        if trace:
+            print(f"sift returning {tree}")
         return tree
 
     def combine_elements(parent_item, paras, children):
@@ -202,21 +254,26 @@ def search(request, words):
         paras is sequence of (para, wordrefs)
         children is sequence of (item, [elements])
         '''
+        #print(f"combine_elements({parent_item=}, ...)")
         ans = []
         next = 1
         for first, second in sorted(chain(paras, children), key=lambda x: x[0].body_order):
+            #print(f"  next element {first=}, {first.body_order=}, {next=}")
             if first.body_order > next and \
                models.Paragraph.objects.filter(item=parent_item,
                                                body_order__range=(next,
                                                                   first.body_order - 1)) \
                                        .exists():
+                #print("  appending 'omitted'")
                 ans.append(('omitted', None))
             ans.append((first, second))
             next = first.body_order + 1
+        #print(f"  done: {first=}, {first.body_order=}, {parent_item.num_elements=}")
         if first.body_order < parent_item.num_elements and \
            models.Paragraph.objects.filter(item=parent_item,
                                            body_order__gt=first.body_order) \
                                    .exists():
+            #print("  appending 'omitted'")
             ans.append(('omitted', None))
         return ans
 
@@ -247,10 +304,10 @@ def search(request, words):
                 # Check for title in item_block.body as body_order == 0.  If found, pull it
                 # out and replace item_block.title with it so that the title has the search
                 # highlights.
-                if item_block.body and isinstance(item_block.body[0], models.Paragraph) and \
+                if item_block.body and item_block.body[0].tag == 'paragraph' and \
                    item_block.body[0].body_order == 0:
                     # Move to title!
-                    item_block.title = item_block.body[0]
+                    item_block.title = item_block.body[0].chunks
                     del item_block.body[0]
 
                 sub_items.append(item_block)
@@ -273,6 +330,6 @@ def search(request, words):
         return blocks
 
     blocks = prepare_blocks(tree)
-    blocks[0].dump(depth=10)
+    #blocks[0].dump(depth=10)
     return render(request, 'opp/search.html',
                   context=dict(words=words, blocks=blocks))
