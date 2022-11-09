@@ -1,6 +1,6 @@
 # synonyms.txt
 
-owner shareholder
+shareholder owner member
 #director board
 dwelling unit
 sign execute
@@ -9,6 +9,7 @@ law statute
 use utilize
 warrant warranty
 #hotel motel cabin lodge
+secret secrecy
 
 abandon abandoned abandons
 abstain abstains abstained

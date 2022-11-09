@@ -10,11 +10,12 @@ from django.db import transaction
 from operating_procedures import models
 
 
-casetext = "https://casetext.com/"
+casetext_domain = "casetext.com"
+casetext = f"https://{casetext_domain}/"
 casetext_61B = casetext + \
                  "regulation/florida-administrative-code/" \
                  "department-61-department-of-business-and-professional-regulation/" \
-                 "division-61b-division-of-florida-condominiums-timeshares-and-mobile-homes"
+                 "division-61b-division-of-florida-condominiums-timeshares-and-mobile-homes/"
 
 fl_leg_domain = "leg.state.fl.us"
 fl_legislature = f"http://www.{fl_leg_domain}/"
@@ -30,6 +31,7 @@ class Find_error(Exception):
     pass
 
 Dump_body = False
+Max_title = 50
 
 
 def find1(soup, name, attrs={}, recursive=False, string=None, error_if_none=True, **kwargs):
@@ -78,27 +80,188 @@ def get(url):
     #print(f"{soup.head.find('meta')}")
     return soup
 
-def scrape_61B():
-    r'''Expectes a list of chapters.  Passes all 75-79 chapters to process.
+def scrape_61B(trace=False):
+    r'''Expectes a list of chapters.  Passes all 75-79 chapters to process_61B_chapter.
     '''
+    global item_order
+    item_order = 1
     soup = get(casetext_61B)
-    article = find1(soup, 'article', recursive=True)
-    ul = find1(article, 'ul')
-    for a in ul.find_all('a'):
+    #article = find1(soup.body, 'article', recursive=True)
+    article = soup.body.article
+    ul = find1(article, 'ul', recursive=False)
+    #print(f"scrape_61B got ul with {len(ul.contents)} elements")
+    chapters_seen = []
+    for li in ul.children:
+        a = li.a
         title = find1(a, 'span', recursive=True, class_='title').string
         assert title.startswith('Chapter 61B-')
         ch_number = int(title[12:].split()[0])
+        #print(f"scrape_61B got li.a tag {a.contents[-1]=}, {ch_number=}")
         if 75 <= ch_number <= 79:
             if 'Repealed' not in title:
+                assert not chapters_seen or ch_number == chapters_seen[-1] + 1
+                chapters_seen.append(ch_number)
                 href = a['href']
                 if href[0] != '/':
                     href = casetext + href
-                process(ch_number, title, href)
+                process_61B_chapter(ch_number, title, href)
+    assert chapters_seen and chapters_seen[-1] == 79
 
 
-def process(ch_number, title, url):
-    print(ch_number, title, url)
+def process_61B_chapter(ch_number, title, url):
+    global item_order
+    title = title[title.index(' - ') + 3: title.index('(\u00a7') - 1] 
+    print(f"process_61B_chapter got {ch_number=}, {title=}, url=...{url[-30:]}")
+    soup = get(url)
+    #article = find1(soup.body, 'article', recursive=True)
+    article = soup.body.article
+    ul = find1(article, 'ul', recursive=False)
+    chapter_item = models.Item(version=version_obj, citation=f"61B-{ch_number}",
+                               number=ch_number, item_order=item_order, num_elements=0,
+                               has_title=True)
+    chapter_item.save()
+    item_order += 1
+    p = models.Paragraph(item=chapter_item, body_order=0, text=title)
+    p.save()
+    for body_order, li in enumerate(ul.children, 1):
+        a = li.a
+        href = a['href']
+        if href[0] != '/':
+            href = casetext + href
+        process_61B_section(chapter_item, body_order, href)
+    chapter_item.num_elements = body_order
+    chapter_item.save()
 
+
+def process_61B_section(parent, body_order, url):
+    global item_order
+    soup = get(url)
+    print(f"process_61B_section {parent.citation=}, {body_order=}")
+    article = find1(soup.body, 'article', recursive=True)
+    body = find1(article, 'div', class_="content-body", recursive=True)
+    title = body.find('section', class_="codified-law-title").string
+    if title.startswith('Section '):
+        title = title[8: ]
+    i = title.index(' - ')
+    citation = title[: i]
+    title = title[i + 3:]
+    number = citation.split('.')[1]
+    print(f"found section title {citation=}, {number=}, {title=}")
+
+    section_item = models.Item(version=version_obj, citation=citation,
+                               number=number, parent=parent,
+                               item_order=item_order, body_order=body_order,
+                               num_elements=0, has_title=True)
+    section_item.save()
+    item_order += 1
+    p = models.Paragraph(item=section_item, body_order=0, text=title)
+    p.save()
+    container = body.find('section', class_='act', recursive=True).section
+
+    print(f"process_61B_section {section_item.citation}:")
+    body_order = 0
+    for body_order, child in enumerate(container.children, 1):
+        if isinstance(child, NavigableString):
+            print(f"  process_61B_section {section_item.citation} got text child")
+        elif child.name != 'span':
+            print(f"  process_61B_section {citation} got unknown child name {child.name=}")
+        elif 'class' in child.attrs:
+            if 'citeAs' in child['class']:
+                print(f"  process_61B_section {citation} got 'citeAs' child")
+            elif 'historicalNote' in child['class']:
+                print(f"  process_61B_section {citation} got "
+                      "'historicalNote' child")
+            else:
+                print(f"  process_61B_section {citation} got unknown child attrs "
+                      f"{child.name=} {child['class']}")
+        else:
+            print(f"  process_61B_section {section_item.citation} got normal child") 
+            process_61B_paragraph(section_item, child, body_order)
+    print(f"process_61B_section {section_item.citation} got num_element={body_order}")
+    section_item.num_elements = body_order
+    section_item.save()
+
+def process_61B_paragraph(parent_item, container, body_order):
+    r'''Creates a new Item and assocated Paragraphs.
+
+    Doesn't return anything.
+    '''
+    global item_order
+    bulletid = container.contents[0]
+    print(f"process_61B_paragraph {parent_item.citation}, first child is {bulletid.name=} "
+          f"{tuple(bulletid.attrs.keys())=}")
+    assert bulletid.name == 'span' and 'data-bulletid' in bulletid.attrs, \
+           f"process_61B_paragraph {parent_item.citation} " \
+           f"expected 'data-bulletid' 'span', " \
+           f"got {bulletid.name=}, {tuple(bulletid.attrs.keys())=}"
+    number = get_string(bulletid)
+    citation = parent_item.citation + number
+    text = container.contents[1]
+    title = None
+    i = -1
+    start = 0
+    if isinstance(text, NavigableString):
+        while True:
+            i = str(text).find('. ', i + 1)
+            if 0 < i <= Max_title:
+                title = str(text)[:i + 1].strip()
+                rest = str(text)[i + 1:].lstrip()
+                if rest:
+                    if rest[0].isupper():
+                        #print(f"{citation=}: '{title=}'")
+                        start = 1
+                        break
+                elif len(container.contents) > 1:
+                    #print(f"{citation=}: no body, '{title=}'")
+                    start = 1
+                    break
+            else:
+                #if i < 0:
+                #    print(f"{citation=}: no title, no '.' found in '{str(text)[:70]}'")
+                #else:
+                #    print(f"{citation=}: no title, sentence too long in "
+                #          f"'{str(text)[:min(i + 1, 70)]}'")
+                title = None
+                rest = str(text).strip()
+                start = 1
+                break
+
+    print(f"process_61B_paragraph {citation=}, {number=}, {title=}:")
+    item = models.Item(version=version_obj, citation=citation, number=number,
+                       parent=parent_item, item_order=item_order, body_order=body_order,
+                       num_elements=0, has_title=(title is not None))
+    item.save()
+    item_order += 1
+    if title is not None:
+        p = models.Paragraph(item=item, body_order=0, text=title)
+        p.save()
+    child_body_order = 0
+    for child_body_order, child in enumerate(container.contents[1:], 1):
+        if isinstance(child, NavigableString):
+            if child_body_order == 1 and title is not None:
+                print(f"  process_61B_paragraph {citation} got text child "
+                      f"{len(rest)=}")
+            else:
+                print(f"  process_61B_paragraph {citation} got extra text child "
+                      f"{len(str(child))=}")
+        elif child.name != 'section':
+            print(f"  process_61B_paragraph {citation} got child {child.name=}")
+        elif 'class' in child.attrs:
+            if 'citeAs' in child['class']:
+                print(f"  process_61B_paragraph {citation} got 'citeAs' child")
+            elif 'historicalNote' in child['class']:
+                print(f"  process_61B_paragraph {citation} got "
+                      "'historicalNote' child")
+            else:
+                print(f"  process_61B_paragraph {citation} got unknown child class "
+                      f"{child['class']=}")
+        else:
+            print(f"  process_61B_paragraph {citation} got normal child") 
+            process_61B_paragraph(item, child, child_body_order)
+    print(f"process_61B_paragraph {citation} setting num_elements={child_body_order}")
+    if child_body_order:
+        item.num_elements = child_body_order
+        item.save()
 
 def scrape_719(trace=False):
     r'''Organization of document:
@@ -230,7 +393,7 @@ def get_string(tag, de_emsp=False, ignore_emdash=False):
         if isinstance(tag, NavigableString):
             #print("NavString", str(tag))
             span.append(drop_emsp(str(tag), de_emsp))
-        elif tag.name in ('span', 'br'):
+        elif tag.name in ('span', 'b', 'br'):
             if tag.has_attr('class') and 'EmDash' in tag['class']:
                 if not ignore_emdash:
                     print(f"=== WARNING: get_strings {depth=} got non-ignored EmDash")
@@ -554,21 +717,32 @@ def process_table(parent, child, body_order):
 @transaction.atomic
 def run(*args):
     global version_obj
-    if 'help' in args:
-        print("scrape_719 help")
-        print("  manage.py runscript scrape_719 --script-args help")
+    if not args or 'help' in args:
+        print("scrape_html help")
+        print("  manage.py runscript scrape_html --script-args help")
         print("    prints this help message")
-        print("  manage.py runscript scrape_719")
+        print("  manage.py runscript scrape_html --script-args 719")
         print("    - loads chapter 719 as a new version with today's date")
         print("    - you must also runscript load_words --script-args <version_id>")
         print("      to index all of the words in this new version")
-        print("  manage.py runscript scrape_719 --script-args trace")
+        print("  manage.py runscript scrape_html --script-args 61b")
+        print("    - loads chapter 61B-75 to 79 as a new version with today's date")
+        print("    - you must also runscript load_words --script-args <version_id>")
+        print("      to index all of the words in this new version")
+        print("  manage.py runscript scrape_html --script-args trace")
         print("    turns trace on for the load")
-    else:
+    elif '719' in args:
         print(f"run {args=}")
         version_obj = models.Version(source=fl_leg_domain, url=chapter_719)
         version_obj.save()
         scrape_719('trace' in args)
         print("Chapter 719 loaded as version", version_obj.id)
-        print(f"next: python manage.py runscript load_words")
+        print(f"next: python manage.py runscript load_words --script-args {version_obj.id}")
+    elif '61b' in [s.lower() for s in args]:
+        print(f"run {args=}")
+        version_obj = models.Version(source=casetext_domain, url=casetext_61B)
+        version_obj.save()
+        scrape_61B('trace' in args)
+        print("Chapters 61B-75 through 79 loaded as version", version_obj.id)
+        print(f"next: python manage.py runscript load_words --script-args {version_obj.id}")
 
