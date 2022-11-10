@@ -13,34 +13,48 @@ from operating_procedures import models
 from operating_procedures.chunks import chunk
 
 
+Source_719 = 'leg.state.fl.us'
+Source_61B = 'casetext.com'
 
 @require_safe
-def toc(request):
+def toc(request, source='719'):
     r'''Creates a table-of-contents of the 'leg.state.fl.us' Chapter 719 code.
 
-    The context created for the template is a recursive list structure:
-
-        node is [citation, title, [node]]
+    The context created for the template is a list of blocks (see chunks.py).
     '''
-    latest_law = models.Version.latest('leg.state.fl.us')
-    items = []
-    for item in models.Item.objects.filter(version_id=latest_law,
-                                           has_title=True).order_by('item_order'):
-        title = item.get_title().text
-
-        my_block = item.get_block(with_body=False)
-        my_children = my_block.body
-
-        if item.parent_id is None:
-            items.append(my_block)
-            path = {item.id: my_children}
-        else:
-            if not path[item.parent_id]:
-                path[item.parent_id].append(chunk('items', items=[]))
-            path[item.parent_id][0].items.append(my_block)
-            path[item.id] = my_children
-    blocks = [chunk('items', items=items, body_order=0)]
-    #blocks[0].dump()
+    if source == '719':
+        latest_law = models.Version.latest(Source_719)
+    elif source.upper() == '61B':
+        latest_law = models.Version.latest(Source_61B)
+    else:
+        return HttpResponse(f"Invalid source: {source}.",
+                            content_type='text/plain; charset=utf-8',
+                            status=400)
+    print(f"toc {source=} {latest_law=}")
+    top_level_items = []
+    item_iter = iter(models.Item.objects.filter(version_id=latest_law).order_by('item_order'))
+    def get_children_of(parent):
+        r'''Returns parent_chunk (or None), next_item (or None)
+        '''
+        child = next(item_iter, None)
+        children = []
+        while child is not None and  child.parent == parent:
+            item_chunk, child = get_children_of(child)
+            if item_chunk is not None:
+                children.append(item_chunk)
+        if parent.has_title or children:
+            my_block = parent.get_block(with_body=False)
+            if children:
+                my_block.body.append(chunk('items', items=children, body_order=0))
+            return my_block, child
+        return None, child
+    item = next(item_iter, None)
+    while item is not None:
+        item_chunk, item = get_children_of(item)
+        if item_chunk is not None:
+            top_level_items.append(item_chunk)
+    blocks = [chunk('items', items=top_level_items, body_order=0)]
+    blocks[0].dump(8)
     return render(request, 'opp/toc.html',
                   context=dict(blocks=blocks))
 
@@ -48,7 +62,7 @@ def toc(request):
 @require_safe
 def cite(request, citation='719'):
     assert citation.startswith('719')
-    latest_law = models.Version.latest('leg.state.fl.us')
+    latest_law = models.Version.latest(Source_719)
     citation = citation.replace(' ', '')
     def add_space(cite):
         if '(' in cite:
@@ -87,7 +101,7 @@ def search(request, words):
     #if trace:
     print(f"search got {words=}, expands to {word_groups=}")
 
-    latest_law = models.Version.latest('leg.state.fl.us')
+    latest_law = models.Version.latest(Source_719)
 
     # list of (para, wordrefs, word_group_index), para repeated for each word_group_index
     para_list1 = [(para, list(wordrefs), word_group_index)

@@ -21,7 +21,8 @@ from operating_procedures import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('toc', views.toc, name='toc'),
+    path('toc', views.toc),
+    path('toc/<source>', views.toc, name='toc'),
     path('cite', views.cite, name='cite'),
     path('cite/<citation>', views.cite, name='cite'),
     path('search/<words>', views.search, name='search'),

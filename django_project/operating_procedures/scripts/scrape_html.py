@@ -109,32 +109,42 @@ def scrape_61B(trace=False):
 
 
 def process_61B_chapter(ch_number, title, url):
-    global item_order
     title = title[title.index(' - ') + 3: title.index('(\u00a7') - 1] 
     print(f"process_61B_chapter got {ch_number=}, {title=}, url=...{url[-30:]}")
     soup = get(url)
     #article = find1(soup.body, 'article', recursive=True)
     article = soup.body.article
     ul = find1(article, 'ul', recursive=False)
-    chapter_item = models.Item(version=version_obj, citation=f"61B-{ch_number}",
-                               number=ch_number, item_order=item_order, num_elements=0,
-                               has_title=True)
-    chapter_item.save()
-    item_order += 1
-    p = models.Paragraph(item=chapter_item, body_order=0, text=title)
-    p.save()
+    chapter_item = create_item(f"61B-{ch_number}", ch_number, title)
     for body_order, li in enumerate(ul.children, 1):
         a = li.a
         href = a['href']
         if href[0] != '/':
             href = casetext + href
         process_61B_section(chapter_item, body_order, href)
-    chapter_item.num_elements = body_order
-    chapter_item.save()
+    set_num_elements(chapter_item, body_order)
+
+
+def create_item(citation, number, title, parent=None, body_order=None):
+    global item_order
+    item = models.Item(version=version_obj, citation=citation, number=number,
+                       parent=parent, item_order=item_order, body_order=body_order,
+                       num_elements=0, has_title=bool(title))
+    item.save()
+    item_order += 1
+    if title:
+        p = models.Paragraph(item=item, body_order=0, text=title)
+        p.save()
+    return item
+
+
+def set_num_elements(item, num_elements):
+    if num_elements > 0:
+        item.num_elements = num_elements
+        item.save()
 
 
 def process_61B_section(parent, body_order, url):
-    global item_order
     soup = get(url)
     print(f"process_61B_section {parent.citation=}, {body_order=}")
     article = find1(soup.body, 'article', recursive=True)
@@ -148,14 +158,8 @@ def process_61B_section(parent, body_order, url):
     number = citation.split('.')[1]
     print(f"found section title {citation=}, {number=}, {title=}")
 
-    section_item = models.Item(version=version_obj, citation=citation,
-                               number=number, parent=parent,
-                               item_order=item_order, body_order=body_order,
-                               num_elements=0, has_title=True)
-    section_item.save()
-    item_order += 1
-    p = models.Paragraph(item=section_item, body_order=0, text=title)
-    p.save()
+    section_item = create_item(citation, number, title, parent, body_order)
+
     container = body.find('section', class_='act', recursive=True).section
 
     print(f"process_61B_section {section_item.citation}:")
@@ -163,30 +167,30 @@ def process_61B_section(parent, body_order, url):
     for body_order, child in enumerate(container.children, 1):
         if isinstance(child, NavigableString):
             print(f"  process_61B_section {section_item.citation} got text child")
-        elif child.name != 'span':
-            print(f"  process_61B_section {citation} got unknown child name {child.name=}")
-        elif 'class' in child.attrs:
-            if 'citeAs' in child['class']:
-                print(f"  process_61B_section {citation} got 'citeAs' child")
-            elif 'historicalNote' in child['class']:
-                print(f"  process_61B_section {citation} got "
-                      "'historicalNote' child")
+        elif child.name == 'p':
+            print(f"  process_61B_section {section_item.citation} got 'p' child") 
+        elif child.name == 'section':
+            if 'class' in child.attrs:
+                if 'citeAs' in child['class']:
+                    print(f"  process_61B_section {citation} got 'citeAs' child")
+                elif 'historicalNote' in child['class']:
+                    print(f"  process_61B_section {citation} got 'historicalNote' child")
+                else:
+                    print(f"  process_61B_section {citation} got unknown child attrs "
+                          f"{child.name=} {child['class']}")
             else:
-                print(f"  process_61B_section {citation} got unknown child attrs "
-                      f"{child.name=} {child['class']}")
+                print(f"  process_61B_section {section_item.citation} got normal child") 
+                process_61B_paragraph(section_item, child, body_order)
         else:
-            print(f"  process_61B_section {section_item.citation} got normal child") 
-            process_61B_paragraph(section_item, child, body_order)
+            print(f"  process_61B_section {citation} got unknown child name {child.name=}")
     print(f"process_61B_section {section_item.citation} got num_element={body_order}")
-    section_item.num_elements = body_order
-    section_item.save()
+    set_num_elements(section_item, body_order)
 
 def process_61B_paragraph(parent_item, container, body_order):
     r'''Creates a new Item and assocated Paragraphs.
 
     Doesn't return anything.
     '''
-    global item_order
     bulletid = container.contents[0]
     print(f"process_61B_paragraph {parent_item.citation}, first child is {bulletid.name=} "
           f"{tuple(bulletid.attrs.keys())=}")
@@ -227,14 +231,7 @@ def process_61B_paragraph(parent_item, container, body_order):
                 break
 
     print(f"process_61B_paragraph {citation=}, {number=}, {title=}:")
-    item = models.Item(version=version_obj, citation=citation, number=number,
-                       parent=parent_item, item_order=item_order, body_order=body_order,
-                       num_elements=0, has_title=(title is not None))
-    item.save()
-    item_order += 1
-    if title is not None:
-        p = models.Paragraph(item=item, body_order=0, text=title)
-        p.save()
+    item = create_item(citation, number, title, parent_item, body_order)
     child_body_order = 0
     for child_body_order, child in enumerate(container.contents[1:], 1):
         if isinstance(child, NavigableString):
@@ -244,24 +241,23 @@ def process_61B_paragraph(parent_item, container, body_order):
             else:
                 print(f"  process_61B_paragraph {citation} got extra text child "
                       f"{len(str(child))=}")
-        elif child.name != 'section':
-            print(f"  process_61B_paragraph {citation} got child {child.name=}")
-        elif 'class' in child.attrs:
-            if 'citeAs' in child['class']:
-                print(f"  process_61B_paragraph {citation} got 'citeAs' child")
-            elif 'historicalNote' in child['class']:
-                print(f"  process_61B_paragraph {citation} got "
-                      "'historicalNote' child")
-            else:
-                print(f"  process_61B_paragraph {citation} got unknown child class "
-                      f"{child['class']=}")
-        else:
-            print(f"  process_61B_paragraph {citation} got normal child") 
+        elif child.name == 'p':
+            print(f"  process_61B_paragraph {citation} got 'p' {child.attrs=}")
+        elif child.name == 'span':
+            print(f"  process_61B_paragraph {citation} got 'span' {child.attrs=}")
+        elif child.name == 'a':
+            print(f"  process_61B_paragraph {citation} got 'a' {child.attrs=}")
+        elif child.name == 'section':
+            print(f"  process_61B_paragraph {citation} got 'section' child") 
+            if child.attrs:
+                print(f"  process_61B_paragraph {citation} got unexpected attrs in section "
+                      f"{child.attrs=}")
             process_61B_paragraph(item, child, child_body_order)
+        else:
+            print(f"  process_61B_paragraph {citation} got unknown child name {child.name=} "
+                  f"{child.attrs=}")
     print(f"process_61B_paragraph {citation} setting num_elements={child_body_order}")
-    if child_body_order:
-        item.num_elements = child_body_order
-        item.save()
+    set_num_elements(item, child_body_order)
 
 def scrape_719(trace=False):
     r'''Organization of document:
@@ -295,27 +291,19 @@ def scrape_719(trace=False):
         process_part(part, trace)
 
 def process_part(part, trace):
-    global item_order
     pt = find1(part, 'div', class_="PartTitle")
     number = get_string(find1(pt, 'div', class_="PartNumber"), de_emsp=True)
     type = "Part"
     title = get_string(find1(pt, 'span', class_="PartTitle"))
     if trace:
         print(f"{type}: {item_order=}, {number=}, {title=}")
-    part_obj = models.Item(version=version_obj, item_order=item_order, num_elements=0,
-                           citation=number, number=number, has_title=True)
-    part_obj.save()
-    p = models.Paragraph(item=part_obj, body_order=0, text=title)
-    p.save()
-    item_order += 1
+    part_obj = create_item(number, number, title)
     body_order = 0  # in case there are no children...
     for body_order, section \
      in enumerate(part.find_all('div', recursive=False, class_='Section'), 1):
         process_section(section, part_obj, body_order, trace)
-    if body_order:
-        part_obj.num_elements = body_order
-        part_obj.save()
-    
+    set_num_elements(part_obj, body_order)
+
 
 def process_section(section, parent, body_order, trace):
     r'''
@@ -324,7 +312,6 @@ def process_section(section, parent, body_order, trace):
     determine whether Item A is a parent (recursively) of Item B.  This prevents '719.103'
     from being taken as a parent of '719.1035'.
     '''
-    global item_order
     #print("process_section:")
     #print(section.prettify())
     assert len(section.contents) > 1, \
@@ -361,15 +348,7 @@ def process_section(section, parent, body_order, trace):
     assert number[-1] == ' '
 
     # omitting part number from citation
-    section_obj = models.Item(version=version_obj, citation=number, number=number.strip(),
-                              parent=parent, item_order=item_order, body_order=body_order,
-                              num_elements=0, has_title=True)
-
-    section_obj.save()
-    p = models.Paragraph(item=section_obj, body_order=0, text=title)
-    p.save()
-
-    item_order += 1
+    section_obj = create_item(number, number.strip(), title, parent, body_order)
 
     get_body(find1(section, 'span', class_="SectionBody"),
              parent=section_obj,
@@ -590,14 +569,11 @@ def get_body(tag, parent=None, allow_title=True, skip=0, strip=0, trace=False):
 
     flatten(tag, skip=skip)
     end_span()
-    if body_order > 1:
-        parent.num_elements = body_order - 1
-        parent.save()
+    set_num_elements(parent, body_order - 1)
     return title
 
 
 def process_child(parent, child, strip_number, body_order, trace):
-    global item_order
     #print(f"process_child {parent.citation=}, {child=}")
     type = child['class'][0]
 
@@ -608,10 +584,7 @@ def process_child(parent, child, strip_number, body_order, trace):
     if trace:
         print(f"{type}: citation={my_number}, {item_order=}, {body_order=}, "
               f"{parent.citation=}")
-    obj = models.Item(version=version_obj, citation=my_number, number=number, parent=parent,
-                      item_order=item_order, body_order=body_order, num_elements=0)
-    obj.save()
-    item_order += 1
+    obj = create_item(my_citation, number, None, parent, body_order)
     title = get_body(child, parent=obj, allow_title=allow_title, skip=skip,
                      strip=strip, trace=trace)
     if title:

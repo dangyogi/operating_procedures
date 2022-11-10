@@ -265,7 +265,12 @@ def chunk_item(item, with_body=True, def_as_link=False):
         ans.title = item.get_title().with_annotations()
     if item.parent_id is None or item.parent.citation.startswith('PART '):
         ans.parent_citation = None
-        ans.parent_url = reverse('toc')
+        if item.citation.startswith('719'):
+            ans.parent_url = reverse('toc', args=['719'])
+        elif item.citation.startswith('61B'):
+            ans.parent_url = reverse('toc', args=['61B'])
+        else:
+            print(f"chunk_item: ERROR don't understand citation {item.citation}")
     else:
         ans.parent_citation = item.parent.citation
         ans.parent_url = reverse('cite', args=[item.parent.citation])
