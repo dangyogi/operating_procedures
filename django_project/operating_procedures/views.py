@@ -54,29 +54,46 @@ def toc(request, source='719'):
         if item_chunk is not None:
             top_level_items.append(item_chunk)
     blocks = [chunk('items', items=top_level_items, body_order=0)]
-    blocks[0].dump(8)
+    #blocks[0].dump(4)
     return render(request, 'opp/toc.html',
                   context=dict(blocks=blocks))
 
 
 @require_safe
 def cite(request, citation='719'):
-    assert citation.startswith('719')
-    latest_law = models.Version.latest(Source_719)
+    if citation.startswith('719'):
+        latest_law = models.Version.latest(Source_719)
+    elif citation.upper().startswith('61B'):
+        latest_law = models.Version.latest(Source_61B)
+    else:
+        return HttpResponse(f"Unknown citation: {citation}.",
+                            content_type='text/plain; charset=utf-8',
+                            status=400)
+
     citation = citation.replace(' ', '')
     def add_space(cite):
-        if '(' in cite:
-            i = cite.index('(')
-            return cite[:i] + ' ' + cite[i:]
-        if '.' in cite:
-            return cite + ' '
-        return cite + '.'
-
-    if '-' in citation:
-        first, last = map(add_space, citation.split('-'))
+        if citation.startswith('719'):
+            if '(' in cite:
+                i = cite.index('(')
+                return cite[:i] + ' ' + cite[i:]
+            if '.' in cite:
+                return cite + ' '
+            return cite + '.'
+        else:
+            return cite
+    if citation.startswith('719'):
+        start = 0
+    else:
+        start = 4
+    hyphen = citation.find('-', start)
+    if hyphen > 0:
+        first = add_space(citation[:hyphen])
+        last = add_space(citation[hyphen + 1:])
     else:
         first = add_space(citation)
         last = first
+
+    print(f"cite: '{first=}', '{last=}'")
 
     items = map(methodcaller('get_block'),
                 models.Item.objects.filter(version_id=latest_law,
@@ -84,7 +101,7 @@ def cite(request, citation='719'):
                                            citation__lte=last)
                                    .order_by('item_order'))
     blocks = [chunk('items', items=list(items), body_order=0)]
-    #blocks[0].dump(depth=10)
+    #blocks[0].dump(depth=3)
     return render(request, 'opp/cite.html',
                   context=dict(citation=citation, blocks=blocks))
 

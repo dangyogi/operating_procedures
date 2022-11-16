@@ -38,7 +38,9 @@ class Item(models.Model):
     num_elements = models.PositiveSmallIntegerField() # not including title
     # title is in Paragraph that points back to this Item with body_order == 0
     has_title = models.BooleanField(default=False)
-    history = models.CharField(max_length=200, null=True, blank=True)
+    #authority = models.CharField(max_length=200, null=True, blank=True)
+    #law_implemented = models.CharField(max_length=200, null=True, blank=True)
+    #history = models.CharField(max_length=200, null=True, blank=True)
 
     def as_str(self):
         return f"<Item({self.id}) {self.citation}>"
@@ -68,10 +70,12 @@ class Item(models.Model):
         i = self
         while True:
             try:
-                return Note.objects.get(item=i, number=number).text
+                anno = Annotation.objects.get(paragraph__item=i, type='note',
+                                              info=str(number))
+                return anno.paragraph.text
             except self.DoesNotExist:
                 if i.parent is None:
-                    raise self.DoesNotExist(f"note {self.citation}")
+                    raise self.DoesNotExist(f"note {number=} in {self.citation}")
                 i = i.parent
 
     def get_block(self, with_body=True, def_as_link=False):
@@ -83,25 +87,33 @@ class Item(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['version', 'citation'], name='unique_item'),
+            models.UniqueConstraint(fields=['version', 'citation'],
+                                    name='unique_item'),
         ]
 
+''' FIX: Delete
 class Note(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    number = models.PositiveSmallIntegerField()
+    note_order = models.PositiveSmallIntegerField()
+    type = models.CharField(max_length=50) # 'History', 'Note', 'Law Implemented', etc
+    note_number = models.PositiveSmallIntegerField(null=True, blank=True)
     text = models.CharField(max_length=200)
 
     def as_str(self):
-        return f"<Note({self.id}) {self.number} {self.item.as_str()}>"
+        if self.note_number is None:
+            return f"<Note({self.id}) {self.type} {self.item.as_str()!r}>"
+        return f"<Note({self.id}) {self.type} {self.number} {self.item.as_str()!r}>"
 
     def __repr__(self):
         return self.as_str()
 
     class Meta:
-        ordering = ['number']
+        ordering = ['note_order']
         constraints = [
-            models.UniqueConstraint(fields=['item', 'number'], name='unique_note'),
+            models.UniqueConstraint(fields=['item', 'note_order'],
+                                    name='unique_note'),
         ]
+'''
 
 class Paragraph(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, blank=True)
@@ -138,26 +150,47 @@ class Paragraph(models.Model):
     class Meta:
         ordering = ['body_order']
         constraints = [
-            models.UniqueConstraint(fields=['item', 'body_order'], name='unique_paragraph'),
+            models.UniqueConstraint(fields=['item', 'body_order'],
+                                    name='unique_paragraph'),
         ]
 
 class Annotation(models.Model):
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)
 
-    # 's_cite' -- an ss. or s. link.  Info is the cite, which could either be a single site
-    #             (e.g., '719.106(1)') or a range of cites (e.g., '719.106-719.108').
-    # 'note' -- a footnote in the text.  The footnote number is in info, the footnote
-    #           itself is in the Note table.
-    # 'definition' -- The citation of the definition is in info.
+    # Local Annotations that only apply to a short piece of text:
     #
-    # Wordrefs appear to be 'search_highlight' annotations with info = word_group_index.
+    # 's_cite' -- an ss. or s. link.  Info is the cite, which could either be a
+    #             single site (e.g., '719.106(1)') or a range of cites
+    #             (e.g., '719.106-719.108').  The cite does not include any spaces.
+    # 'note_ref' -- a footnote reference in the text.  The footnote number is in
+    #               info, the footnote itself is in the related Paragraph with a
+    #               'note' Annotation with the same footnote number.
+    # 'definition' -- The citation of the definition is in info.
+    # 'link' -- an <a> tag in the sources.  Info is the href.
+    #
+    # Wordrefs appear to be 'search_highlight' annotations with
+    # info = word_group_index, but these annotations are not stored in the database.
+    #
+    # Annotations that identify special kinds of paragraphs:
+    #
+    # 'citeAs' -- 61B, includes the whole Paragraph.
+    #
+    # The rest of these only include the title word(s):
+    #
+    # 'note' -- footnote body for 719.  Info is footnote number.  No other Annotations.
+    # 'law_implemented' -- for 61B, separate 's_cite' Annotations for each cite
+    # 'specific_authority' -- for 61B, separate 's_cite' Annotations for each cite
+    # 'rulemaking_authority' -- for 61B, separate 's_cite' Annotations for each cite
+    # 'history' -- 719 and 61B, no other Annotations
+    #
     type = models.CharField(max_length=20)
     char_offset = models.PositiveSmallIntegerField()
     length = models.PositiveSmallIntegerField()
     info = models.CharField(max_length=20, null=True, blank=True)
 
     def as_str(self):
-        return f"<Annotation({self.id}) {self.type} paragraph={self.paragraph.as_str()} info={self.info!r}>"
+        return f"<Annotation({self.id}) {self.type} " \
+               f"paragraph={self.paragraph.as_str()} info={self.info!r}>"
 
     def __repr__(self):
         return self.as_str()

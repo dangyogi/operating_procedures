@@ -15,6 +15,7 @@ Tags for text chunks (aka "text-chunks" in this description):
     'definition': term<[text-chunk]>, definition<[block]> (definition could have items)
     'definition_link': term<[text-chunk]>, link=<url>
     'search_term': term<text-chunk>, word_group_number<int>
+    'link': term<text-chunk>, href=<url>
 
 Tags for larger blocks of text:
     'items': items<[item]>
@@ -33,8 +34,7 @@ And finally the item itself!  (only appears in 'items' chunk)
             number<string>
             url<string>
             title<[text-chunk]> (may be None),
-            history<string> (may be None),
-            notes<[(number, string)]>
+            notes<[(type, number, string)]>  # number None except for type == 'Note'
             body<[block]> (could have items)
             body_order<int>
 '''
@@ -54,10 +54,10 @@ class chunk:
     The blocks of text may be arranged hierarchically.
     '''
     def __init__(self, tag, **attrs):
+        self._attrs = set()
         self.tag = tag
         for name, value in attrs.items():
             setattr(self, name, value)
-        self._attrs = attrs
         if tag == 'item' and self.body and self.body[0].tag == 'item':
             assert False
         if False:
@@ -72,13 +72,18 @@ class chunk:
                         print(f", {name}={value!r}", end='')
                 print(")")
 
+    def __setattr__(self, name, value):
+        if name not in ('tag', '_attrs'):
+            self._attrs.add(name)
+        super().__setattr__(name, value)
+
     def __repr__(self):
         return f"<chunk {self.tag}>"
 
     def dump(self, depth=3, indent=0):
         print(f"{' ' * indent}{self.tag}: ", end='')
         sep = ''
-        for a in self._attrs:
+        for a in sorted(self._attrs):
             value = getattr(self, a)
             if isinstance(value, str):
                 if len(value) > 35:
@@ -95,7 +100,7 @@ class chunk:
                        f"dump: expected list in {self.tag}.{a}, got {value!r}"
         print()
         if depth > 0:
-            for a in self._attrs:
+            for a in sorted(self._attrs):
                 value = getattr(self, a)
                 if isinstance(value, list) and value:
                     print(f"{' ' * indent}  {a}=[")
@@ -234,7 +239,7 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
         return [chunk('note',
                       note=parent_item.get_note(annotation.info),
                       term=text_chunks)]
-    elif annotation.type == 'definition':
+    if annotation.type == 'definition':
         if def_as_link:
             return [chunk('definition_link', term=text_chunks,
                           link=reverse('cite', args=[annotation.info]))]
@@ -244,8 +249,10 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
                           definition=chunkify_item_body(
                                        models.Item.objects.get(citation=annotation.info),
                                        def_as_link=True))]
-    elif annotation.type == 'search_highlight':
+    if annotation.type == 'search_highlight':
         return [chunk('search_term', term=text_chunks, word_group_number=annotation.info)]
+    if annotation.type == 'link':
+        return [chunk('link', term=text_chunks, href=annotation.info)]
     else:
         raise AssertionError(f"Unknown annotation type {annotation.type!r}")
 
@@ -256,7 +263,6 @@ def chunk_item(item, with_body=True, def_as_link=False):
                 citation=item.citation,
                 number=item.number,
                 title=None,
-                history=item.history,
                 notes=[],
                 url=reverse('cite', args=[item.citation]),
                 body=[],
@@ -277,9 +283,10 @@ def chunk_item(item, with_body=True, def_as_link=False):
     if with_body:
         ans.body = chunkify_item_body(item, def_as_link=def_as_link)
         for note in item.note_set.all():
-            ans.notes.append((note.number, note.text))
-    else:
-        ans.history = None
+            if note.type == 'Note':
+                ans.notes.append((note.type, note.number, note.text))
+            else:
+                ans.notes.append((note.type, None, note.text))
     return ans
 
 

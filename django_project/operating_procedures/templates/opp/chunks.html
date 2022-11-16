@@ -9,6 +9,8 @@
 <a href="{{ chunk.link }}" class="definition-link">{% include "opp/chunks.html" with chunks=chunk.term %}</a>
 {% endspaceless %}{% elif chunk.tag == 'search_term' %}{% spaceless %}
 <span class="search-term-{{ chunk.word_group_number }}">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
+{% endspaceless %}{% elif chunk.tag == 'link' %}{% spaceless %}
+<a href="{{ chunk.href }}">{% include "opp/chunks.html" with chunks=chunk.term %}</a>
 {% endspaceless %}{% else %}
 <div class="error">ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.</div>
 {% endif %}{% comment %}

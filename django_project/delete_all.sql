@@ -2,7 +2,6 @@
 
 delete from opp_version;
 delete from opp_item;
-delete from opp_note;
 delete from opp_paragraph;
 delete from opp_annotation;
 delete from opp_table;
@@ -13,7 +12,6 @@ delete from opp_wordref;
 
 update sqlite_sequence set seq = 0 where name = 'opp_version';
 update sqlite_sequence set seq = 0 where name = 'opp_item';
-update sqlite_sequence set seq = 0 where name = 'opp_note';
 update sqlite_sequence set seq = 0 where name = 'opp_paragraph';
 update sqlite_sequence set seq = 0 where name = 'opp_annotation';
 update sqlite_sequence set seq = 0 where name = 'opp_table';

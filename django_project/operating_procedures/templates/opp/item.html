@@ -11,11 +11,9 @@
     {# notitle #}
     {% include "opp/blocks.html" with blocks=item.body item_first=item %}
 {% endif %}
-    {% if item.history %}
-      <div><span class="history"><span class="history-tag">History.</span> {{ item.history }}</span></div>
-    {% endif %}
-    {% for n, text in item.notes %}
-      <div><span class="note"><sup>{{ n }}</sup><span class="note-tag">Note.</span> {{ text }}</span></div>
+    {% for type, number, text in item.notes %}
+      <div><span class="{{ type }}">{% if number is not None $}<sup>{{ number }}</sup>{% endif %}
+      <span class="{{ type }}-tag">{{ type }}.</span> {{ text }}</span></div>
     {% endfor %}
   </div>
 {# end item.html <br/> #}

@@ -4,6 +4,7 @@ from itertools import chain
 import re
 
 from django.db import transaction
+from django.db.models import Q
 
 from operating_procedures import models
 
@@ -91,12 +92,29 @@ def run(*args):
         ver_obj = models.Version.objects.get(id=version)
         if ver_obj.definitions_loaded:
             print("ERROR: load_definitions already run on version", version)
-        else:
-            parent = models.Item.objects.get(version_id=version, has_title=True,
-                                             paragraph__body_order=0,
-                                             paragraph__text='Definitions.')
-            for definition in parent.item_set.all():
+        elif ver_obj.source == 'leg.state.fl.us':
+            definitions = models.Item.objects.get(version_id=version, has_title=True,
+                                                  paragraph__body_order=0,
+                                                  paragraph__text='Definitions.')
+            fac_version = models.Version.latest('casetext.com')
+            print(f"doing definitions from {definitions.citation} to "
+                  f"{version=} and {fac_version=}")
+            for definition in definitions.item_set.all():
                 annotate(version, definition)
-                ver_obj.definitions_loaded = True
-                ver_obj.save()
+                annotate(fac_version, definition)
+            ver_obj.definitions_loaded = True
+            ver_obj.save()
+        else:
+            assert ver_obj.source == 'casetext.com'
+            for definitions in models.Item.objects.filter(Q(paragraph__text='Definitions.')
+                                                          | Q(paragraph__text='Definition.'),
+                                                          version_id=version, has_title=True,
+                                                          paragraph__body_order=0):
+                base_citation = definitions.parent.citation
+                print(f"doing definitions from {definitions.citation} to "
+                      f"{version=} {base_citation=}")
+                #for definition in definitions.item_set.all():
+                #    annotate(version, definition)
+            #ver_obj.definitions_loaded = True
+            #ver_obj.save()
         print("next: python manage.py runscript show_outline")
