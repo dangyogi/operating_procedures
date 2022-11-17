@@ -17,31 +17,39 @@ term_re = re.compile(r'''
 
 or_re = re.compile(r' +or +')
 
-def annotate(version, definition):
-    print("processing", definition.citation)
+def annotate(version, definition, base_citation=None):
+    print(f"annotate: {definition.citation} id={definition.id}")
     def_text = definition.paragraph_set.get(body_order=1).text
     assert def_text[0] in ('"', '\u201c'), \
-           f'Expected ", got {ord(def_text[0])} {ord(def_text[11])}'
+           f'Expected ", got {ord(def_text[0])=} {ord(def_text[11])=}'
     terms_text = term_re.match(def_text).group()
-    #print(f"{terms_text=}")
+    print(f"  {terms_text=}")
     terms = or_re.split(terms_text)
-    #print(f"{terms=}")
+    print(f"  {terms=}")
     for term in terms:
-        annotate_term(version, definition.citation, term[1:-1].split())
+        annotate_term(version, definition.citation, term[1:-1].split(), base_citation)
 
-def annotate_term(version, definition_citation, words):
-    print(f"annotate_term {version=} {definition_citation=} {words=}")
+def annotate_term(version, definition_citation, words, base_citation):
+    print(f"annotate_term {version=} {definition_citation=} {words=} {base_citation=}")
     w = words[0]
     first_words = [models.Word.objects.get(id=id)
                    for id in models.Word.lookup_word(w).get_synonyms()]
     rest_words = words[1:]
 
-    for ref in chain.from_iterable(
-                 chain(word.wordref_set.filter(
-                         paragraph__item__version=version).all(),
-                       word.wordref_set.filter(
-                         paragraph__cell__table__item__version=version).all())
-                 for word in first_words):
+    def get_wordrefs(word):
+        if base_citation is None:
+            return chain(word.wordref_set.filter(
+                           paragraph__item__version=version).all(),
+                         word.wordref_set.filter(
+                           paragraph__cell__table__item__version=version).all())
+        return chain(word.wordref_set.filter(
+                       paragraph__item__version=version,
+                       paragraph__item__citation__startswith=base_citation).all(),
+                     word.wordref_set.filter(
+                       paragraph__cell__table__item__version=version,
+                       paragraph__cell__table__item__citation__startswith=base_citation).all())
+
+    for ref in chain.from_iterable(get_wordrefs(word) for word in first_words):
         char_offset = ref.char_offset
         for w in rest_words:
             try:
@@ -63,9 +71,6 @@ def annotate_term(version, definition_citation, words):
                               char_offset=char_offset,
                               length=ref.char_offset + ref.length - char_offset,
                               info=definition_citation).save()
-
-def get_synonyms(word):
-    return [word]
 
 @transaction.atomic
 def run(*args):
@@ -107,14 +112,21 @@ def run(*args):
         else:
             assert ver_obj.source == 'casetext.com'
             for definitions in models.Item.objects.filter(Q(paragraph__text='Definitions.')
-                                                          | Q(paragraph__text='Definition.'),
+                                                          | Q(paragraph__text='Definition.')
+                                                          | Q(paragraph__text='Definitions')
+                                                          | Q(paragraph__text='Definition'),
                                                           version_id=version, has_title=True,
                                                           paragraph__body_order=0):
-                base_citation = definitions.parent.citation
-                print(f"doing definitions from {definitions.citation} to "
+                base_citation = definitions.citation[: definitions.citation.index('.')]
+                print(f"doing definitions from {definitions.citation} id={definitions.id} to "
                       f"{version=} {base_citation=}")
-                #for definition in definitions.item_set.all():
-                #    annotate(version, definition)
-            #ver_obj.definitions_loaded = True
-            #ver_obj.save()
+                if definitions.item_set.exists():
+                    print(f"item_set exists")
+                    for definition in definitions.item_set.all():
+                        annotate(version, definition, base_citation)
+                else:
+                    print(f"item_set empty")
+                    annotate(version, definitions, base_citation)
+            ver_obj.definitions_loaded = True
+            ver_obj.save()
         print("next: python manage.py runscript show_outline")

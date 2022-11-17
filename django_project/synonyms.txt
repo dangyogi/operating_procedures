@@ -1,14 +1,11 @@
 # synonyms.txt
 
 shareholder owner member
-#director board
 dwelling unit
 sign execute
 reallocate allocate
 law statute
 use utilize
-warrant warranty
-#hotel motel cabin lodge
 secret secrecy
 
 abandon abandoned abandons
@@ -17,82 +14,101 @@ accept accepted accepts accepting
 access accesses assessed accessing
 accompany accompanied accompanies accompanying
 accomplish accomplished accomplishing
-account accounted accounts
-accrue accrued accrues accruing
-achieve achieves
+accord according
+account accounted accounts accounting
+accrue accrued accrues accruing accrual
+accurate accurately
+achieve achieves achieved
 acknowledge acknowledged acknowledges acknowledging
 acknowledgment acknowledgments
 acquire acquired acquiring
 act acts acting
 action actions
+actual actually
 add added adding
 addition additions
-address addressed addresses
-adjourn adjourned
+additional additionally
+address addressed addresses addressing
+adjourn adjourned adjournment
 adjust adjusted
 administer administered administering
-adopt adopted adopting
+adopt adopted adopting adoption
 advance advanced
-advertise advertising
+adverse adversely
+advertise advertising advertised
 affair affairs
 affect affected affects
+affidavit affidavits
 affiliate affiliates
 affirm affirmed affirming
 affirmation affirmations
+affirmative affirmatively
+afford afforded
 agent agents
 aggravate aggravating
 agree agreed agrees
 agreement agreements
-allege alleged alleging
-allocate allocated allocating
+allege alleged alleging allegedly
+allocate allocated allocating allocation
 allow allowed allows allowing
+alphabetical alphabetically
 alter altered alters
 alteration alterations
-amend amended amending
+alternate alternative
+amend amended amending amendment
 amendment amendments
 amount amounts
 annex annexed
-announce announced
+announce announced announcement
 announcement announcements
+annual annum annually
 annuity annuities
 answer answers
-anticipate anticipated
+anticipate anticipated anticipation
 apartment apartments
-appear appears
+appear appears appearance
 appertain appertaining
 apply applied applies applying
-appoint appointed appointing
-appraise appraised
-approve approved
+appoint appointed appointing appointment
+appraise appraised appraiser
+approve approved approval
+approximate approximation approximately
 approximation approximations
 appurtenance appurtenances
+appurtenant appurtenance
 area areas
+arise arising
+arrange arrangement
 arrangement arrangements
 article articles
 ask asked
+assemble assembled
 assent assented
 assert asserted
-assess assessed assessing
+assess assessed assessing assessment
 assessment assessments
 asset assets
-assign assigned assigns
+assign assigned assigns assignment assignee
 assignee assignees
-assist assists
-associate associated
+assist assists assistance assistant
+associate associated association
 association associations
-assume assumed
+assume assumed assumption
 assurance assurances
-assure assures
+assure assures assurance
 attach attached attaching
 attain attained
 attempt attempted attempts
-attend attending
+attend attending attendance
 attest attesting
-audit audited audits auditing
+audit audited audits auditing auditor
+authenticate authentication
 authority authorities
-authorize authorized authorizes
+authorize authorized authorizes authorization
+automatic automatically
 avoid avoided
 award awarded
+balance balances
 ballot ballots balloting
 base based
 bathroom bathrooms
@@ -100,83 +116,97 @@ bear bears bearing
 become becomes becoming
 bedroom bedrooms
 begin begins beginning
-benefit benefits
+belief believe
+benefit benefits beneficial beneficiary
 betterment betterments
 bid bids bidding
-bill billed bills
+bill billed bills billing
 billing billings
 bind binding
+blind blindness
+board boarding
 body bodies
 boldface boldfaced
 bond bonds bonding
 book books
 boundary boundaries
-bound bounds
-broadcasting
+bound bounds boundary
+broadcast broadcasting
 brochure brochures
-budget budgeted budgets
+budget budgeted budgets budgetary
 building buildings
+bulk bulky
 bylaw bylaws
 bypass bypassing
-calculate calculated calculating
+calculate calculated calculating calculation
 call called calling
 cancel canceled canceling
 candidate candidates
 capacity capacities
-carrying
+carry carrying
 case cases
 cast casts casting
 category categories
 cause caused causes causing
 center centers
-certificate certificates
+certificate certificates certification certify
 certification certifications
 certify certified certifies
 challenge challenging
-change changes changing
+change changes changing changed
 chapter chapters
 charge charged charges
-check checks
-circulate circulates
+check checks checked checklist
+child children
+circular circulate
+circulate circulates circulated
 circumstance circumstances
-cite cited
+cite cited citation
 claim claims claiming
 classification classifications
 clause clauses
-close closed closing
-collect collected collecting
-combine combined
+close closed closing closest
+code coded
+collect collected collecting collection collectible
+combine combined combination
 come coming comes
-commence commenced commencing
+commence commenced commencing commencement
+commercial commercially
 commingle commingled commingling
 commission commissioned commissions
 commit committed committing
 committee committees
-communicate communicated
+common commonly
+communicate communicated communication
 communication communications
 community communities
-compelling
+compel compelling
 compile compiled
-complaint complaints
-complete completed
-comply complied complies complying
+complaint complaints complainant
+complete completed completion
+comply complied complies complying compliance compliant
 component components
 compose composed
+comprehend comprehensible
 comprise comprised comprising
-compute computed
+compute computed computation computing
+computer computers
 concern concerning
 conclude concluded
-condition conditioned conditions conditioning
+condition conditioned conditions conditioning conditioner
 conditioner conditioners
 condominium condominiums
-conduct conducted
+conduct conducted conducting
 conduit conduits
-conform conforming conforms conformed
+conflict conflicting
+conform conforming conforms conformed conformance
 consent consented consents consenting
 consider considered considering
 consist consisting
+consistent consistency
+conspicuous conspicuously
 constitute constituted constitutes
-construct constructed constructing
+construct constructed constructing construction
 construe construed
 consumer consumers
 contain contained contains containing
@@ -184,97 +214,113 @@ contemplate contemplated
 content contents
 contest contests contested contesting
 contingency contingencies
+contingent contingency
 continue continuing
-contract contracted contracts contracting
+continuous continuously
+contract contracted contracts contracting contractor contractual
 contractor contractors
-contribute contributes
+contribute contributes contribution
 contribution contributions
 control controlled controls controlling
+convenient conveniently
 conversion conversions
-convert converted converting
-convey conveyed
+convert converted converting converter
+convey conveyed conveyance
 convict convicted
 cool cooling
 cooperative cooperatives
 copy copies copying
+corporate corporation
 corporation corporations
-correct corrected correcting
+correct corrected correcting correction correctly corrective
+correction corrections
 corridor corridors
 cost costs
 count counted counts counting
 county counties
 court courts
 covenant covenants
-cover covered covering
-create created creates creating
+cover covered covering covers coverage
+create created creates creating creation
 credit credited
 cross crosses crossing
 curing
+current currently
 damage damaged damages
 date dated dates
 day days
 deadline deadlines
 decide decided
 decision decisions
-declare declared
+declare declared declaration declaratory
 deem deemed deems
 deface defaces
 default defaults
 defect defects
+defend defense
 defense defenses
 defer deferred
 deficiency deficiencies
-define defined
+define defined definition
 definition definitions
 delete deleted
 delineate delineating
 delinquency delinquencies
-deliver delivered delivers delivering
-demonstrating
+delinquent delinquency
+deliver delivered delivers delivering delivery 
+demonstrate demonstrating
 deny denied
 deposit deposited deposits depositing
 depth depths
 describe described describes describing
 description descriptions
-designate designated designates designating
+designate designated designates designating designation
 design designed
 desire desired desires desiring
 destroy destroys
 detail detailed details
 determination determinations
-determine determined determines determining
-develope developed
+determine determined determines determining determination
+develop developer development developed develope
 developer developers
 development developments
-direct directing
+differ difference different
+dimension dimensions
+direct directing directed direction directive
 director directors
-disburse disbursed
+disburse disbursed disbursement
 disbursement disbursements
-disclose disclosed
+disclose disclosed disclosure
 disclosure disclosures
 discontinue discontinues
 discuss discussing
 display displayed
-dispose disposing
+dispose disposing disposal
 dispute disputes
+disseminate disseminating
 distinguish distinguished
-distribute distributed
+distribute distributed distributing distribution
 divide divided
-document documents
+document documents documentation
 do doing does
 dollar dollars
-door doors
+door doors doorways
+draft drafted
 dry drying
 duct ducts
 due dues
 duty duties
-earn earned earns
+earn earned earns earnings
 easement easements
-effect effected
+edit editors edited
+education educational
+effect effected effective
 effort efforts
 elapse elapsed
-elect elected electing
+elect elected electing election
 election elections
+electric electrical electrician electricity
+electronic electronically
 element elements
 elevator elevators
 email emails
@@ -283,55 +329,73 @@ enable enabling enabled
 encompass encompassed
 encumber encumbered encumbers encumbering
 encumbrance encumbrances
-end ends
+end ends ending
+endorses endorsement
+enforce enforceable enforcement
 engineer engineering
-enjoy enjoyed
+enjoy enjoyed enjoyment
 ensure ensures ensuring
 enter entered enters entering
 entitle entitled entitles entitling
 entity entities
-enumerate enumerated
-equip equipped equipping
-error errors
+enumerate enumerated enumeration
+envelope envelopes
+equal equally
+equip equipped equipping equipment
+equity equitable
+error errors erroneous
 escrow escrowed
-establish established establishes establishing
+establish established establishes establishing establishment
 estate estates
-estimate estimated estimates
+estimate estimated estimates estimating
+evacuate evacuation
 event events
 evidence evidenced evidences evidencing
+exact exaction
 exaction exactions
+examine examination
+example examples
 exceed exceeded exceeds
+except exception
 exception exceptions
+excess excessive
 exclude excluded excluding
+exclusive exclusively
 excuse excused
-execute executed executing
-exempt exempted
+execute executed executing execution
+exempt exempted exemption
 exercise exercised exercising
 exhibit exhibits
-exist exists
-expand expanded
+exist exists existing existed existence
+expand expanded expandable
 expedite expedited
-expend expended
+expend expended expending expense
 expenditure expenditures
 expense expenses
-expire expired expires expiring
+expire expired expires expiring expiration
 explain explained
-expose exposed
+expose exposed exposure
 express expressed
-extend extended extending
+extend extended extending extends extension extent
 extension extensions
+extent extensive
 extinguish extinguished
+face facial
 facility facilities
-fact facts
+fact facts factor
 factor factors
-fail failed fails
+fail failed fails failure
+failure failures
 fair fairs
 fee fees
+felon felony
 figure figures
 file filed files filing
+filing filings
 fill filled fills filling
 filter filters
-finance financed financing
+final finally
+finance financed financing financial
 find finds finding
 finding findings
 fine fined fines
@@ -339,158 +403,208 @@ finish finished finishing
 fireproof fireproofing
 fix fixed
 fixture fixtures
-follow follows following
-foreclose foreclosed
+follow follows following followed
+foreclose foreclosed foreclosure
 foreclosure foreclosures
 forego foregoing
-form forms forming
+former formerly
+form forms forming formed
+four fourth
 fourth fourths
-fraction fractions
+fraction fractions fractional
 franchise franchised
+full fully
+functions functional
 fund funded funds funding
 furnish furnished furnishing
-give gives giving
+general generally
+give gives giving given
 go goes
 good goods
-govern governed governing
-grant granted granting
+govern governed governing government governor
+government governmental
+grant granted granting grantee
 ground grounds
-guarantee guaranteed
+guarantee guaranteed guarantees
 guardrail guardrails
 guest guests
 guideline guidelines
+guilt guilty
 handle handled
 handrail handrails
 happen happening
 have having
-hear hearing
+hear hearing heard
 heat heated heating
 heir heirs
+high highest higher
+hold holds holding holder
 holder holders
-hold holds holding
 holiday holidays
 home homes
 hotel hotels
 hour hours
+house housing
 hyphen hyphens
 identification identifications
 identify identified identifies identifying
+immediate immediately
+immune immunity
 impair impaired
+implement implemented
 imply implied
-impose imposed imposing
-improve improved
+impose imposed imposing imposition
+improper improperly
+improve improved improvement
 improvement improvements
 incapacitate incapacitated
 inch inches
 include included includes including
-incorporate incorporated
+incorporate incorporated incorporation
 increase increased increases
 incur incurred incurring
-indicate indicating
+indicate indicating indicated indicator indication
 indicator indicators
-individual individuals
+individual individuals individually
+industrial industrially
+informal informally
 inform informed
 inhabit inhabited
+initial initially
 initiate initiates initiating
-inquiry inquiries
+injury injured
+inquiry inquiries inquirer
 insert inserted
-inspect inspected
-inspection inspections
+inspect inspected inspection
+inspection inspections inspector
 installation installations
 installment installments
-institution institutions
+institute institution
+institution institutions institutional
 instrument instruments
-insure insured
-intend intended intends
+insure insured insurance
+intend intended intends intent
+intent intention
+intentional intentionally
+intention intentional
 interest interests
+interfere interference
 interpose interposes
-investigate investigated investigating
-investigation investigations
-invest invested
+interval intervals
+invalid invalidate
+investigate investigated investigating investigation
+investigation investigations investigator
+invest invested investment
 invitee invitees
-invite invited invites
+invite invited invites invitee
 invoice invoices
 involve involved involving
-issue issued issues issuing
+issue issued issues issuing issuance
 item items
 itemize itemized
 join joined
 jurisdiction jurisdictions
+keep keeping
+known knowingly knowledge
+label labeled
 land lands
 landscape landscaping
+larger largest
+late later latest
+lawful lawfully
 law laws
 leasehold leaseholds
-lease leased leases leasing
-lend lent lending
+lease leased leases leasing leasehold
+legal legally
+lend lent lending lender
 lessee lessees
-letter letters
 let letting
-levy levied
-license licensed
+letter letters
+levy levied levying
+license licensed licensee
 lie lies
-lien liens
+lien liens lienor
+like likewise
 limitation limitations
-limit limited limits
-line lined
+limit limited limits limitation
+line lined lines
 list listed lists
-locate located
+live lives
+locate located location
 location locations
+long longer
+lower lowest
+machine machines
 mail mailed mailing
-maintain maintained maintaining
+maintain maintained maintaining maintains
 make makes making
-manage managing
+manage managing management managerial manager
+mandate mandatory
 manufacturer manufacturers
-material materials
+material materials materially
 matter matters
-mean means
+meaning meaningful
+mean means meant
+meant meaning
 measure measured measures
-mediate mediated
+mediate mediated mediator mediation
 mediator mediators
 meeting meetings
 meet meets meeting
-member members
+member members membership
+mere merely
 mete metes
-method methods
+method methods methodology
 mile miles
 minimum minimums
 minute minutes
 mislead misleading
 mitigate mitigating
 modify modified modifies
-money moneys
-month months
+money moneys monetary
+month months monthly
 mortgagee mortgagees
-mortgage mortgages
+mortgage mortgages mortgagee
+motion motions
 multiply multiplied
 municipality municipalities
 name named names
+necessary necessarily
 need needed needs
+negative negatively
 newsletter newsletters
-nominate nominated
+nominate nominated nominating nominations nomination
+norm normally
+note notice notation noted notes notifiy
 notice noticed notices noticing
 notify notified notifies
+notify notifiy
 number numbers
 oath oaths
-obligate obligated
+obligate obligated obligation
 obligation obligations
-obtain obtained obtains
-occupy occupied occupying
-occur occurred occurs occurring
+obtain obtained obtains obtaining
+occupant occupancy
+occupy occupied occupying occupancy
+occur occurred occurs occurring occurrence
 offer offered offers offering
+offering offerings
 office offices
 officer officers
 official officials
 omission omissions
-operate operated operates operating
-operation operations
+open opened opening
+operate operated operates operating operation operator
+operation operations operational
 opinion opinions
+option options
 opt opted opts
 order orders
 ordinance ordinances
-organize organized
+organize organized organization
 other others
 owe owed
-owner owners
+owner owners ownership own
 own owned owns owning
 page pages
 paint painted paints painting
@@ -498,149 +612,181 @@ paper papers
 paragraph paragraphs
 parcel parcels
 park parked parks parking
-participate participates participated participating
+participant participants
+participate participates participated participating participation
 part parts
 party parties
 pass passed
 password passwords
 payment payments
-pay pays paying
+pay pays paying payment payroll payable payor
 penalty penalties
 percentage percentages
+percent percentage
 perform performed performing
-period periods
+periodic periodically
+period periods periodic
 permit permits permitted permitting
 person people persons
+persons personnel
 pertain pertains pertained pertaining
 petition petitions petitioned petitioning
 pet pets
-phase phases phasing
+phase phased phases phasing
 photocopy photocopies photocopying
 photograph photographs photographing
 phrase phrases
+physical physically
 place placed
 plan planned plans
 policy policies
+pool pooled
 portion portions
+position positions
+postal postage
 post posted posting
 power powers
 practice practices
 precede preceded precedes preceding
-preclude precludes
+preclude precluded precludes
 premise premises
 premium premiums
-prepare prepared prepares preparing
+prepare prepared prepares preparing preparation preparer
 prescribe prescribed
-presume presumed
+present presence
+preside presiding
+presume presumed presumption
 prevail prevails prevailing
-prevent prevented
+prevent prevented prevention
+previous previously
+primary primarily
 principle principles
-print printed
+print printed printer
+private privately
 privilege privileges
-procedure procedures
-proceed proceeding
+procedure procedures procedural
 proceeding proceedings
+proceed proceeding
 produce produced
 product products
 professional professionals
 profit profits
 program programs
-prohibit prohibited prohibits prohibiting
+prohibit prohibited prohibits prohibiting prohibition
+project projected
 promulgate promulgated
+proper properly
 property properties
-proportion proportions
+proportionate proportionately
+proportion proportions proportionate proportional
 proposal proposals
+propose proposal
 propose proposed proposing
 propound propounded
 prorate prorated
 proscribe proscribed
 protection protections
-protect protected protecting
-provide provided provides providing
+protect protected protecting protection
+provide provided provides providing provider
 provider providers
 provision provisions
 proxy proxies
 publish published publishes
-purchase purchased purchases purchasing
+purchase purchased purchases purchasing purchaser
 purchaser purchasers
 purport purported purports
 purpose purposes
+qualification qualifications
 qualify qualified
 question questions
 raise raised raising
 ratify ratifies ratified
 reacquire reacquired reacquiring
+read reader
 reallocate reallocated reallocates reallocating
+reasonable reasonably
 reason reasons
 rebut rebutted
-recall recalled
+recall recalled recalling
 receipt receipts
-receive received receives receiving
-recite recited
-recognize recognized recognizing
+receive received receives receiving receiver receivable
+recite recited recites
+recognize recognized recognizing recognizes
 recommendation recommendations
 recommend recommended
-record recorded records recording
-recover recovered recovers recovering
+record recorded records recording recorder
+recover recovered recovers recovering recoverable
+recreation recreational
 recur recurring
 reduce reduced
-reference references
-refer referred
+reference referenced references
+refer refers referred
 refinance refinanced refinances refinancing
 reflect reflected reflects
 refund refunded
-refuse refused
+refuse refused refusal
+regard regarding
 register registered
-regulate regulates
+regular regularly
+regulate regulates regulated regulation
 regulation regulations
-reimburse reimburses reimbursed reimbursing
+reimburse reimburses reimbursed reimbursing reimbursement
 reimpose reimposed
 reinstate reinstates reinstated
-reject rejected
+reject rejected rejection
 relate related relates relating
+relation relationship
 release released releases releasing
+relief relieve
 relieve relieves
 relinquish relinquishes
-rely relied relies
+relocate relocation
+rely relied relies reliance
 remain remains remained remaining
 remedy remedies
 remodel remodels remodeled remodeling
-remove removes removed removing
+remove removes removed removing removal
 render rendered renders rendering
 renewal renewals
-renew renewed
-rent rents renting
+renew renewed renewal renewable
+rent rents renting rental renter
 repair repairs
 repeal repealed repeals repealing
-replace replaced
+repeated repeatedly
+replacement replacements
+replace replaced replacement
 report reports reporting
 representation representations
-represent represented represents representing
-request requested requests requesting
+representative representatives
+represent represented represents representing representation
+request requested requests requesting requestor
 requirement requirements
-require required requires requiring
+require required requires requiring requirement
+rescind rescinded
 reservation reservations
-reserve reserved reserves
-resident residents
-reside resided resides residing
+reserve reserved reserves reservation
+resident residents residence residential
+reside resided resides residing resident
 resignation resignations
+resign resigns resignation
 resolve resolved
 respondent respondents
-respond responded responding
-response responses
+respond responded responding response
+response responses respondent
 restaurant restaurants
 restore restored
 restriction restrictions
-restrict restricted
+restrict restricted restricting restriction restrictive
 resubmit resubmitted
 result results resulting
 resurface resurfaced resurfaces resurfacing
 retain retained retains retaining
+retire retiring
 retrofit retrofitting
 return returned
 revenue revenues
 review reviewed reviews
-revise revised
+revise revised revision
 revoke revoked
 reword reworded rewords rewording
 right rights
@@ -656,17 +802,21 @@ satisfy satisfying
 saturday saturdays
 save saving
 saving savings
-scan scanned scans scanning
+scale scaled
+scan scanned scans scanning scanner
 schedule scheduled
+seal sealed
+search searchable
 seawall seawalls
 section sections
-secure secures securing
+secure secures securing securely security
 security securities
 seek seeks seeking
-select selected selects selecting
-sell sold sells selling
+select selected selects selecting selection
+sell sold sells selling seller
 seminar seminars
-send sends
+send sends sent sending
+separate separately separating
 serve served serves serving
 service services
 servitude servitudes
@@ -677,12 +827,18 @@ show shown showing
 shut shutting
 side sides
 sight sighted
+signature signatures
 sign signed signing
+simultaneous simultaneously
 size sizes
-solicit solicits
+sole solely
+solicit solicits solicited solicitation
 space spaces
+speak speaker
 specification specifications
+specific specifically
 specify specified specifies specifying
+spouse spouses
 stagger staggered
 stairwell stairwells
 stamp stamped
@@ -692,88 +848,116 @@ statement statements
 state stated states stating
 statute statutes
 story stories
+structure structures structural
 study studies
 subcontractor subcontractors
 subject subjected
-submit submits submitted
-subordinate subordinating
+submit submits submitted submission
+subordinate subordinating subordination
 subparagraph subparagraphs
+subpoena subpoenas
 subscribe subscribed
 subsection subsections
+substantial substantially substantiate
 substantiate substantiated
 successor successors
+sufficient sufficiency
+summary summarizing
 sum sums
 sunday sundays
-supplement supplemented
+supplement supplemented supplementary
 supplier suppliers
-supply supplied supplying
+supply supplied supplying supplier
 support supported supporting
-survey surveys
-suspend suspended
+survey surveys surveyor
+survive survival
+suspend suspended suspension
 suspension suspensions
 swim swam swimming
 system systems
-take took taking
+take took taking taken
 tax taxes taxing
 technique techniques
-tenant tenants
-terminate terminated terminates
+telegram telegrams
+temporary temporarily
+tenant tenants tenancy
+terminate terminated terminates termination
 term terms
+them they their
+then therefor thereby
+therefor therefore
 thing things
 third thirds
+through throughout
 timeshare timeshares
 timetable timetables
 time times
 title titles
 toward towards
 train training
-transfer transferred
+transfer transferred transfers transferee
+transit transition
 transmission transmissions
-transmit transmitted
-treat treated
+transmit transmitted transmission
+treat treated treatment
 turn turned turns turning
 type types
-underline underlined underlining
 underlie underlying
+underline underlined underlining
 undersign undersigned
 understand understanding
 undivide undivided
 unexpire unexpired
+uniform uniformly
 uninterrupt uninterrupted
 unite united unites
 unit units
 unqualify unqualified
+unreasonable unreasonably
 user users
 use used uses using
 utility utilities
-utilize utilized
+utilize utilized utilizes
 vacancy vacancies
 vacate vacates
+validate validated
+valid validity validate
+vary various
 vehicle vehicles
 verify verifying
 vest vested vesting vests
 videoconference videoconferencing
 videotape videotaped videotaping
+video videotape
 view viewed views
 violate violated violates violating
+violate violation
 violation violations
-void voided
+visual visually
+void voided voidable
 volume volumes
+voluntary voluntarily
 voter voters
-vote voted votes voting
-waive waived waives waiving
+vote voted votes voting voter
+waive waived waives waiving waiver
 walkway walkways
 wall walls
 warn warning
-warrant warrants
+warrant warrants warranty
 warranty warranties
 waterproof waterproofing
+when whenever
+whole wholly
+whom whose
+willful willfully
+will willing
 window windows
 wish wishes
+withdraw withdrawal withdrawn
 witness witnesses
 word words
 work worked works working
 write wrote writes writing written
 yard yards
-year years
+year years yearly
 zone zoning

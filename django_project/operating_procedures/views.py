@@ -72,15 +72,12 @@ def cite(request, citation='719'):
 
     citation = citation.replace(' ', '')
     def add_space(cite):
-        if citation.startswith('719'):
-            if '(' in cite:
-                i = cite.index('(')
-                return cite[:i] + ' ' + cite[i:]
-            if '.' in cite:
-                return cite + ' '
-            return cite + '.'
-        else:
-            return cite
+        if '(' in cite:
+            i = cite.index('(')
+            return cite[:i] + ' ' + cite[i:]
+        if '.' in cite:
+            return cite + ' '
+        return cite
     if citation.startswith('719'):
         start = 0
     else:
@@ -88,18 +85,19 @@ def cite(request, citation='719'):
     hyphen = citation.find('-', start)
     if hyphen > 0:
         first = add_space(citation[:hyphen])
-        last = add_space(citation[hyphen + 1:])
+        last = add_space(citation[hyphen + 1:]) + '~'
     else:
         first = add_space(citation)
-        last = first
+        last = first + '~'
 
-    print(f"cite: '{first=}', '{last=}'")
+    items = list(map(methodcaller('get_block'),
+                     models.Item.objects.filter(version_id=latest_law,
+                                                citation__gte=first,
+                                                citation__lte=last)
+                                        .order_by('item_order')))
 
-    items = map(methodcaller('get_block'),
-                models.Item.objects.filter(version_id=latest_law,
-                                           citation__gte=first,
-                                           citation__lte=last)
-                                   .order_by('item_order'))
+    print(f"cite: {first=!r}, {last=!r} {latest_law=} got {len(items)} items")
+
     blocks = [chunk('items', items=list(items), body_order=0)]
     #blocks[0].dump(depth=3)
     return render(request, 'opp/cite.html',

@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-from itertools import chain
+from itertools import chain, product
 from operator import attrgetter
 
 from operating_procedures.chunks import (
@@ -69,13 +69,14 @@ class Item(models.Model):
         '''
         i = self
         while True:
+            print(f"{i.citation} looking for {number=!r}")
             try:
                 anno = Annotation.objects.get(paragraph__item=i, type='note',
                                               info=str(number))
                 return anno.paragraph.text
-            except self.DoesNotExist:
+            except Annotation.DoesNotExist:
                 if i.parent is None:
-                    raise self.DoesNotExist(f"note {number=} in {self.citation}")
+                    raise Annotation.DoesNotExist(f"note {number=} in {self.citation}")
                 i = i.parent
 
     def get_block(self, with_body=True, def_as_link=False):
@@ -256,32 +257,46 @@ class Word(models.Model):
 
         Converts text to lowercase.
         '''
-        text = text.lower()
-        try:
-            w = Word.objects.get(text=text)
-        except cls.DoesNotExist:
-            w = Word(text=text)
-            w.save()
-        return w
+        return cls.objects.get_or_create(text=text.lower())[0]
 
-    def get_synonyms(self, seen=None):
-        r'''Returns a set of Word.ids.
+    def get_synonyms(self):
+        r'''Returns a set of Word.ids (including self.id).
         '''
-        if seen is None:
-            seen = set((self.id,))
-        for s in Synonym.objects.filter(word=self).all():
-            if s.synonym_id not in seen:
-                seen.add(s.synonym_id)
-                s.synonym.get_synonyms(seen)
-        return seen
+        return Synonym.get_synonyms(self.id)
 
 class Synonym(models.Model):
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
     synonym = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='+')
 
+    @classmethod
+    def get_synonyms(cls, word_id):
+        ans = set(map(attrgetter('synonym_id'),
+                      cls.objects.filter(word_id=word_id).all()))
+        ans.add(word_id)
+        return ans
+
+    @classmethod
+    def add_synonym(cls, word_id, synonym_id):
+        if cls.objects.filter(word_id=word_id, synonym_id=synonym_id).exists():
+            raise AssertionError(
+                    f"add_synonym: duplicate {Word.objects.get(id=word_id).text} "
+                    f"{Word.objects.get(id=synonym_id).text}")
+        cls.objects.bulk_create(
+            chain.from_iterable(
+              (cls(word_id=w, synonym_id=s),
+               cls(word_id=s, synonym_id=w))
+              for w, s in product(cls.get_synonyms(word_id),
+                                  cls.get_synonyms(synonym_id))))
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['word', 'synonym'],
+                                    name='unique_synonym'),
+        ]
+
 class WordRef(models.Model):
-    type = 'search_highlight'  # word_group_index inserted as 'info' to make this look like
-                               # an annotation with type 'search_highlight'.
+    type = 'search_highlight'  # word_group_index inserted as 'info' to make this
+                               # look like an annotation with type 'search_highlight'.
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
     sentence_number = models.PositiveSmallIntegerField()

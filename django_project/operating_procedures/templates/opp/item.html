@@ -12,7 +12,7 @@
     {% include "opp/blocks.html" with blocks=item.body item_first=item %}
 {% endif %}
     {% for type, number, text in item.notes %}
-      <div><span class="{{ type }}">{% if number is not None $}<sup>{{ number }}</sup>{% endif %}
+      <div><span class="{{ type }}">{% if number is not None %}<sup>{{ number }}</sup>{% endif %}
       <span class="{{ type }}-tag">{{ type }}.</span> {{ text }}</span></div>
     {% endfor %}
   </div>

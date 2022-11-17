@@ -29,11 +29,8 @@ def run(*args):
             for line in synonyms:
                 line = line.strip()
                 if line and line[0] != '#':
-                    words_in_line = line.split()
-                    if words_in_line:
-                        first = models.Word.lookup_word(words_in_line[0])
-                        for w in words_in_line[1:]:
-                            second = models.Word.lookup_word(w)
-                            models.Synonym(word=first, synonym=second).save()
-                            models.Synonym(word=second, synonym=first).save()
+                    words = list(map(models.Word.lookup_word, line.split()))
+                    first = words[0]
+                    for second in words[1:]:
+                        models.Synonym.add_synonym(first.id, second.id)
         print(f"next: python manage.py runscript load_definitions --script-args <version>")

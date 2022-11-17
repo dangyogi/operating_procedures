@@ -11,11 +11,17 @@ Tags for text chunks (aka "text-chunks" in this description):
     'text': text<string>
     'cite': citation<string> (which might be a hyphenated range), url<string>
             chunks<[text-chunk]>
-    'note': term<[text-chunk]>, note<string>
+    'note_ref': term<[text-chunk]>, note<string>
     'definition': term<[text-chunk]>, definition<[block]> (definition could have items)
     'definition_link': term<[text-chunk]>, link=<url>
     'search_term': term<text-chunk>, word_group_number<int>
     'link': term<text-chunk>, href=<url>
+    'citeAs': term<text-chunk>
+    'note': term<text-chunk>, number=<str>
+    'law_implemented': term<text-chunk>
+    'specific_authority': term<text-chunk>
+    'rulemaking_authority': term<text-chunk>
+    'history': term<text-chunk>
 
 Tags for larger blocks of text:
     'items': items<[item]>
@@ -34,7 +40,6 @@ And finally the item itself!  (only appears in 'items' chunk)
             number<string>
             url<string>
             title<[text-chunk]> (may be None),
-            notes<[(type, number, string)]>  # number None except for type == 'Note'
             body<[block]> (could have items)
             body_order<int>
 '''
@@ -235,8 +240,8 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
         else:
             url = make_fl_leg_url(citation)
         return [chunk('cite', citation=citation, url=url, chunks=text_chunks)]
-    if annotation.type == 'note':
-        return [chunk('note',
+    if annotation.type == 'note_ref':
+        return [chunk('note_ref',
                       note=parent_item.get_note(annotation.info),
                       term=text_chunks)]
     if annotation.type == 'definition':
@@ -249,10 +254,15 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
                           definition=chunkify_item_body(
                                        models.Item.objects.get(citation=annotation.info),
                                        def_as_link=True))]
-    if annotation.type == 'search_highlight':
-        return [chunk('search_term', term=text_chunks, word_group_number=annotation.info)]
     if annotation.type == 'link':
         return [chunk('link', term=text_chunks, href=annotation.info)]
+    if annotation.type == 'search_highlight':
+        return [chunk('search_term', term=text_chunks, word_group_number=annotation.info)]
+    if annotation.type == 'note':
+        return [chunk('note', term=text_chunks, number=annotation.info)]
+    if annotation.type in ('citeAs', 'law_implemented', 'specific_authority',
+                           'rulemaking_authority', 'history'):
+        return [chunk(annotation.type, term=text_chunks)]
     else:
         raise AssertionError(f"Unknown annotation type {annotation.type!r}")
 
@@ -263,7 +273,6 @@ def chunk_item(item, with_body=True, def_as_link=False):
                 citation=item.citation,
                 number=item.number,
                 title=None,
-                notes=[],
                 url=reverse('cite', args=[item.citation]),
                 body=[],
                 body_order=item.body_order)
@@ -282,11 +291,6 @@ def chunk_item(item, with_body=True, def_as_link=False):
         ans.parent_url = reverse('cite', args=[item.parent.citation])
     if with_body:
         ans.body = chunkify_item_body(item, def_as_link=def_as_link)
-        for note in item.note_set.all():
-            if note.type == 'Note':
-                ans.notes.append((note.type, note.number, note.text))
-            else:
-                ans.notes.append((note.type, None, note.text))
     return ans
 
 

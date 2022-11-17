@@ -112,7 +112,7 @@ def scrape_61B(trace=False):
 def process_61B_chapter(ch_number, title, url):
     r'''E.g., 61B-75
     '''
-    title = title[title.index(' - ') + 3: title.index('(\u00a7') - 1] 
+    title = title[title.index(' - ') + 3: title.index('(\u00a7') - 1]  # \u00a7 is section sign
     #print(f"process_61B_chapter got {ch_number=}, {title=}, url=...{url[-30:]}")
     soup = get(url)
     #article = find1(soup.body, 'article', recursive=True)
@@ -157,9 +157,9 @@ def process_61B_section(parent, body_order, url):
     if title.startswith('Section '):
         title = title[8: ]
     i = title.index(' - ')
-    citation = title[: i]
+    citation = title[: i] + ' '
     title = title[i + 3:]
-    number = citation[citation.index('.'):]  # e.g., '.008'
+    number = citation[citation.index('.'):]  # e.g., '.008 '
     #print(f"found section title {citation=}, {number=}, {title=}")
 
     section_item = create_item(citation, number, title, parent, body_order)
@@ -273,10 +273,10 @@ def process_p_tag(item, body_order, p_tag):
             else:
                 print(f"  process_p_tag: while examining {p_tag.prettify()},")
                 print(f"  process_p_tag {item.citation} NOTICE: 'p' with {p_child.name=} "
-                      f"as {i} child")
+                      f"as {i} child -- IGNORED")
         elif saw_text:
             print(f"  process_p_tag: while examining {p_tag.prettify()},")
-            print(f"  process_p_tag {item.citation} NOTICE: multiple NavigableStrings")
+            print(f"  process_p_tag {item.citation} NOTICE: multiple NavigableStrings -- IGNORED")
         else:
             inc += 1
             create_paragraph(str(p_child), body_order + inc, item)
@@ -309,7 +309,8 @@ def process_61B_paragraph(parent_item, container, body_order):
                 title = str(text)[:i + 1].strip()
                 rest = str(text)[i + 1:].lstrip()
                 if rest:
-                    if rest[0].isupper():
+                    if rest[0].isupper() or \
+                       rest[0] in '"\u201c\u201f\u201d\u301d\u301e' and rest[1].isupper():
                         #print(f"{citation=}: '{title=}'")
                         start = 1
                         break
@@ -333,19 +334,21 @@ def process_61B_paragraph(parent_item, container, body_order):
     child_body_order = 0
     text = ''
     post_fns = []
+    child_body_order = 0
 
     def check_text(dec=1):
-        nonlocal text, post_fns
+        nonlocal text, post_fns, child_body_order
         if text:
-            para = create_paragraph(text, child_body_order - dec, item)
+            child_body_order += 1
+            para = create_paragraph(text, child_body_order, item)
             for post_fn in post_fns:
                 post_fn(para)
             text = ''
             post_fns = []
 
-    for child_body_order, child in enumerate(container.contents[1:], 1):
+    for child in container.contents[1:]:
         if isinstance(child, NavigableString):
-            if child_body_order == 1 and title is not None:
+            if child_body_order == 0 and title is not None:
                 text = text_cat(text, rest)
             else:
                 text = text_cat(text, str(child))
@@ -353,7 +356,7 @@ def process_61B_paragraph(parent_item, container, body_order):
         elif child.name == 'p':
             check_text()
             #print(f"  process_61B_paragraph {citation} got 'p' {child.attrs=}")
-            process_p_tag(item, child_body_order, child)
+            child_body_order += process_p_tag(item, child_body_order, child)
         elif child.name == 'span':
             text = text_cat(text, process_61B_span(child, citation))
         elif child.name == 'a':
@@ -367,6 +370,7 @@ def process_61B_paragraph(parent_item, container, body_order):
             if child.attrs:
                 print(f"  process_61B_paragraph {citation} WARNING got unexpected attrs in "
                       f"section {child.attrs=}")
+            child_body_order += 1
             process_61B_paragraph(item, child, child_body_order)
         else:
             print(f"  process_61B_paragraph {citation} got unknown child name {child.name=} "
@@ -947,7 +951,8 @@ def create_note(parent, body_order, text, prefix_len=None, type=None, info=None)
     elif prefix_len is None:
         prefix_len = len(text)
     para = create_paragraph(text, body_order, parent, index=(type not in ('citeAs', 'history')))
-    models.Annotation(paragraph=para, type=type, char_offset=0, length=prefix_len, info=info)
+    models.Annotation(paragraph=para, type=type, char_offset=0, length=prefix_len, info=info) \
+          .save()
 
 def get_string(tag, de_emsp=False, ignore_emdash=False, allow_p=False):
     span = []
