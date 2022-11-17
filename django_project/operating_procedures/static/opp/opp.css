@@ -105,23 +105,13 @@ div {
 }
 
 
-/* History */
+/* little stuff... */
 
-.history {
+.note, .law_implemented, .specific_authority, .rulemaking_authority, .history {
     font-size: smaller;
 }
 
-.history-tag {
-    font-weight: bold;
-}
-
-/* Notes */
-
-.note {
-    font-size: smaller;
-}
-
-.note-tag {
+.bold {
     font-weight: bold;
 }
 

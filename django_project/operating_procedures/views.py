@@ -85,23 +85,25 @@ def cite(request, citation='719'):
     hyphen = citation.find('-', start)
     if hyphen > 0:
         first = add_space(citation[:hyphen])
-        last = add_space(citation[hyphen + 1:]) + '~'
+        last = add_space(citation[hyphen + 1:])
+        first_item = models.Item.objects.get(version_id=latest_law, citation=first)
+        parent = first_item.parent
+        items = [item.get_block()
+                 for item in parent.item__set
+                  if first <= item.citation <= last]
     else:
         first = add_space(citation)
-        last = first + '~'
-
-    items = list(map(methodcaller('get_block'),
-                     models.Item.objects.filter(version_id=latest_law,
-                                                citation__gte=first,
-                                                citation__lte=last)
-                                        .order_by('item_order')))
+        last = first
+        items = [models.Item.objects.get(version_id=latest_law, citation=first).get_block()]
 
     print(f"cite: {first=!r}, {last=!r} {latest_law=} got {len(items)} items")
 
-    blocks = [chunk('items', items=list(items), body_order=0)]
+    blocks = [chunk('items', items=items, body_order=0)]
     #blocks[0].dump(depth=3)
     return render(request, 'opp/cite.html',
-                  context=dict(citation=citation, blocks=blocks))
+                  context=dict(citation=citation, blocks=blocks,
+                               little_tags=('note', 'law_implemented', 'specific_authority',
+                                            'rulemaking_authority', 'history')))
 
 
 @require_safe
@@ -361,4 +363,6 @@ def search(request, words):
     blocks = prepare_blocks(tree)
     #blocks[0].dump(depth=10)
     return render(request, 'opp/search.html',
-                  context=dict(words=words, blocks=blocks))
+                  context=dict(words=words, blocks=blocks,
+                               little_tags=('note', 'law_implemented', 'specific_authority',
+                                            'rulemaking_authority', 'history')))
