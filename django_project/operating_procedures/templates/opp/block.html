@@ -11,9 +11,9 @@
   {% endfor %}
 {% elif block.tag == 'paragraph' %}
   {% if item_first %}
-    {% include "opp/item_link.html" %}{% include "opp/chunks.html" with chunks=block.chunks item_first='' %}
+    {% include "opp/item_link.html" %}{% include "opp/chunks.html" with chunks=block.chunks item_first='' block_type=block.type %}
   {% else %}
-    <div>{% include "opp/chunks.html" with chunks=block.chunks %}</div>
+    <div>{% include "opp/chunks.html" with chunks=block.chunks block_type=block.type %}</div>
   {% endif %}
 {% elif block.tag == 'omitted' %}
   <div class="omitted">. . .</div>

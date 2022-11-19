@@ -107,12 +107,18 @@ div {
 
 /* little stuff... */
 
+.citeAs {
+  font-size: smaller;
+  font-style: italic;
+}
+
 .note, .law_implemented, .specific_authority, .rulemaking_authority, .history {
-    font-size: smaller;
+  font-size: smaller;
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
+  font-size: initial;
 }
 
 /* vim: sw=2

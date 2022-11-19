@@ -28,6 +28,9 @@ Tags for larger blocks of text:
              body_order<int>
     'paragraph': chunks<[text-chunk]>
                  body_order<int>
+                 type<str>      # None, 'note', 'law_implemented',
+                                # 'specific_authority', 'rulemaking_authority',
+                                # or 'history'
     'table': has_header<bool>
              rows<[[[block]]]>  # list of rows,
                                 # each row a list of columns,
@@ -50,6 +53,9 @@ from operator import attrgetter, methodcaller
 from django.urls import reverse
 from operating_procedures import models
 
+
+little_stuff = ('note', 'law_implemented', 'specific_authority',
+                'rulemaking_authority', 'history')
 
 class chunk:
     r'''These represent strings of text, as well as larger blocks of text.
@@ -332,8 +338,13 @@ def chunkify_item_body(item, def_as_link=False):
 
 
 def chunk_paragraph(paragraph, wordrefs=(), def_as_link=False):
-    return chunk('paragraph', chunks=paragraph.with_annotations(wordrefs=wordrefs,
-                                                                def_as_link=def_as_link),
+    chunks = paragraph.with_annotations(wordrefs=wordrefs, def_as_link=def_as_link)
+    if chunks[0].tag in little_stuff:
+        type = chunks[0].tag
+        #print("chunk_paragraph got type", type)
+    else:
+        type = None
+    return chunk('paragraph', type=type, chunks=chunks,
                  body_order=paragraph.body_order)
 
 

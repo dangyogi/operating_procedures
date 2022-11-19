@@ -1,5 +1,5 @@
 {% load opp_extras %}
-{% for chunk in chunks %}{% if chunk.tag == 'text' %}{{ chunk.text|savespaces }}{% elif chunk.tag == 'cite' %}{% spaceless %}
+{% if block_type is not None %}<span class="{{ block_type }}">{% endif %}{% for chunk in chunks %}{% if chunk.tag == 'text' %}{{ chunk.text|savespaces }}{% elif chunk.tag == 'cite' %}{% spaceless %}
 <a href="{{ chunk.url }}" class="cite-link">{% include "opp/chunks.html" with chunks=chunk.chunks %}</a>
 {% endspaceless %}{% elif chunk.tag == 'note_ref' %}{% spaceless %}
 <span class="tooltip">{% include "opp/chunks.html" with chunks=chunk.term %}<span class="tooltiptext">{{ chunk.note }}</span></span>
@@ -11,10 +11,12 @@
 <span class="search-term-{{ chunk.word_group_number }}">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
 {% endspaceless %}{% elif chunk.tag == 'link' %}{% spaceless %}
 <a href="{{ chunk.href }}">{% include "opp/chunks.html" with chunks=chunk.term %}</a>
+{% endspaceless %}{% elif chunk.tag == 'citeAs' %}{% spaceless %}
+<span class="citeAs">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
 {% endspaceless %}{% elif chunk.tag in little_tags %}{% spaceless %}
-<span class="{{ chunk.tag }}">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
+<span class="{{ chunk.tag }} bold">{% include "opp/chunks.html" with chunks=chunk.term %}</span>
 {% endspaceless %}{% else %}
 <div class="error">ERROR: chunks.html: Unrecognized chunk.tag {{ chunk.tag }}.</div>
 {% endif %}{% comment %}
   vim: sw=2 nofixendofline
-{% endcomment %}{% endfor %}
+{% endcomment %}{% endfor %}{% if block_type is not None %}</span>{% endif %}
