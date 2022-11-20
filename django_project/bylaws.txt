@@ -1,23 +1,39 @@
-BY-LAWS OF GOLDEN GATE RESIDENTS ASSOCIATION
-OF PINELLAS PARK, INC.
+## Format:
+##
+## All lines start at column 0 (there is no indenting).
+##
+##   My comments start with ## (anywhere in the line) to the end of the line.
+##
+##   Items start with:
+##      ARTICLE <roman> <title>
+##      nn.?n? [<title>]  (first N corresponds with <roman> in ARTICLE)
+##      a. [<title>]
+##
+##      The hierarchy level is N.N.A.N (but there is one N.N.N)
+##
+##   Anything else is a paragraph.  If the paragraph starts with <, it belongs to the parent
+##   of the current item.
+##
+## Document terminates with --END--, starting in column 0.  After that is signature block...
+##
 
-ARTICLE I
-OFFICES
+ARTICLE I OFFICES
 
 1.1
 1. The registered office of the Corporation in the state of Florida shall be located in the
 County of Pinellas at:
-        8201 40M Street North
-        Pinellas Park, FL 33781-1730
+
+8201 40th Street North
+
+Pinellas Park, FL 33781-1730
 
 
-ARTICLE II
-PURPOSE
+ARTICLE II PURPOSE
 
-2 The Board of Directors shall govern this Corporation in accordance with these By-Laws.
+2
+The Board of Directors shall govern this Corporation in accordance with these By-Laws.
 
-ARTICLE III
-SHAREHOLDERS AND STOCK DISTRIBUTION
+ARTICLE III SHAREHOLDERS AND STOCK DISTRIBUTION
 
 3.1
 Ownership of GOLDEN GATE RESIDENTS' ASSOCIATION OF PINELLAS PARK,
@@ -50,165 +66,182 @@ precedent to owning a dwelling in Golden Gate.
 3.8
 The share shall be purchased at the current market price.
 
+ARTICLE IV DIRECTORS
 
-ARTICLE IV
-DIRECTORS
-
-4.1
-Function: All corporate power shall be exercised by or under the authority of, and the
+4.1 Function:
+All corporate power shall be exercised by or under the authority of, and the
 business and affairs of this Corporation shall be managed under the direction of the
 Board of Directors.
 
-4.2
-Qualifications: Directors must be shareholders of the Corporation and residents of the
+4.2 Qualifications:
+Directors must be shareholders of the Corporation and residents of the
 park.  The purpose of this provision is to assure the availability of directors to conduct
 the business of the Corporation.
 
-4.3
-Compensation: The Shareholders, by majority vote, shall determine the rate of
+4.3 Compensation:
+The Shareholders, by majority vote, shall determine the rate of
 compensation, if any, for the Directors and officers.
 
-4.4
-Duties of Directors:
-a. The Directors shall have a fiduciary relationship to the Corporation.
-b. A Director shall perform his or her duties as a director, including his or her
-   duties as a member of any committee of the board upon which he or she may
+4.4 Duties of Directors:
+a.
+The Directors shall have a fiduciary relationship to the Corporation.
 
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 583
-
+b.
+A Director shall perform his or her duties as a director, including his or her
+duties as a member of any committee of the board upon which he or she may
 serve, in good faith, in a manner he or she reasonably believes  to be in the
 best interests of the Corporation, and with such care as an ordinary prudent
 person in a like position would use under similar circumstances.
-c. In performing his or her duties, a Director shall be entitled to rely on
+
+c.
+In performing his or her duties, a Director shall be entitled to rely on
 information, opinions, reports or statements, including financial statements
 and other financial data, in each case prepared or presented by:
-1. One or more officers or employees of the Corporation whom the Director
+
+1.
+One or more officers or employees of the Corporation whom the Director
 reasonably believes to be reliable and competent in the matters
-presented
-2. Counsel, public accountants or other persons as to matters which the
+presented.
+
+2.
+Counsel, public accountants or other persons as to matters which the
 Director reasonably believes to be within such person's professional or
 expert competence.
-3.   A committee of the Board upon which he or she does not serve, duly
+
+3.
+A committee of the Board upon which he or she does not serve, duly
 designated in accordance with a provision of the Articles of Incorporation
 or the By-Laws, as to matters within its designated authority, which
 committee the Director reasonably believes to merit confidence.
-d   A  Director shall not be considered to be acting in good faith if he or she has
+
+d.
+A Director shall not be considered to be acting in good faith if he or she has
 knowledge concerning the matter in question that would cause such reliance
 described above to be unwarranted.
-e. A person who performs his or her duties in compliance with this section shall
+
+e.
+A person who performs his or her duties in compliance with this section shall
 have no liability by reason of being or having been a director of the
 Corporation.  The Corporation shall indemnify and hold harmless any Director
 from liability for Corporate action.
 
-4.5
-Presumption of Assent: A Director of the Corporation who is present at a meeting of
+4.5 Presumption of Assent:
+A Director of the Corporation who is present at a meeting of
 its Directors at which action on any Corporation matter is taken shall be presumed to
 have assented to the action taken unless he or she votes against such action or
 abstains from voting in respect thereto because of an asserted conflict of interest.
 
-4.6
-Number: This Corporation shall be managed by a Board of five (5) Directors.  The
+4.6 Number:
+This Corporation shall be managed by a Board of five (5) Directors.  The
 number of Directors may be increased or decreased from time to time by amendment to
 these By-Laws, but no decrease shall have the effect of shortening the terms of any
 incumbent Director.  No decrease shall have the effect of reducing the number of
 Directors to less than five (5).
 
-4.7
-Election and Term: At the first annual meeting of shareholders and at each annual
+4.7 Election and Term:
+At the first annual meeting of shareholders and at each annual
 meeting thereafter, the shareholders shall elect directors to hold office.
-a. At the first shareholders meeting, the first two (2) Directors shall be elected for
+
+a.
+At the first shareholders meeting, the first two (2) Directors shall be elected for
 a term of three (3) years.  The second two (2) Directors shall be elected for a
 term of two (2) years. And the fifth Director for a term of one (1) year.
-b. Thereafter, at the expiration of each Director's term of office his or her
+
+b.
+Thereafter, at the expiration of each Director's term of office his or her
 replacement will be elected at the annual shareholder meeting for a term of
 three (3) years.
-c. This staggering of directors terms is intended to provide continuity to the
+
+c.
+This staggering of directors terms is intended to provide continuity to the
 management of the Corporation.
-d. No Director shall serve more than two successive three year terms.
 
+d.
+No Director shall serve more than two successive three year terms.
 
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 584
-
-4.8
-Election Nonces and Timing:   Not less than 60 days before a scheduled election, the
+4.8 Election Nonces and Timing:
+Not less than 60 days before a scheduled election, the
 Corporation shall mail, deliver or transmit to each shareholder entitled to vote, a first
 notice of the date of election.
 
-a. Any eligible person desiring to be a candidate for the Board of Directors shall
+a.
+Any eligible person desiring to be a candidate for the Board of Directors shall
 give written notice to the Corporation not less than 40 days before a
 scheduled election.
 
-b. Together with the written notice and agenda, the Corporation shall mail,
+b.
+Together with the written notice and agenda, the Corporation shall mail,
 deliver or electronically transmit a second notice of election to all
 shareholders entitled to vote therein, together with a ballot which shall list all
 candidates.
 
-c. Upon request of a candidate, the Corporation shall include an information
+c.
+Upon request of a candidate, the Corporation shall include an information
 sheet, no larger than 8-1/2 inches by 11 inches, which must be furnished by
 the candidate not less than 35 days prior to the election, to be included with
 the mailing, delivery, or electronic transmission of the ballot, with the costs of
 mailing, delivery, or transmission and copying to be borne by the Corporation.
 
-d. The Corporation has no liability for the contents of the information sheets
+d.
+The Corporation has no liability for the contents of the information sheets
 provided by the candidates.
 
-e. Elections shall be decided by a plurality of those ballots cast.
+e.
+Elections shall be decided by a plurality of those ballots cast.
 
-f. There shall be no quorum requirement.
+f.
+There shall be no quorum requirement.
 
-g. However, at least 20 percent of the eligible voters must cast a ballot in order
+g.
+However, at least 20 percent of the eligible voters must cast a ballot in order
 to have a valid election of members of the board of administration.
 
-h. No shareholder shall permit any other person to vote his or her ballot, and any
+h.
+No shareholder shall permit any other person to vote his or her ballot, and any
 such ballots improperly cast shall be deemed invalid.
 
-i. The regular election shall occur on the date of the annual meeting.
+i.
+The regular election shall occur on the date of the annual meeting.
 
-j. Notwithstanding the provision of this subparagraph, an election and balloting
+j.
+Notwithstanding the provision of this subparagraph, an election and balloting
 are not required unless more candidates file a notice of intent to run than
 vacancies exist on the board.
 
-4.9
-Voting Procedures: Voting procedures, including rules establishing procedures for
+4.9 Voting Procedures:
+Voting procedures, including rules establishing procedures for
 giving notice by electronic transmission and rules providing for the secrecy of ballots,
 shall be in accordance with rules established by the Department of Business and
 Professional Regulation.
 
-4.10
-Vacancies: Any vacancy occurring in the Board of Directors, including any vacancy
+4.10 Vacancies:
+Any vacancy occurring in the Board of Directors, including any vacancy
 created by reason of an increase in the number of directors, shall be filled by the
 remaining Directors, who shall appoint such replacement Director or Directors as are
 necessary to fill any vacancies.  A Director so elected will serve until the next annual
 meeting, at which time a replacement Director shall be elected in the manner provided
 by these By-Laws who shall serve the remaining of the unexpired term.
 
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 585
-
-4.11
-Recall and Removal of Directors:  Any Director may be recalled and removed from
+4.11 Recall and Removal of Directors:
+Any Director may be recalled and removed from
 office with or without cause by the vote or agreement in writing by a majority of all the
 voting interests then entitled to vote at an election of Directors.
 
-a. A special meeting of the shareholders to recall a member or members of
+a.
+A special meeting of the shareholders to recall a member or members of
 the Board may be called by ten percent (10%) of the shareholders giving
 notice of the meeting as required for a meeting of the shareholders and
 stating the purpose of the meeting.  S723.078 (2) (1):719.108 (1) (f)
 
-b. If the recall is approved by the majority of all voting interests by a vote at
+b.
+If the recall is approved by the majority of all voting interests by a vote at
 the meeting, the recall shall be effective immediately, and each recalled
 member of the Board of Directors shall turn over to the Board any and all
 records of the Association in his or her possession within 72 hours after
 the meeting.
 
-c. If the proposed recall is by an agreement in writing by a majority of all
+c.
+If the proposed recall is by an agreement in writing by a majority of all
 voting interests, the agreement in writing shall be served on the
 Association by certified mail.  The Board of Directors shall call a meeting
 of the Board within 72 hours after receipt of the agreement in writing and
@@ -217,88 +250,99 @@ which case such members shall be recalled effective immediately and
 shall turn over to the Board, within 72 hours, any and all records in their
 possession, or proceed as described in subparagraph (c).  ## (c)??
 
-d. If the Board determines not to certify the written agreement to recall
+d.
+If the Board determines not to certify the written agreement to recall
 members of the Board, or if recall by a vote at a meeting is disputed, the
 Board shall within 72 hours file with the Division a petition for binding
 arbitration pursuant to the procedures of S719.1255.  ## mitigation?
 
-e. The unit owners who voted at the meeting or who executed the agreement
+e.
+The unit owners who voted at the meeting or who executed the agreement
 in writing shall constitute one party under the petition for arbitration.
 
-f. If the arbitration certifies the recall as to any member of the Board, the
+f.
+If the arbitration certifies the recall as to any member of the Board, the
 recall shall be effective upon service of the final order of arbitration upon
 the association. S719.106 (1) (f) (3).
 
-4.12
-Quorum and Voting: A majority of the number of Directors fixed by these By-Laws
+4.12 Quorum and Voting:
+A majority of the number of Directors fixed by these By-Laws
 shall constitute a quorum for the transaction of business.
 
-a. The act of the majority of the Directors present at a meeting at which a
+a.
+The act of the majority of the Directors present at a meeting at which a
 quorum is present shall be the act of the Board of Directors.
 
-4.13
-Executive and Other Committees: The Directors by resolution adopted by a majority
+4.13 Executive and Other Committees:
+The Directors by resolution adopted by a majority
 of the full Board of Directors may designate from among its members, an executive
 committee and other committees.
 
-a. Each such committee shall serve at the pleasure of the Board with the
+a.
+Each such committee shall serve at the pleasure of the Board with the
 authority contained in the Florida statutes.
 
-b. The Board, by resolution, may designate one or more directors as alternate  ## Directors
+b.
+The Board, by resolution, may designate one or more directors as alternate  ## Directors
 members of any such committee who may act in the place and stead of any
 absent member or members at any meeting of such committee.
 
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 586
-
-4.14
-Regular Meetings: Regular monthly meetings of the Directors shall be held on the third
+4.14 Regular Meetings:
+Regular monthly meetings of the Directors shall be held on the third
 Tuesday of each month.
 
-a. The Board may hold its meeting at another time if necessary.
+a.
+The Board may hold its meeting at another time if necessary.
 
-b. The meetings are open to all members of the Corporation and notice shall be  ## speak
+b.
+The meetings are open to all members of the Corporation and notice shall be  ## speak
 posted in a conspicuous place on the park property at least forty eight (48)  ## where?
 hours in advance of the meeting.
 
-4.15
-Special Meetings: Special meetings of the Directors may be called by the President or
+4.15 Special Meetings:
+Special meetings of the Directors may be called by the President or
 by any two (2) Directors.
 
-a. Members of the Board of Directors may participate in a meeting of such Board
+a.
+Members of the Board of Directors may participate in a meeting of such Board
 by means of a conference telephone or similar communications equipment by
 such means of which all persons participating in the meeting can hear each
 other at the same time.
 
-b. Such meetings must be open to all members and notice given as above.
+b.
+Such meetings must be open to all members and notice given as above.
 
-4.16
-Notice: Except in case of emergency, written notice of the time and place of the Special
+4.16 Notice:
+Except in case of emergency, written notice of the time and place of the Special
 Meetings of Directors shall be given to each Director either by personal delivery or by
 mail, electronic transmission, telegram, or cablegram and by notice posted on the
 bulletin board at the Clubhouse at least forty eight (48) hours before the meeting. ## delivered to SH
 
-a. The business to be transacted at or the purpose of any special meeting of the
+a.
+The business to be transacted at or the purpose of any special meeting of the
 Directors shall be specified in the notice.
 
-b. Notice of any meetings in which assessments against Shareholders are to be
+b.
+Notice of any meetings in which assessments against Shareholders are to be
 discussed for any reason shall specifically contain a statement that
 assessments will be considered, and the nature of assessments.
 
-c. The Board of Directors shall mail a meeting notice and copies of the proposed
+c.
+The Board of Directors shall mail a meeting notice and copies of the proposed
 annual budget of expenses to the shareholders who are out of town, at that
 address, not less then thirty (30) days prior to the meeting at which the budget
 will be considered.
 
-d. Otherwise a copy of the budget shall be posted in a conspicuous place on the
+d.
+Otherwise a copy of the budget shall be posted in a conspicuous place on the
 park premises.
 
-e. Written notice of the time and place of the budget meeting shall be delivered
+e.
+Written notice of the time and place of the budget meeting shall be delivered
 to each Shareholder thirty (30) days prior to such a meeting.
 
-f. Electronic transmissions of notices by the Corporation to directors are
+f.
+Electronic transmissions of notices by the Corporation to directors are
 permitted to the fullest extent allowed by law.  Notwithstanding any provision
 herein to the contrary, electronic transmission may be used in lieu of any
 physical mailing or delivery of any notice which may be required, including
@@ -310,355 +354,421 @@ thereto.  Any failure of a director to receive an electronic transmission for an
 reason (e.g., changed address, spam or other filters) shall not affect the
 sending of the notice by the Corporation.
 
+4.17 Control of Spending:
+The Board of Directors shall not authorize any single non-budget
+or discretionary expense exceeding $15,000.00.   Any single expenditure in excess of
+this amount must be approved by a majority of the Association Shareholders present or
+represented by proxy at a meeting held for that purpose.
 
-
-
-PINELLAS CO TY FL OFF. FEC. BK 17926 PG 587
-
-4.17
- Control of Spending: The Board of Directors shall not authorize any single non-budget
- or discretionary expense exceeding $15,000.00.   Any single expenditure in excess of
- this amount must be approved by a majority of the Association Shareholders present or
- represented by proxy at a meeting held for that purpose.
-
-a. An exception to that rule is made for emergency expenditures when such
+a.
+An exception to that rule is made for emergency expenditures when such
 an emergency prevents the timely scheduling of a meeting of the
 Shareholders for approval.
 
-b. Any emergency expenditure requires the unanimous vote of the Board of
+b.
+Any emergency expenditure requires the unanimous vote of the Board of
 Directors.
 
+ARTICLE V OFFICERS
 
-ARTICLE V
-OFFICERS
-
-5.1
-Officers: The officers of the Corporation shall consist of a president, secretary, and
+5.1 Officers:
+The officers of the Corporation shall consist of a president, secretary, and
 treasurer who shall be elected by the Directors at the meeting of the Board
 following the annual meeting and whom shall serve at the pleasure of the Board.
 
-a. Such other officers and assistant officers and agents deemed necessary may be
+a.
+Such other officers and assistant officers and agents deemed necessary may be
 elected or appointed by the Board of Directors from time to time.
 
-b. Each officer shall hold office until his or her successor shall have been duly elected
+b.
+Each officer shall hold office until his or her successor shall have been duly elected
 and shall have qualified or until his or her resignation, or until he or she shall have
 been removed in the manner provided herein.
 
-c. The failure to elect a president, secretary or treasurer shall not affect the existence
+c.
+The failure to elect a president, secretary or treasurer shall not affect the existence
 of the Corporation.
 
-5.2
-Duties of Officers: The officers of this Corporation shall have the following duties:
+5.2 Duties of Officers:
+The officers of this Corporation shall have the following duties:
 
-a. The President shall be the chief executive officer of the Corporation.
+a.
+The President shall be the chief executive officer of the Corporation.
 
-1. Shall have general and active management of the business affairs of
+1.
+Shall have general and active management of the business affairs of
 the Corporation subject to the directions of the Board of Directors.
 
-2. Shall preside at all meetings of the shareholders and Board of
+2.
+Shall preside at all meetings of the shareholders and Board of
 Directors.
 
-b. The Secretary shall have custody of, and maintain, all of the Corporation
+b.
+The Secretary shall have custody of, and maintain, all of the Corporation
 records except financial records.
 
-1. Shall record the minutes of all meetings of the shareholders and
+1.
+Shall record the minutes of all meetings of the shareholders and
 Board of Directors.
 
-2. Send out all notices of meetings.
+2.
+Send out all notices of meetings.
 
-3. Perform such other duties as may be prescribed by the Board of
+3.
+Perform such other duties as may be prescribed by the Board of
 Directors or the President.
 
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 588
-
-c. The Treasurer shall have custody of the Corporation funds and financial
+c.
+The Treasurer shall have custody of the Corporation funds and financial
 records.
 
-1. Shall keep full and accurate accounts of receipts and disbursements
+1.
+Shall keep full and accurate accounts of receipts and disbursements
 and render accounts thereof at the annual meetings of the shareholders
 and whenever else required by the Board of Directors or the President.
 
-2. Shall perform such other duties as may be prescribed by the Board of
+2.
+Shall perform such other duties as may be prescribed by the Board of
 Directors or the President.
 
-5.3
-Removal: Any officer or agent elected or appointed by the Directors may be
+5.3 Removal:
+Any officer or agent elected or appointed by the Directors may be
 removed whenever in their judgment the best interest of the corporation would be
 served thereby, but such removal shall be without prejudice to the contract rights, if
 any, of the person to be removed.
 
-5.4
-Fiduciary Relationship: The officers of the Corporation have a fiduciary relationship
+5.4 Fiduciary Relationship:
+The officers of the Corporation have a fiduciary relationship
 to the Corporation and its shareholders.
 
+ARTICLE VI CERTIFICATES FOR SHARES
 
-ARTICLE VI
-CERTIFICATES FOR SHARES
-
-6.1
-Issuance: Every holder of shares in this Corporation shall be entitled to have a
+6.1 Issuance:
+Every holder of shares in this Corporation shall be entitled to have a
 certificate, representing the share to which he or she is entitled.
 
-6.2
-Form: Certificates representing shares of the Corporation shall be signed by the
+6.2 Form:
+Certificates representing shares of the Corporation shall be signed by the
 President and Secretary or by other officers authorized by the Directors under the
 laws of the State of Florida and may be sealed with the seal of the Corporation or a
 facsimile thereof.
-a. All certificates shall be numbered according to the unit that they represent.
-b. All certificates representing shares shall state upon the face thereof:
-1. The name of the Corporation.
-2. The Corporation is organized under the laws of the State.
-3. The name of the person or persons to whom issued.
-4. The par value of each share represented by such certificate or a statement
+
+a.
+All certificates shall be numbered according to the unit that they represent.
+
+b.
+All certificates representing shares shall state upon the face thereof:
+
+1.
+The name of the Corporation.
+
+2.
+The Corporation is organized under the laws of the State.
+
+3.
+The name of the person or persons to whom issued.
+
+4.
+The par value of each share represented by such certificate or a statement
 that share is without par value.  ## Do we have different kinds of shares?
 ## see 6.4(b) for another requirement
 
-6.3
-Lost Stolen or Destroyed Certificates: The Corporation shall issue a new stock
+6.3 Lost Stolen or Destroyed Certificates:
+The Corporation shall issue a new stock
 certificate in place of any certificate previously issued if the holder of record of the
-certificate
-a. Makes proof in affidavit form that it has been lost, destroyed or wrongfully
+certificate  ## :
+
+a.
+Makes proof in affidavit form that it has been lost, destroyed or wrongfully
 taken.
-b. Requests the issue of a new certificate before the Corporation has notice that
+
+b.
+Requests the issue of a new certificate before the Corporation has notice that
 the certificate has been acquired by a purchaser for value in good faith and
 without notice of any adverse claim.
-c. Gives bond in such form as the Corporation may direct, to indemnify the
+
+c.
+Gives bond in such form as the Corporation may direct, to indemnify the
 Corporation, the transfer agent, and registrar against any claim that may be
 made on account of the alleged loss, destruction, or theft of a certificate.
-d. Satisfies any other reasonable requirements imposed by the Corporation.
 
+d.
+Satisfies any other reasonable requirements imposed by the Corporation.
 
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 589
-
-6.4
-Transfer af Shares: Upon surrender to the Corporation of a certificate for shares duly
+6.4 Transfer af Shares:
+Upon surrender to the Corporation of a certificate for shares duly
 endorsed or accompanied by proper evidence of succession, assignment or authority
 to transfer, it shall be the duty of the Corporation to issue a new certificate to the
 person entitled thereto, and to cancel the old certificate.
-a. Every such transfer shall be entered on the transfer book of the
+
+a.
+Every such transfer shall be entered on the transfer book of the
 Corporation which shall be kept at the principal office.
-b. All such transfers are subject to the condition that only owners of mobile
+
+b.
+All such transfers are subject to the condition that only owners of mobile
 homes within the Park are eligible to be shareholders in this Corporation.
-c. This restriction on ownership must appear on the face of all stock
+
+c.
+This restriction on ownership must appear on the face of all stock
 certificates.
-d The Corporation shall be entitled to treat the holder of record of any share as
+
+d. The Corporation shall be entitled to treat the holder of record of any share as
 the holder in fact thereof, and accordingly, will not be bound to recognize any
 equitable or other claim to or interest in such share or the part of any notice
 thereof, except as expressly provided by the laws of this State.
 
-6.5
-Transfer Fees:
-a. The assignment, sale, mortgage, lease, sublease or other transfer of a unit is
+6.5 Transfer Fees:
+
+a.
+The assignment, sale, mortgage, lease, sublease or other transfer of a unit is
 subject to approval by the association pursuant to these By-Laws and master
 occupancy agreement.  ## Master Occ... ??
-b. The Association may impose a fee in connection with the approval of the
+
+b.
+The Association may impose a fee in connection with the approval of the
 assignment, sale, mortgage, lease or sublease of units that shall not exceed
 $50.00 per applicant.
-c. However, if the lease or sublease is a renewal, of a lease or sublease with the
+
+c.
+However, if the lease or sublease is a renewal, of a lease or sublease with the
 same lessee or sub lessee, no charge shall be made.
-d   The Board of Directors shall have the authority to require a security deposit
+
+d.
+The Board of Directors shall have the authority to require a security deposit
 from subleases (renters) in an amount not to exceed the equivalent of 1 (one)
 month's rent.  ## renters?
-e. The security deposit shall protect against damages to the common areas or
+
+e.
+The security deposit shall protect against damages to the common areas or
 cooperative property.
-f. Within 15 days after a tenant vacates the premises, the association shall
+
+f.
+Within 15 days after a tenant vacates the premises, the association shall
 refund the full security deposit or give written notice to the tenant of any claim
 made against the security.
-g   Disputes under this paragraph shall be handled as disputes concerning
+
+g.
+Disputes under this paragraph shall be handled as disputes concerning
 security deposits under S83.49 Florida Statutes #719.106.(1) (1).   ## #?
 
+ARTICLE VII MEETING OF SHAREHOLDERS
 
-ARTICLE VII
-MEETING OF SHAREHOLDERS
+7.1 Annual Meeting:
 
-7.1
-Annual Meeting:
-a. The annual meeting of the shareholders of this Corporation shall be held the
+a.
+The annual meeting of the shareholders of this Corporation shall be held the
 third Tuesday of February of each year.
-b. The annual meeting of the shareholders for any year shall be held no later
+
+b.
+The annual meeting of the shareholders for any year shall be held no later
 than thirteen months after the last preceding annual meeting of the
 shareholders.
-c. Business transacted at the annual meeting shall include the election of
+
+c.
+Business transacted at the annual meeting shall include the election of
 directors of the Corporation.
 
+7.2 Special Meetings:
 
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 590
-
-7.2
-Special Meetings:
-a. Special meetings of the shareholders shall be held when directed by the
+a.
+Special meetings of the shareholders shall be held when directed by the
 President, the Board of Directors, or when requested in writing by the holders
 of not less then ten (10) percent of all the shares entitled to vote at the
 meeting.
-b. A meeting requested by shareholders shall be called for a date not less than
+
+b.
+A meeting requested by shareholders shall be called for a date not less than
 fourteen (14) nor more than sixty (60) days after the request is made, unless
 the shareholders requesting the meeting designate a later date.
-c. The call for the meeting shall be issued by the Secretary, unless the
+
+c.
+The call for the meeting shall be issued by the Secretary, unless the
 President, of the Board of Directors, or shareholders requesting the meeting
 shall designate another person to do so.
 
-7.3
-Place:
-a. Meetings of shareholders shall be held within the State of Florida.
-b. If no designation is made. The place of the meeting shall be the registered  ## . -> ,
+7.3 Place:
+
+a.
+Meetings of shareholders shall be held within the State of Florida.
+
+b.
+If no designation is made. The place of the meeting shall be the registered  ## . -> ,
 office of the Corporation.
 
-7.4
-Notice:
-a. Written notice stating the place, day and hour of the meeting and, in the case
+7.4 Notice:
+
+a.
+Written notice stating the place, day and hour of the meeting and, in the case
 of a special meeting, the purpose for which the meeting is called, shall be
 delivered not less than fourteen (14) days or more than sixty (60) days before
 the meeting, by regular mail, by or at the direction of the President, the
 Secretary, or the officer or persons calling the meeting to each shareholder of
 record entitled to vote at such meeting.
-b. Such notice shall be deemed to be delivered when deposited in the United
+
+b.
+Such notice shall be deemed to be delivered when deposited in the United
 States mail addressed to the shareholder at his or her address as it appears
 on the stock transfer books of the Corporation, with postage thereon prepaid, ## how to update address?
 except that notices sent to shareholders known to be part-time residents of
 the Park shall keep their other residence address on file with the Park
 Secretary and when they are not at their Park address their notices shall be
 sent to their other official address.
-c. A shareholder may waive in writing his or her right to receive mail delivery of
+
+c.
+A shareholder may waive in writing his or her right to receive mail delivery of
 his or her notice to meetings.
-d. This written waiver must be kept on file by the Secretary of the Corporation.
-e. Notice of all shareholder meetings must be posted in a conspicuous place in
+
+d.
+This written waiver must be kept on file by the Secretary of the Corporation.
+
+e.
+Notice of all shareholder meetings must be posted in a conspicuous place in
 the Park property at least fourteen (14) days prior to all meetings.
-f. An officer of the Corporation must provide an affidavit affirming that the
+
+f.
+An officer of the Corporation must provide an affidavit affirming that the
 notices were mailed (or hand delivered where there are written waivers of
 mail delivery) according to the provisions of this Article to each member at the
 address last furnished to the Corporation.
-g. Electronic transmissions of notices by the Corporation to shareholders are
+
+g.
+Electronic transmissions of notices by the Corporation to shareholders are
 permitted to the fullest extent allowed by law.  Notwithstanding any provision
 herein to the contrary, electronic transmission may be used in lieu of any
 physical mailing or delivery of any notice which may be required including any
 attachments to such notice.  The Corporation shall maintain a directory of
 electronic transmission addresses for each shareholder, subject to consent of
-
-
-9
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 591
-
 such shareholder.  Any shareholder who has consented to receipt of
 electronic transmission shall be responsible to notify the Corporation of any
 changes thereto.  Any failure of a shareholder to receive an electronic
 transmission for any reason (e.g., changed address, spam or other filters)
 shall not affect the sending of the notice by the Corporation.
 
-7.5
-Notice of Adjourned Meetings:
-a. When a meeting is adjourned to another place or time, it shall not be
+7.5 Notice of Adjourned Meetings:
+
+a.
+When a meeting is adjourned to another place or time, it shall not be
 necessary to give any notice of the adjourned meeting if the place and time to
 which the meeting is adjourned are announced at the meeting at which the
 adjournment is taken, and at the adjourned meeting, any business may be
 transacted that might have been transacted the original date of the meeting.
-b. If, however, after the adjournment, the Board of Directors fixes a new record
+
+b.
+If, however, after the adjournment, the Board of Directors fixes a new record
 date for the adjourned meeting, a notice of the adjourned meeting shall be
 given as, provided in this section, each shareholder of record on the new
 record date entitled to vote at such meeting.
 
-7.6
-Closing of Transfer Rooks, and Fixing Record Date:
-a. For the purpose of determining shareholders entitled to notice of or to vote at
+7.6 Closing of Transfer Rooks, and Fixing Record Date:
+
+a.
+For the purpose of determining shareholders entitled to notice of or to vote at
 any meeting of shareholders or any adjournment thereof, or entitled to receive
 payment of any dividend, or in order to make a determination of shareholders
 for any other purpose, the Board of Directors shall provide that the stock
 transfer books shall be closed for a stated period but not to exceed, in any
 case, sixty (60) days.
-b. If the stock transfer books shall be closed for the purpose of determining
+
+b.
+If the stock transfer books shall be closed for the purpose of determining
 shareholders entitled to notice of or to vote at a meeting of shareholders, such
 books shall be closed for at least fifteen (15) days immediately preceding
 such meeting.
-c. When a determination of shareholders entitled to vote at any meeting of
+
+c.
+When a determination of shareholders entitled to vote at any meeting of
 shareholders has been made as provided in this section, such determination
 shall apply to any adjournment thereof, unless the Board of Directors fixes a
 new record date for the adjourned meeting.
 
-7.7
-Voting Record:
-a. The officers or agent having charge of the stock transfer books for shares of
+7.7 Voting Record:
+
+a.
+The officers or agent having charge of the stock transfer books for shares of
 the Corporation shall make, at least ten (10) days before each meeting of the
 shareholders, a complete list of the shareholders entitled to vote at such
 meetings or any adjournment thereof, with the address of and the number of
 shares held by each.
-b. The list, for a period of ten (10) days prior to such meeting, shall be kept on
+
+b.
+The list, for a period of ten (10) days prior to such meeting, shall be kept on
 file at the registered office of the Corporation and any shareholder shall be
 entitled to inspect the list at any time during usual business hours.
-c. The list shall also be produced and kept open at the time and place of the
+
+c.
+The list shall also be produced and kept open at the time and place of the
 meeting and shall be subject to the inspection of any shareholder at any time
-
-
-10
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 592
-
 during the meeting.
-d. If the requirements of this section have not been substantially complied with,
+
+d.
+If the requirements of this section have not been substantially complied with,
 the meeting, on demand of any shareholder in person or by proxy, shall be
 adjourned until the requirements are complied with.
 
-If no such demand is made, failure to comply with the requirements of this
-section shall not affect the validity of any action taken at such meeting.
+<If no such demand is made, failure to comply with the requirements of this
+section shall not affect the validity of any action taken at such meeting.  ## belongs to 7.7
 
-7.8
-Sharehoiders Quorum and Voting:
-a. A majority of the shares entitled to vote, represented in person or by proxy,
+7.8 Sharehoiders Quorum and Voting:
+a.
+A majority of the shares entitled to vote, represented in person or by proxy,
 shall constitute a quorum at a meeting of shareholders.
-b. If a quorum is present, the affirmative vote of the majority of the shares
+
+b.
+If a quorum is present, the affirmative vote of the majority of the shares
 represented at the meeting and entitled to vote shall be the act of the
 shareholders unless otherwise provided by law.
-c. After a quorum has been established at a shareholders meeting, the
+
+c.
+After a quorum has been established at a shareholders meeting, the
 subsequent withdrawal of shareholders, so as to reduce the number of
 shareholders entitled to vote at the meeting below the number required for a
 quorum shall not affect the validity of any action taken at the meeting or any
 adjournment thereof.  ## check 719 on this
 
-7.9
-Voting of Shares:
-a. Each shareholder entitled to vote in accordance with the terms and provisions
+7.9 Voting of Shares:
+
+a.
+Each shareholder entitled to vote in accordance with the terms and provisions
 of the Articles of Incorporation and these By-Laws, shall be entitled to one (1)
 vote for each share of stock owned by such shareholder.
-b. The vote for directors shall be by secret ballot as provided by Section 719.106
+
+b.
+The vote for directors shall be by secret ballot as provided by Section 719.106
 of Florida Statutes (1995) as amended from time to time.  ## recall votes also secret?
 
-7.10
-Proxies:
-a. Every shareholder entitled to vote at a meeting of shareholders, or a
+7.10 Proxies:
+
+a.
+Every shareholder entitled to vote at a meeting of shareholders, or a
 shareholder duly authorized attorney-in-fact, may authorize another person or
 persons to act for him or her by proxy to the extent permitted by Section
 719.106 (1) (b) 2 of the Florida Statute (1995) as amended from time to time,
 but no one shall be authorized to hold more than 5 proxies.
-b. Every proxy must be signed by the shareholder or his attorney-in-fact.
-c. Every proxy shall be effective only for the specific meeting for which it has
+
+b.
+Every proxy must be signed by the shareholder or his attorney-in-fact.
+
+c.
+Every proxy shall be effective only for the specific meeting for which it has
 been given and any lawfully adjourned meeting thereof, except that in no
 event will proxy be valid for more that ninety (90) days from the date of the
 first meeting for which it was given.
-d. Every proxy shall be revocable at the pleasure of the shareholder executing it.
-e. The authority of the holder of a proxy to act shall not be revoked by the
+
+d.
+Every proxy shall be revocable at the pleasure of the shareholder executing it.
+
+e.
+The authority of the holder of a proxy to act shall not be revoked by the
 incompetence or death of the shareholder who executed the proxy unless,
 before the authority is exercised, written notice of an adjudication of such
 incompetence or of such death is received by the Corporation officer
 responsible for maintaining the list of shareholders.
 
+7.11 Action of Sharehoider Without a Meeting:
 
-11
-
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 593
-
-7.11
-Action of Sharehoider Without a Meeting:
-a. Any action required by law, these By-Laws, or the Articles of Incorporation of
+a.
+Any action required by law, these By-Laws, or the Articles of Incorporation of
 this Corporation to be taken at any annual or special meeting of shareholders
 of the Corporation, or any action which may be taken at any annual or special
 meeting of such shareholders, may be taken without a meeting, without prior
@@ -667,9 +777,7 @@ taken, shall be signed by the holders of outstanding stock having not less that
 the minimum number of votes that would be necessary to authorize or take  ## "minumum number"?
 such action.
 
-
-ARTICLE VIII
-BOOKS AND RECORDS
+ARTICLE VIII BOOKS AND RECORDS
 
 8.1
 The Corporation shall keep correct and complete books and records of account and
@@ -677,156 +785,155 @@ shall keep minutes of the proceedings of its shareholders, Directors and committ
 of directors upon the terms and conditions provided by law, and shall be available for  ## of SH?
 inspection by shareholders, or their authorized representatives, and board members
 at a reasonable time.
-a The Corporation shall retain these minutes and records for a period of not
+
+a.
+The Corporation shall retain these minutes and records for a period of not
 less than seven (7) years. 723.078(2) (e).
-b. All persons who control or disburse funds of the association shall be bonded
+
+b.
+All persons who control or disburse funds of the association shall be bonded
 in the principal sum of not less than $10,000.00 for each person.
-c. The Association shall bear the cost of bonding, unless otherwise provided by
+
+c.
+The Association shall bear the cost of bonding, unless otherwise provided by
 contract between the association and an independent management company.
 
-
-ARTICLE IX
-DIVIDENDS
+ARTICLE IX DIVIDENDS
 
 9
 The directors may from, time to time declare, and the Corporation may pay, dividends
 on its outstanding shares upon terms and conditions provided by law.
 
-
-ARTICLE X
-FISCAL YEAR
+ARTICLE X FISCAL YEAR
 
 10
 The fiscal year of the Corporation shall begin on the first day of January in each year.
 
-
-ARTICLE XI
-CORPORATE SEAL
+ARTICLE XI CORPORATE SEAL
 
 11
 The Directors shall provide a corporate seal which shall be circular in form and shall
 have inscribed thereon the name of the Corporation, state of incorporation, year of
 incorporation and the words "corporate seal."
 
+ARTICLE XII RULES AND REGUATIONS
 
-12
+12 Rules and Regulations:
 
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 594
-
-ARTICLE XII
-RULES AND REGUATIONS
-
-12
-Rules and Regulations:
-a. As established by the Board of Directors and approved by the shareholders,
+a.
+As established by the Board of Directors and approved by the shareholders,
 are hereby made a part of these By-Laws, and shall bind all shareholders and
 tenants until such time as they are amended.
-b. New rules and regulations may be approved by the vote of a majority of
+
+b.
+New rules and regulations may be approved by the vote of a majority of
 those present and entitled to vote at any meeting at which there is a quorum. ## SH meeting
 
 
-ARTICLE XIII
-AMENDMENT
+ARTICLE XIII AMENDMENT
 
-13
-By-Laws may be Repealed or Amended:
-a. These By-laws may be repealed or amended, and new By-laws adopted by
+13 By-Laws may be Repealed or Amended:
+
+a.
+These By-laws may be repealed or amended, and new By-laws adopted by
 approval of two thirds (2/3) of the voting interests represented at an annual
 meeting or special meeting called for that purpose.
 
-b. Text of the proposed change shall be posted at the clubhouse and/ or the
+b.
+Text of the proposed change shall be posted at the clubhouse and/ or the
 office door of the Corporation at least four weeks prior to the called meeting.
 
-c. No By-Laws shall be revised or amended by reference to the title or the
+c.
+No By-Laws shall be revised or amended by reference to the title or the
 number alone.
 
-d. Proposals to amend existing By-Laws shall contain the full text of the by-laws  ## by-laws -> By-Laws
+d.
+Proposals to amend existing By-Laws shall contain the full text of the by-laws  ## by-laws -> By-Laws
 to be amended, new words shall be inserted in the text underlined, and words
 to be deleted shall be lined through with hyphens.
-e. However, if the proposed change is so extensive that the above procedure
+
+e.
+However, if the proposed change is so extensive that the above procedure
 would hinder understanding of proposal, it is not necessary to use the above
 procedure.
-f. Instead, the following notation must appear, immediately preceding the
+
+f.
+Instead, the following notation must appear, immediately preceding the
 proposed:
 
 * "Substantial rewording of By-Law. See by-laws (insert appropriate article  ## * is bullet
-and section number) for present text." 719.106(1) (h).  ## This sentence is italics.
+and section number) for present text." 719.106(1) (h).  ## This sentence is italics. belongs to f.
 
+ARTICLE XIV BUDGET
 
-ARTICLE XIV
-BUDGET
+14.1 Annual Budget:
 
-14.1
-Annual Budget:
-a. A proposed annual budget of common expenses shall be prepared by the
+a.
+A proposed annual budget of common expenses shall be prepared by the
 Board of Directors and copies sent to the unit owners at least thirty (30) days
 prior to the meeting at which the budget will be considered.
-b. The meeting shall be open to all unit owners.
 
+b.
+The meeting shall be open to all unit owners.
 
-13
+14.2 Budget Shall Show:
 
-
-
-PINELLAS COUNTY FL OFF. REC. BK 17926 PG 595
-
-14.2
-Budget Shall Show:
-
-a. The budget shall show the amounts budgeted by accounts and expense
+a.
+The budget shall show the amounts budgeted by accounts and expense
 classifications, including but not limited to reserve accounts for capital
 expenditures, deferred maintenance, roof replacement, building painting,
 pavement resurfacing, administration of the cooperative, management fees,
 maintenance, taxes, insurance, security provisions, other expenses, operating
 capital, fees payable to the division.
 
-b. The proposed annual budget of common expenses shall be detailed and shall
+b.
+The proposed annual budget of common expenses shall be detailed and shall
 show the amounts budgeted by accounts and expense classifications,
 including, if applicable, but not limited to, those expenses listed in
 719.504(20).
 
-c. In addition to annual operating expenses, the budget shall include reserve
+c.
+In addition to annual operating expenses, the budget shall include reserve
 accounts for capital expenditures and deferred maintenance for any item for
 which the deferred maintenance expense or replacement costs is greater than
 $10,000.00.
 
-d. These accounts shall include, but not be limited to, roof replacement, building
+d.
+These accounts shall include, but not be limited to, roof replacement, building
 painting, and pavement resurfacing.  ## anything else?
 
-e. The amount to be reserved shall be computed by means of a formula which
+e.
+The amount to be reserved shall be computed by means of a formula which
 is based upon estimated life and estimated replacement costs or deferred
 maintenance expense of each reserve item.
 
-f. The foregoing shall not apply to any budget in which the members of the
+f.
+The foregoing shall not apply to any budget in which the members of the
 association have, by vote of the majority of members present at a duly called
 meeting of the association, determined for a fiscal year to provide no reserves
 or reserves less adequate than required by the foregoing section.
 
-g. If a meeting of the unit owners has been called to determine to provide no
+g.
+If a meeting of the unit owners has been called to determine to provide no
 reserves or reserves less than adequate than required, and such result is not
 attained or quorum is not attained, the reserves as included in the budget
 shall go into effect. S719.106 (1) (j)  ## could add "(2)" to cite
 
-14.3
-Budget Adopted:
-a. The budget shall be adopted at a meeting of the Directors of the Corporation.
-b. The Board of Directors may, in any event, propose a budget to the unit
+14.3 Budget Adopted:
+
+a.
+The budget shall be adopted at a meeting of the Directors of the Corporation.
+
+b.
+The Board of Directors may, in any event, propose a budget to the unit
 owners at a meeting of members or by writing, and if the budget or proposed
 budget is approved by the unit owners at the meeting or by a majority of all
 shareholders in writing, the budget shall be adopted.
-c. If a meeting of the unit owners has been called and a quorum is not attained
+
+c.
+If a meeting of the unit owners has been called and a quorum is not attained
 or a substitute budget is not adopted by the unit owners, the budget adopted
 by the board of directors shall go into effect as scheduled S719.106 (1) (f) (3).
-
-
-14
-
-
-
-
-PINELLAS CO TY FL OFF. FEC. BK 17926 PG 597
 
 14.4
 If the budget adopted by the Board requires assessment against the unit owners in
@@ -834,11 +941,13 @@ any fiscal or calendar year exceeding 115 percent (115%) of such assessments for
 the preceding year, a special meeting of the unit owners shall be held upon written
 application of 10% of the shareholders.
 
-a. Not less than 10 days written notice shall be given to each unit owner, but the
+a.
+Not less than 10 days written notice shall be given to each unit owner, but the
 meeting shall be held within 30 days of delivery of such application to the
 Board.
 
-b. At the special meeting, unit owners may consider and enact a revision of the
+b.
+At the special meeting, unit owners may consider and enact a revision of the
 budget or recall any or all members of the Board and elect their successors.
 S719.106 (1) (e) (2).   ## 719.106(1)(e)2.  has this changed?
 
@@ -854,7 +963,7 @@ computation.
 However, as long as the developer is in control of the board of administration, the
 board shall not impose an assessment for any year greater than 115 percent (115%)
 of the prior fiscal or calendar year's assessment without approval of a majority of all
-shareholders. 719.106(1) (e) (4).
+shareholders. 719.106(1) (e) (4).  ## 4.
 
 14.7
 Within 60 days following the end of the fiscal year the Board shall mail or furnish by
@@ -879,91 +988,84 @@ j. General reserves.
 k. Maintenance reserves.
 l. Depreciation reserves.
 
+ARTICLE XV COSTS AND ASSESSMENTS
 
-ARTICLE XV
-COSTS AND ASSESSMENTS
-
-15.1
-Costs:
- All costs of operating, debt retirement, interests, other expenses and a reserve fund
-
-
-15
-
-
-o
-PINELLAS CO TY FL OFF. FEC. BK 17926 PG 596
-
+15.1 Costs:
+All costs of operating, debt retirement, interests, other expenses and a reserve fund
 shall be shared according to the schedule of Common Assessments established by
 the Board of Directors.  The Schedule of Common Assessments shall not be
 changed except by the written consent of those shareholders affected.  ## First sentence italics.
 
-15.2
-Assessments:
+15.2 Assessments:
 All assessments shall be made monthly in amounts sufficient to provide funds in
 advance for payment of all anticipated current operating expense and for all unpaid
 operating expense previously incurred and collected monthly and shall specify what
 portion is to cover debt retirement and what portion is to cover maintenance and
 other costs.
 
-15.3
-Contingency Fund:
+15.3 Contingency Fund:
 Sufficient funds shall be retained from the monthly payments to set up and maintain
 a contingenccy fund, to be used for other daily expenses.
 
-15.4
-Late Fees:
+15.4 Late Fees:
 The Board may establish and enforce the payment of late fees for assessments not
 paid within five (5) calendar days from their due date.
 
-15.5
-Unpaid Assessments:
+15.5 Unpaid Assessments:
 
-a. The Board of Directors may enforce the payment of assessments, fees
+a.
+The Board of Directors may enforce the payment of assessments, fees
 properly imposed by the Board, and interest that has accrued on such unpaid
 assessments and fees by any method provided by law, including but not
 limited to the filing of a claim of lien, foreclosure of the owner's interest in the
 association and civil suit for damages.
 
-1. The choice of any remedy by the Directors does not constitute an election
+1.
+The choice of any remedy by the Directors does not constitute an election
 or the waiver of any remedy.
 
-2. Any lien established by the Corporation shall also secure reasonable
+2.
+Any lien established by the Corporation shall also secure reasonable
 attorney's fees incurred by the Corporation incident to the collection of the
 rents and assessments for enforcement of such lien.
-3. In any foreclosure, the unit owner shall pay a reasonable rent for the
+
+3.
+In any foreclosure, the unit owner shall pay a reasonable rent for the
 Cooperative parcel.
 
-b. If any assessment is not paid within (30) days after the delinquency date,
+b.
+If any assessment is not paid within (30) days after the delinquency date,
 which shall be set by the Board of Directors, the assessment shall bear
 interest from the date due at the rate of ten (10%) percent per annum.
-1. The association may at any time thereafter bring action to foreclose the
+
+1.
+The association may at any time thereafter bring action to foreclose the
 lien against the shareholder in a like manner as a foreclosure of a
 mortgage on real property, or a suit on the personal obligation against the
 owner.
-2. There shall be added to the amount of such assessment the cost of
+
+2.
+There shall be added to the amount of such assessment the cost of
 preparing and filing the complaint in such action, including reasonable
 attorney's fee.
-3. In the event that a judgment is obtained, such judgment shall include
+
+3.
+In the event that a judgment is obtained, such judgment shall include
 interest on the assessment as provided and a reasonable attorney's fee to
 be fixed by the court, together with costs of the action.
 
+15.6 Subordination to Lien of Mortgages:
 
-16
-
-
-
-PINELLAS CO TY FL OFF. REC. BK 17926 PG 598
-
-15.6
-Subordination to Lien of Mortgages:
-a. The lien of the assessment for which provision is herein made, as well as in
+a.
+The lien of the assessment for which provision is herein made, as well as in
 any other article of these by-laws, shall be subordinate to the lien of any first
 mortgage to a federal or state chartered bank, mortgage company, life
 insurance company, federal or state savings and loan association or real
 estate investment trust which is perfected by law prior to the enforcement of a
 claim of lien for any such unpaid assessment by the association.
-b. Such subordination shall apply only to the assessments which have become
+
+b.
+Such subordination shall apply only to the assessments which have become
 due and payable prior to a sale or transfer of such unit by deed in lieu of
 foreclosure of such unit or pursuant to a decree of foreclosure, and in any
 other proceeding in lieu of foreclosure of such mortgage, provided however,
@@ -971,21 +1073,23 @@ any such unit shall be liable, following such sale, for a prorata share of any
 unpaid assessments against such unit accruing prior to such sale, in common
 with all other shareholders.
 
-c. No sale or transfer shall relieve any shareholder from liability for any
+c.
+No sale or transfer shall relieve any shareholder from liability for any
 assessment thereafter becoming due, nor from the lien of any such
 subsequent assessment.
-d. The written opinion of the association that the lien is subordinate to a
+
+d.
+The written opinion of the association that the lien is subordinate to a
 mortgage shall be dispositive of any question of subordination.
 
-
-ARTICLE XVI
-ARBITRATION
+ARTICLE XVI ARBITRATION
 
 16.1
 Internal disputes among developers, unit owners, associations and their agents and
 assigns shall be subject to voluntary binding arbitration in accordance with 719.1255, ## mitigation?
 Florida Statutes, as the same may be amended from time to time.  ## Entire paragraph italics.
 
+--END--
 
 THIS OOCUMENT IS A CERTIFIED COPY OF THE ORIGINAL BY-
 LAWS OF GOLDEN GATE RESIDENTS ASSOCIATION OF
@@ -1008,5 +1112,3 @@ executed said instrument for the purposes therein expressed.
 
 JANE HOTCHKISS, NOTARY PUBLIC     WITHNESS MY HAND AND OFFICIAL SEAL, this 14th day of
 March, 2013
-
-17
