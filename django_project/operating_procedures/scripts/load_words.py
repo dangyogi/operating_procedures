@@ -5,6 +5,7 @@ import re
 from django.db import transaction
 
 from operating_procedures import models
+from operating_procedures.scripts.sources import *
 
 
 def index_paragraph(paragraph):
@@ -87,54 +88,68 @@ def get_words(text):
 def is_word(w):
     return w and w.isalpha() and len(w) > 1
 
+
+def load_words(version):
+    ver_obj = models.Version.objects.get(id=version)
+    print("loading words for {ver_obj.source!r} {version=}")
+    if ver_obj.wordrefs_loaded:
+        print("ERROR: load_words already run on version", version)
+    else:
+        for item in models.Item.objects.filter(version_id=version):
+            for p in item.paragraph_set.all():
+                print(f"paragraph {item.citation}, {p.body_order}")
+                index_paragraph(p)
+            for t in item.table_set.all():
+                print(f"table {item.citation}, {t.body_order}")
+                for c in t.tablecell_set.all():
+                    index_cell(c)
+        ver_obj.wordrefs_loaded = True
+        ver_obj.save()
+
+
 @transaction.atomic
 def run(*args):
     global words
     words = {}
     if 'help' in args:
         print("load_words help:")
-        print("  manage.py runscript load_words --script-args help")
-        print("    prints this help message")
-        print("  manage.py runscript load_words --script-args test")
+        print("  python manage.py runscript load_words")
+        print("    loads opp_wordref from all words in latest versions of 719, 61B and GG")
+        print("  python manage.py runscript load_words --script-args 719|61b|gg")
+        print("    loads opp_wordref from all words in latest versions of 719, 61B or GG")
+        print("  python manage.py runscript load_words --script-args 'version' version_id")
+        print("    loads opp_wordref from all words in indicated version")
+        print("  python manage.py runscript load_words --script-args test")
         print("    runs test on get_sentences function")
-        print("  manage.py runscript load_words")
-        print("    loads opp_wordref from all words in latest version of chapter 719")
-        print("  manage.py runscript load_words --script-args version_id")
-        print("    loads opp_wordref from all words in indicated version of chapter 719")
+        print("  python manage.py runscript load_words --script-args help")
+        print("    prints this help message")
     elif 'test' in args:
         p = 'All notices of intended conversion given subsequent to the effective date of this part shall be subject to the requirements of ss. 719.606, 719.608, and 719.61. Tenants given such notices shall have a right of first refusal as provided by s. 719.612.'
         for s_offset, s in get_sentences(p):
             print(s_offset, len(s), repr(s))
             for w_offset, w in get_words(s):
                 print("word:", w_offset, s_offset + w_offset, repr(w))
+    elif 'version' in args:
+        version = int(args[-1])
+        load_words(version)
+        print_load_synonyms()
+        print(f"next: python manage.py runscript load_definitions "
+              f"--script-args version {version}")
+    elif args:
+        source = args[0]
+        version = models.Version.latest(Source_map[source])
+        load_words(version)
+        print_load_synonyms()
+        print(f"next: python manage.py runscript load_definitions "
+              f"--script-args {source}")
     else:
-        if args:
-            version = int(args[0])
-            got_arg = True
-        else:
-            version = models.Version.latest('leg.state.fl.us')
-            got_arg = False
-            print("loading version", version)
-        ver_obj = models.Version.objects.get(id=version)
-        if ver_obj.wordrefs_loaded:
-            print("ERROR: load_words already run on version", version)
-        else:
-            for item in models.Item.objects.filter(version_id=version):
-                for p in item.paragraph_set.all():
-                    print(f"paragraph {item.citation}, {p.body_order}")
-                    index_paragraph(p)
-                for t in item.table_set.all():
-                    print(f"table {item.citation}, {t.body_order}")
-                    for c in t.tablecell_set.all():
-                        index_cell(c)
-            ver_obj.wordrefs_loaded = True
-            ver_obj.save()
+        for source in Sources:
+            version = models.Version.latest(source)
+            load_words(version)
+        print_load_synonyms()
+        print(f"next: python manage.py runscript load_definitions")
 
-        print(f"next: python manage.py runscript load_synonyms --script-args synonyms.txt")
-        print("or, if you've already done that:")
-        if got_arg:
-            print(f"next: python manage.py runscript load_definitions "
-                  f"--script-args {version}")
-        else:
-            print(f"next: python manage.py runscript load_definitions")
+def print_load_synonyms():
+    print(f"next: python manage.py runscript load_synonyms")
+    print("or, if you've already done that:")
 

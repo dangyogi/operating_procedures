@@ -19,6 +19,8 @@ class Version(models.Model):
 
     @classmethod
     def latest(cls, source):
+        r'''Returns id of latest version of source.
+        '''
         return cls.objects.filter(source=source).order_by('-upload_date', '-id')[0].id
 
     def as_str(self):

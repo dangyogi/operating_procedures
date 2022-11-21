@@ -2,29 +2,46 @@
 ##
 ## All lines start at column 0 (there is no indenting).
 ##
-##   My comments start with ## (anywhere in the line) to the end of the line.
+## My comments start with ## (anywhere in the line) to the end of the line.
 ##
-##   Items start with:
+## The file is divided into item blocks separated by a blank line.
+##
+## Each item block starts with a single line describing the item, followed by text lines for the
+## paragraph.
+##
+## <item-line>
+## <text-line>
+## <text-line>
+## <text-line>
+##
+## The <item-line> has one of the following formats:
 ##      ARTICLE <roman> <title>
-##      nn.?n? [<title>]  (first N corresponds with <roman> in ARTICLE)
+##      nn?.?n? [<title>]  (first N corresponds with <roman> in ARTICLE)
 ##      a. [<title>]
 ##
 ##      The hierarchy level is N.N.A.N (but there is one N.N.N)
 ##
-##   Anything else is a paragraph.  If the paragraph starts with <, it belongs to the parent
-##   of the current item.
+## The <text-lines> (if any) are the paragraph.  A line of just a single '-' separates
+## paragraphs.  A line with a single '<' separates paragraphs, but also indicates the following
+## paragraph belongs to the parent item.
 ##
-## Document terminates with --END--, starting in column 0.  After that is signature block...
+## Document terminates with --END--, starting in column 0.  After that is the signature block...
+##
+## Cites:
+##
+##   [ S#:]NNN?.NNN ([AN])*
 ##
 
 ARTICLE I OFFICES
 
 1.1
-1. The registered office of the Corporation in the state of Florida shall be located in the
+
+1.  ## This doesn't make sense.  Perhaps instead of 1.1 and 1., it should just be 1?
+The registered office of the Corporation in the state of Florida shall be located in the
 County of Pinellas at:
-
+-
 8201 40th Street North
-
+-
 Pinellas Park, FL 33781-1730
 
 
@@ -74,7 +91,7 @@ business and affairs of this Corporation shall be managed under the direction of
 Board of Directors.
 
 4.2 Qualifications:
-Directors must be shareholders of the Corporation and residents of the
+Directors must be shareholders of the Corporation and residents of the  ## full-time residents?
 park.  The purpose of this provision is to assure the availability of directors to conduct
 the business of the Corporation.
 
@@ -83,6 +100,7 @@ The Shareholders, by majority vote, shall determine the rate of
 compensation, if any, for the Directors and officers.
 
 4.4 Duties of Directors:
+
 a.
 The Directors shall have a fiduciary relationship to the Corporation.
 
@@ -231,7 +249,7 @@ a.
 A special meeting of the shareholders to recall a member or members of
 the Board may be called by ten percent (10%) of the shareholders giving
 notice of the meeting as required for a meeting of the shareholders and
-stating the purpose of the meeting.  S723.078 (2) (1):719.108 (1) (f)
+stating the purpose of the meeting.  S723.078 (2) (1):719.108 (1) (f)  ## 723 still relevent?
 
 b.
 If the recall is approved by the majority of all voting interests by a vote at
@@ -513,7 +531,8 @@ c.
 This restriction on ownership must appear on the face of all stock
 certificates.
 
-d. The Corporation shall be entitled to treat the holder of record of any share as
+d.
+The Corporation shall be entitled to treat the holder of record of any share as
 the holder in fact thereof, and accordingly, will not be bound to recognize any
 equitable or other claim to or interest in such share or the part of any notice
 thereof, except as expressly provided by the laws of this State.
@@ -550,7 +569,7 @@ made against the security.
 
 g.
 Disputes under this paragraph shall be handled as disputes concerning
-security deposits under S83.49 Florida Statutes #719.106.(1) (1).   ## #?
+security deposits under S83.49 Florida Statutes #719.106.(1) (1).   ## #? 106.?(1)
 
 ARTICLE VII MEETING OF SHAREHOLDERS
 
@@ -705,11 +724,12 @@ d.
 If the requirements of this section have not been substantially complied with,
 the meeting, on demand of any shareholder in person or by proxy, shall be
 adjourned until the requirements are complied with.
-
-<If no such demand is made, failure to comply with the requirements of this
+<
+If no such demand is made, failure to comply with the requirements of this
 section shall not affect the validity of any action taken at such meeting.  ## belongs to 7.7
 
 7.8 Sharehoiders Quorum and Voting:
+
 a.
 A majority of the shares entitled to vote, represented in person or by proxy,
 shall constitute a quorum at a meeting of shareholders.
@@ -743,7 +763,7 @@ a.
 Every shareholder entitled to vote at a meeting of shareholders, or a
 shareholder duly authorized attorney-in-fact, may authorize another person or
 persons to act for him or her by proxy to the extent permitted by Section
-719.106 (1) (b) 2 of the Florida Statute (1995) as amended from time to time,
+719.106 (1) (b) 2 of the Florida Statute (1995) as amended from time to time,  ## (b)2.
 but no one shall be authorized to hold more than 5 proxies.
 
 b.
@@ -788,7 +808,7 @@ at a reasonable time.
 
 a.
 The Corporation shall retain these minutes and records for a period of not
-less than seven (7) years. 723.078(2) (e).
+less than seven (7) years. 723.078(2) (e).  ## 723 still relevent?
 
 b.
 All persons who control or disburse funds of the association shall be bonded
@@ -860,7 +880,7 @@ procedure.
 f.
 Instead, the following notation must appear, immediately preceding the
 proposed:
-
+-
 * "Substantial rewording of By-Law. See by-laws (insert appropriate article  ## * is bullet
 and section number) for present text." 719.106(1) (h).  ## This sentence is italics. belongs to f.
 

@@ -82,7 +82,7 @@ def get(url):
     return soup
 
 def scrape_61B(trace=False):
-    r'''Expectes a list of chapters.  Passes all 75-79 chapters to process_61B_chapter.
+    r'''Expects a list of chapters.  Passes all 75-79 chapters to process_61B_chapter.
     '''
     global item_order
     item_order = 1
@@ -1214,20 +1214,20 @@ def run(*args):
     global source, version_obj
     if not args or 'help' in args:
         print("scrape_html help")
-        print("  manage.py runscript scrape_html --script-args help")
-        print("    prints this help message")
-        print("  manage.py runscript scrape_html --script-args doctests")
-        print("    run doctests on this module")
-        print("  manage.py runscript scrape_html --script-args 719")
+        print("  python manage.py runscript scrape_html --script-args 719")
         print("    - loads chapter 719 as a new version with today's date")
-        print("    - you must also runscript load_words --script-args <version_id>")
+        print("    - you must also runscript load_words --script-args 719")
         print("      to index all of the words in this new version")
-        print("  manage.py runscript scrape_html --script-args 61b")
+        print("  python manage.py runscript scrape_html --script-args 61b")
         print("    - loads chapter 61B-75 to 79 as a new version with today's date")
-        print("    - you must also runscript load_words --script-args <version_id>")
+        print("    - you must also runscript load_words --script-args 61b")
         print("      to index all of the words in this new version")
-        print("  manage.py runscript scrape_html --script-args trace")
+        print("  python manage.py runscript scrape_html --script-args trace")
         print("    turns trace on for the load")
+        print("  python manage.py runscript scrape_html --script-args doctests")
+        print("    run doctests on this module")
+        print("  python manage.py runscript scrape_html --script-args help")
+        print("    prints this help message")
     elif 'doctests' in args:
         import doctest
         print(f"{doctest.testmod()=}")
@@ -1245,7 +1245,7 @@ def run(*args):
         source = '719'
         scrape_719('trace' in args)
         print("Chapter 719 loaded as version", version_obj.id)
-        print(f"next: python manage.py runscript load_words --script-args {version_obj.id}")
+        print(f"next: python manage.py runscript load_words --script-args {source}")
     elif '61b' in [s.lower() for s in args]:
         print(f"run {args=}")
         version_obj = models.Version(source=casetext_domain, url=casetext_61B)
@@ -1253,5 +1253,5 @@ def run(*args):
         source = '61b'
         scrape_61B('trace' in args)
         print("Chapters 61B-75 through 79 loaded as version", version_obj.id)
-        print(f"next: python manage.py runscript load_words --script-args {version_obj.id}")
+        print(f"next: python manage.py runscript load_words --script-args {source}")
 

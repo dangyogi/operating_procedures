@@ -1,29 +1,52 @@
 # show_outline.py
 
 from operating_procedures import models
+from operating_procedures.scripts.sources import *
 
 
 def run(*args):
     if 'help' in args:
         print("show_outline help:")
-        print("  manage.py runscript show_outline --script-args help")
-        print("    prints this help message")
-        print("  manage.py runscript show_outline")
-        print("    prints outline for latest version of chapter 719")
-        print("  manage.py runscript show_outline --script-args version_id")
-        print("    prints outline for specified version of chapter 719")
+        print("  python manage.py runscript show_outline")
+        print("    Prints outline for latest version of chapter 719.")
+        print("  python manage.py runscript show_outline --script-args source")
+        print("    Prints outline for latest version of source.")
+        print("  python manage.py runscript show_outline --script-args version version_id")
+        print("    Prints outline for specified version.")
+        print("  python manage.py runscript show_outline --script-args help")
+        print("    Prints this help message.")
     else:
-        if args:
-            version = int(args[0])
+        if 'version' in args:
+            version = int(args[args.index('version') + 1])
+        elif args:
+            version = models.Version.latest(Source_map[args[0]])
         else:
-            version = models.Version.latest('leg.state.fl.us')
+            version = models.Version.latest(Source_719)
         path = []
-        for item in models.Item.objects.filter(version_id=version,
-                                               has_title=True).order_by('item_order'):
+
+        def print_item(item):
+            if item.has_title:
+                print(f"{'  ' * len(path)}{item.number}: {item.get_title().text}")
+            else:
+                print(f"{'  ' * len(path)}{item.number}:")
+
+        def adjust_path_and_print(item):
+            nonlocal path
             if item.parent_id is None:
-                path = [item.id]
+                path = []
+                print_item(item)
+                path.append(item.id)
+            elif item.parent_id not in path:
+                adjust_path_and_print(item.parent)
+                print_item(item)
+                path.append(item.id)
             else:
                 i = path.index(item.parent_id)
-                path[i + 1:] = [item.id]
-            print(f"{'  ' * (len(path) - 1)}{item.number}: {item.get_title().text}")
+                del path[i + 1:]
+                print_item(item)
+                path.append(item.id)
+
+        for item in models.Item.objects.filter(version_id=version,
+                                               has_title=True).order_by('item_order'):
+            adjust_path_and_print(item)
 
