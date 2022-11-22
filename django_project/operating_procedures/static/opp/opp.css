@@ -35,6 +35,16 @@ div {
   padding-left: 12pt;
 } 
 
+table {
+  border-collapse: collapse;
+}
+
+td {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
 /* tooltips */
 
 .tooltip {

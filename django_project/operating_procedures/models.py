@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 from itertools import chain, product
-from operator import attrgetter
+from operator import attrgetter, methodcaller
 
 from operating_procedures.chunks import (
     chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table
@@ -94,29 +94,6 @@ class Item(models.Model):
                                     name='unique_item'),
         ]
 
-''' FIX: Delete
-class Note(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    note_order = models.PositiveSmallIntegerField()
-    type = models.CharField(max_length=50) # 'History', 'Note', 'Law Implemented', etc
-    note_number = models.PositiveSmallIntegerField(null=True, blank=True)
-    text = models.CharField(max_length=200)
-
-    def as_str(self):
-        if self.note_number is None:
-            return f"<Note({self.id}) {self.type} {self.item.as_str()!r}>"
-        return f"<Note({self.id}) {self.type} {self.number} {self.item.as_str()!r}>"
-
-    def __repr__(self):
-        return self.as_str()
-
-    class Meta:
-        ordering = ['note_order']
-        constraints = [
-            models.UniqueConstraint(fields=['item', 'note_order'],
-                                    name='unique_note'),
-        ]
-'''
 
 class Paragraph(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, blank=True)
@@ -156,6 +133,7 @@ class Paragraph(models.Model):
             models.UniqueConstraint(fields=['item', 'body_order'],
                                     name='unique_paragraph'),
         ]
+
 
 class Annotation(models.Model):
     paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE)

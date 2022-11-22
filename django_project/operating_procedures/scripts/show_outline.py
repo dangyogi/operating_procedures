@@ -25,10 +25,14 @@ def run(*args):
         path = []
 
         def print_item(item):
-            if item.has_title:
-                print(f"{'  ' * len(path)}{item.number}: {item.get_title().text}")
+            if item.parent_id is None:
+                number = item.citation
             else:
-                print(f"{'  ' * len(path)}{item.number}:")
+                number = item.number
+            if item.has_title:
+                print(f"{'  ' * len(path)}{number}: {item.get_title().text}")
+            else:
+                print(f"{'  ' * len(path)}{number}:")
 
         def adjust_path_and_print(item):
             nonlocal path

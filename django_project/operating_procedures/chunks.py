@@ -49,6 +49,7 @@ And finally the item itself!  (only appears in 'items' chunk)
 
 from itertools import groupby
 from operator import attrgetter, methodcaller
+import re
 
 from django.urls import reverse
 from operating_procedures import models
@@ -213,7 +214,7 @@ def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link
 
 
 fl_leg_url_prefix = \
-  f"http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL="
+  "http://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL="
 
 def make_fl_leg_url(citation):
     if '(' in citation:
@@ -232,17 +233,29 @@ def make_fl_leg_url(citation):
     return f"{url_start}Sections/{chapter:04d}.{int(section):02d}.html"
 
 
+flrules_url_prefix = "https://www.flrules.org/gateway/RuleNo.asp?ID="
+
+def make_flrules_url(citation):
+    if '(' in citation:
+        return flrules_url_prefix + citation.upper()[: citation.index('(')]
+    return flrules_url_prefix + citation.upper()
+
+
 def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
     r'''Called by chunkify_text.
     '''
     #print(f"make_chunk({parent_item.as_str()}, {annotation.as_str()}, {text_chunks})")
     if annotation.type == 's_cite':
         citation = annotation.info
-        if citation.startswith('719'):
+        if citation.startswith('719') or citation.startswith('PART ') or \
+           citation.startswith('61B-7') and '5' <= citation[5] <= '9' or \
+           citation.startswith('GG '):
             url = reverse('cite', args=[citation])
-        elif '-' in citation:
+        elif '-' in citation[5:]:
             print("WARNING: Could not make url for '-' in citation:", citation)
             return text_chunks
+        elif re.match(r'[0-9]{1,2}[a-zA-Z][0-9]*-[0-9]', citation):
+            url = make_flrules_url(citation)
         else:
             url = make_fl_leg_url(citation)
         return [chunk('cite', citation=citation, url=url, chunks=text_chunks)]
@@ -284,7 +297,8 @@ def chunk_item(item, with_body=True, def_as_link=False):
                 body_order=item.body_order)
     if item.has_title:
         ans.title = item.get_title().with_annotations()
-    if item.parent_id is None or item.parent.citation.startswith('PART '):
+    if item.parent_id is None or item.parent.citation.startswith('PART '): # or \
+       #item.parent.citation.startswith('61B-') or item.parent.citation.startswith('GG '):
         ans.parent_citation = None
         if item.citation.startswith('719'):
             ans.parent_url = reverse('toc', args=['719'])

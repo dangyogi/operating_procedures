@@ -53,7 +53,7 @@ def process_item(line, item_order, trace):
         if number.startswith('ARTICLE '):
             # top-level item
             #print(f"process_item got ARTICLE {line=!r}")
-            citation = number
+            citation = "GG " + number
             History = []
         elif '.' not in number or number.endswith('.'):
             # 1 or 1.
@@ -96,7 +96,7 @@ def process_item(line, item_order, trace):
                 assert History[-1][0].number.startswith('ARTICLE '), \
                        f"Expected ARTICLE in History, got {History[-1][0].number=}"
                 # We're decending down another level
-                citation = number
+                citation = "GG " + number
         else:
             # 1.1
             #print(f"process_item got n.n {number} -- at level {len(History)} {line=!r}")
@@ -105,7 +105,7 @@ def process_item(line, item_order, trace):
                 #print(f"process_item popping {History[-1][0].citation=!r}")
                 set_num_elements(trace)
             number += '.'
-            citation = number
+            citation = "GG " + number
 
         if History:
             History[-1][1] += 1
@@ -237,20 +237,20 @@ def create_cites(citation, para, text, trace):
         cite2 = cite.replace(' ', '')
         cite3 = cite2.replace('.(', '(')
         while cite3.count('(') > 2:
-            cite3 = ''.join(cite2.rsplit('(', 1))   # delete last '('
+            cite3 = ''.join(cite3.rsplit('(', 1))   # delete last '('
             cite3 = '.'.join(cite3.rsplit(')', 1))  # replace last ')' with '.'
         if '(' in cite3 and not cite3.endswith(')') and not cite3.endswith('.'):
             cite3 += '.'
         if trace and cite2 != cite3:
             print(f"create_cites: {cite2} -> {cite3}")
         if trace:
-            print(f"  create_cites: {cite2=!r} at {start}")
+            print(f"  create_cites: {cite3=!r} at {start}")
         else:
             models.Annotation.objects.create(paragraph=para,
                                              type='s_cite',
                                              char_offset=start,
                                              length=len(cite),
-                                             info=cite2)
+                                             info=cite3)
 
     if trace and targets:
         print(f"create_cites {citation} NOTICE done: {targets=}")

@@ -408,8 +408,9 @@ def process_61B_a(a, char_offset, citation):
         else:
             print(f"process_61B_a {citation} WARNING: child {i}, {child.prettify()}, IGNORED")
     def create_annotation(para):
-        models.Annotation(paragraph=para, type='link', char_offset=char_offset, length=len(ans),
-                          info=a['href']).save()
+        models.Annotation.objects.create(paragraph=para, type='link',
+                                         char_offset=char_offset, length=len(ans),
+                                         info=a['href'])
     return ans, create_annotation
 
 
@@ -670,6 +671,7 @@ cite_hyphen_re = re.compile(r"""
           re.VERBOSE)
 
 def create_s_cites(para, text, trace):
+    trace = True
     if trace:
         if para.item:
             citation = para.item.citation
@@ -723,8 +725,9 @@ def create_s_cites(para, text, trace):
                 if current:
                     if trace:
                         print(f"    create_s_cites: last cite {cite=!r} {current=!r} at {start}")
-                    models.Annotation(paragraph=para, type='s_cite', char_offset=start,
-                                      length=len(cite), info=current).save()
+                    models.Annotation.objects.create(paragraph=para, type='s_cite',
+                                                     char_offset=start, length=len(cite),
+                                                     info=current)
                 break
             elif comma < 0 or 0 <= and_offset < comma:
                 # and comes first
@@ -736,8 +739,9 @@ def create_s_cites(para, text, trace):
                 if current:
                     if trace:
                         print(f"    create_s_cites: and cite {cite=!r} {current=!r} at {start}")
-                    models.Annotation(paragraph=para, type='s_cite', char_offset=start,
-                                      length=len(cite), info=current).save()
+                    models.Annotation.objects.create(paragraph=para, type='s_cite',
+                                                     char_offset=start, length=len(cite),
+                                                     info=current)
                 start = and_offset + 3
             else:
                 # comma comes first
@@ -749,8 +753,9 @@ def create_s_cites(para, text, trace):
                 if current:
                     if trace:
                         print(f"    create_s_cites: ',' cite {cite=!r} {current=!r} at {start}")
-                    models.Annotation(paragraph=para, type='s_cite', char_offset=start,
-                                      length=len(cite), info=current).save()
+                    models.Annotation.objects.create(paragraph=para, type='s_cite',
+                                                     char_offset=start, length=len(cite),
+                                                     info=current)
                 start = comma + 1
     if targets:
         print(f"  create_s_cites {citation} {para.body_order=} NOTICE done: {targets=}")
@@ -769,6 +774,8 @@ def combine(a, b):
        ('123.456', '123.456')
        >>> combine('987.654', '61B-75.456 (1)')
        ('61B-75.456(1)', '61B-75.456(1)')
+       >>> combine('719.104(2)(a)9.', '719.106(1)(j)2.')
+       ('719.106(1)(j)2.', '719.106(1)(j)2.')
        >>> combine('987.654(6)(x)4.y.', '.456(1)')
        ('987.456(1)', '987.456(1)')
        >>> combine('987.654(6)(x)4.y.', ' ( 1)')
@@ -804,6 +811,8 @@ def combine1(a, b):
     if not b:
         return b
     try:
+        if b.startswith('719') or b.startswith('61B-7'):
+            return b
         if b.startswith('.'):
             return a[:a.index('.')] + b
         if b.startswith('('):
@@ -951,8 +960,8 @@ def create_note(parent, body_order, text, prefix_len=None, type=None, info=None)
     elif prefix_len is None:
         prefix_len = len(text)
     para = create_paragraph(text, body_order, parent, index=(type not in ('citeAs', 'history')))
-    models.Annotation(paragraph=para, type=type, char_offset=0, length=prefix_len, info=info) \
-          .save()
+    models.Annotation.objects.create(paragraph=para, type=type, char_offset=0, length=prefix_len,
+                                     info=info)
 
 def get_string(tag, de_emsp=False, ignore_emdash=False, allow_p=False):
     span = []
@@ -1020,8 +1029,9 @@ def get_body(tag, parent=None, allow_title=True, skip=0, strip=0, trace=False):
                     m = ss_cite_re.match(text, offset)
                     if not m:
                         m = word_re.match(text, offset)
-                models.Annotation(paragraph=p, type=type, char_offset=offset,
-                                  length=m.end() - offset, info=info).save()
+                models.Annotation.objects.create(paragraph=p, type=type,
+                                                 char_offset=offset, length=m.end() - offset,
+                                                 info=info)
             annotations = []
             current_span = []
 
@@ -1238,6 +1248,12 @@ def run(*args):
                 print(f"search failed for {s!r}")
             else:
                 print(f"search matched {s=!r} with {m.group()=!r}")
+        for s in 'Subsections 61B-76.006(6), (8), F.A.C.', 'Section 719.301(4)(a), F.S.':
+            m = fac_cite_re.search(s)
+            if m is None:
+                print(f"search failed for {s!r}")
+            else:
+                print(f"search matched {s=!r} with {m.group()=!r} {m.group(1)=!r}")
     elif '719' in args:
         print(f"run {args=}")
         version_obj = models.Version(source=fl_leg_domain, url=chapter_719)
