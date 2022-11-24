@@ -122,7 +122,7 @@ td {
   font-style: italic;
 }
 
-.note, .law_implemented, .specific_authority, .rulemaking_authority, .history {
+.note, .law_implemented, .specific_authority, .rulemaking_authority, .history, .references {
   font-size: smaller;
 }
 

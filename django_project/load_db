@@ -1,0 +1,36 @@
+# load_db
+
+set -e
+
+echo deleting db.sqlite3
+rm -f db.sqlite3
+
+echo deleting migrations 0001_initial.py
+rm -f operating_procedures/migrations/0001_initial.py
+
+echo makemigrations
+python manage.py makemigrations > logs/makemigrations.log 2>&1
+
+echo migrate
+python manage.py migrate > logs/migrate.log 2>&1
+
+echo scrape_html 719
+python manage.py runscript scrape_html --script-args 719 > logs/719.log 2>&1
+
+echo scrape_html 61B
+python manage.py runscript scrape_html --script-args 61b > logs/61B.log 2>&1
+
+echo scrape_bylaws
+python manage.py runscript scrape_bylaws > logs/GG.log 2>&1
+
+echo load_words
+python manage.py runscript load_words > logs/words.log 2>&1
+
+echo load_synonyms
+python manage.py runscript load_synonyms > logs/synonyms.log 2>&1
+
+echo load_definitions
+python manage.py runscript load_definitions > logs/definitions.log 2>&1
+
+echo Done!
+

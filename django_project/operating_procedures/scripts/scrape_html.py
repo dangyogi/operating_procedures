@@ -298,8 +298,11 @@ def process_61B_paragraph(parent_item, container, body_order):
            f"got {bulletid.name=}, {tuple(bulletid.attrs.keys())=}"
     number = get_string(bulletid)
     citation = parent_item.citation + number
+    trace = False
+    trace = citation == '61B-76.005 (1)'
     text = container.contents[1]
     title = None
+    rest = None
     i = -1
     start = 0
     if isinstance(text, NavigableString):
@@ -311,25 +314,30 @@ def process_61B_paragraph(parent_item, container, body_order):
                 if rest:
                     if rest[0].isupper() or \
                        rest[0] in '"\u201c\u201f\u201d\u301d\u301e' and rest[1].isupper():
-                        #print(f"{citation=}: '{title=}'")
+                        if trace:
+                            print(f"{citation=}: '{title=}'")
                         start = 1
                         break
                 elif len(container.contents) > 1:
-                    #print(f"{citation=}: no body, '{title=}'")
+                    if trace:
+                        print(f"{citation=}: no body, '{title=}'")
                     start = 1
                     break
             else:
-                #if i < 0:
-                #    print(f"{citation=}: no title, no '.' found in '{str(text)[:70]}'")
-                #else:
-                #    print(f"{citation=}: no title, sentence too long in "
-                #          f"'{str(text)[:min(i + 1, 70)]}'")
+                if trace:
+                    if i < 0:
+                        print(f"{citation=}: no title, no '.' found in '{str(text)[:70]}'")
+                    else:
+                        print(f"{citation=}: no title, sentence too long in "
+                              f"'{str(text)[:min(i + 1, 70)]}'")
                 title = None
                 rest = str(text).strip()
                 start = 1
                 break
 
-    #print(f"process_61B_paragraph {citation=}, {number=}, {title=}:")
+    if trace:
+        print(f"process_61B_paragraph {citation=}, {number=}, {title=}, "
+              f"{len(container.contents)=}:")
     item = create_item(citation, number, title, parent_item, body_order)
     child_body_order = 0
     text = ''
@@ -340,7 +348,7 @@ def process_61B_paragraph(parent_item, container, body_order):
         nonlocal text, post_fns, child_body_order
         if text:
             child_body_order += 1
-            para = create_paragraph(text, child_body_order, item)
+            para = create_paragraph(text, child_body_order, item, trace=trace)
             for post_fn in post_fns:
                 post_fn(para)
             text = ''
@@ -348,25 +356,35 @@ def process_61B_paragraph(parent_item, container, body_order):
 
     for child in container.contents[1:]:
         if isinstance(child, NavigableString):
-            if child_body_order == 0 and title is not None:
+            if rest is not None:
                 text = text_cat(text, rest)
+                if trace:
+                    print(f"  process_61B_paragraph {citation} got rest child {len(rest)=}")
+                rest = None
             else:
                 text = text_cat(text, str(child))
-            #print(f"  process_61B_paragraph {citation} got text child {len(text)=}")
+                if trace:
+                    print(f"  process_61B_paragraph {citation} got text child {len(text)=}")
         elif child.name == 'p':
             check_text()
-            #print(f"  process_61B_paragraph {citation} got 'p' {child.attrs=}")
+            if trace:
+                print(f"  process_61B_paragraph {citation} got <p> {child.attrs=}")
             child_body_order += process_p_tag(item, child_body_order, child)
         elif child.name == 'span':
-            text = text_cat(text, process_61B_span(child, citation))
+            span = process_61B_span(child, citation)
+            text = text_cat(text, span)
+            if trace:
+                print(f"  process_61B_paragraph {citation} got <span> with {span=}")
         elif child.name == 'a':
-            #print(f"  process_61B_paragraph {citation} got 'a' {child.attrs=}")
+            if trace:
+                print(f"  process_61B_paragraph {citation} got <a> {child.attrs=}")
             a_text, post_fn = process_61B_a(child, len(text), citation)
             text = text_cat(text, a_text)
             post_fns.append(post_fn)
         elif child.name == 'section':
             check_text()
-            #print(f"  process_61B_paragraph {citation} got 'section' child") 
+            if trace:
+                print(f"  process_61B_paragraph {citation} got <section> child") 
             if child.attrs:
                 print(f"  process_61B_paragraph {citation} WARNING got unexpected attrs in "
                       f"section {child.attrs=}")
@@ -376,7 +394,8 @@ def process_61B_paragraph(parent_item, container, body_order):
             print(f"  process_61B_paragraph {citation} got unknown child name {child.name=} "
                   f"{child.attrs=}, IGNORED")
     check_text(0)
-    #print(f"process_61B_paragraph {citation} setting num_elements={child_body_order}")
+    if trace:
+        print(f"process_61B_paragraph {citation} setting num_elements={child_body_order}")
     set_num_elements(item, child_body_order)
 
 
@@ -671,19 +690,19 @@ cite_hyphen_re = re.compile(r"""
           re.VERBOSE)
 
 def create_s_cites(para, text, trace):
-    trace = True
-    if trace:
-        if para.item:
-            citation = para.item.citation
-        else:
-            citation = para.cell.table.item.citation
-        targets = [(m.group(), m.start(), m.end())
-                   for m in re.finditer(r'719(\.[0-9]+)?|61[bB](-[0-9]+(\.[0-9]+)?)?', text)]
-        if targets:
-            for i in range(len(targets) - 1):
-                if targets[i][1] > targets[i+1][1]:
-                    print(f"create_s_cites {citation} WARNING {targets=} out of order")
-            #print(f"create_s_cites {citation} {para.body_order=} {targets=}")
+    #trace = True
+    if para.item:
+        citation = para.item.citation
+    else:
+        citation = para.cell.table.item.citation
+    targets = [(m.group(), m.start(), m.end())
+               for m in re.finditer(r'719(\.[0-9]+)?|61[bB](-[0-9]+(\.[0-9]+)?)?', text)]
+    if targets:
+        for i in range(len(targets) - 1):
+            if targets[i][1] > targets[i+1][1]:
+                print(f"create_s_cites {citation} WARNING {targets=} out of order")
+        if trace:
+            print(f"create_s_cites {citation} {para.body_order=} {targets=}")
 
     # record all legal cites (starting with 'ss.' or 's.') in Annotations
     for m in chain.from_iterable(cite_re.finditer(text) for cite_re in cite_re_map[source]):
@@ -694,21 +713,21 @@ def create_s_cites(para, text, trace):
             #    print(f"create_s_cites: {citation} {para.body_order=} NOTICE: "
             #          f"no identifers on {m.group(1)} -- IGNORED")
             continue
-        if trace:
-            full = m.group().strip()
-            if full.startswith('s.') or full.startswith('ss.'):
-                print(f"  create_s_cites {citation} {para.body_order=} full starts with s.")
-            first = None
-            for i, (t_text, t_start, t_end) in enumerate(targets):
-                if start <= t_start and end >= t_end:
-                    if first is None:
-                        first = i
-                    last = i
-            if first is None:
-                print(f"  create_s_cites {citation} {para.body_order=} "
-                      f"got cite {m.group(1)!r} at {start} -- NOTICE: NOT IN TARGETS")
-            else:
-                del targets[first: last + 1]
+        full = m.group().strip()
+        if trace and (full.startswith('s.') or full.startswith('ss.')):
+            print(f"  create_s_cites {citation} {para.body_order=} full starts with s.")
+        first = None
+        for i, (t_text, t_start, t_end) in enumerate(targets):
+            if start <= t_start and end >= t_end:
+                if first is None:
+                    first = i
+                last = i
+        if first is None:
+            print(f"  create_s_cites {citation} {para.body_order=} "
+                  f"got cite {m.group(1)!r} at {start} -- NOTICE: NOT IN TARGETS")
+        else:
+            del targets[first: last + 1]
+            if trace:
                 print(f"  create_s_cites {citation} {para.body_order=} "
                       f"got cite {m.group(1)!r} at {start}")
         previous = None
@@ -829,7 +848,7 @@ def combine1(a, b):
     return b
 
 
-def create_paragraph(text, body_order, item=None, cell=None, index=True, trace=True):
+def create_paragraph(text, body_order, item=None, cell=None, index=True, trace=False):
     assert item or cell
     para = models.Paragraph(item=item, cell=cell, body_order=body_order, text=text)
     para.save()
@@ -1019,7 +1038,7 @@ def get_body(tag, parent=None, allow_title=True, skip=0, strip=0, trace=False):
         nonlocal body_order, current_span, annotations
         if current_span:
             text = ' '.join(current_span)
-            p = create_paragraph(text, body_order, parent)
+            p = create_paragraph(text, body_order, parent, trace=trace)
             body_order += 1
 
             # record annotations
@@ -1111,7 +1130,7 @@ def process_child(parent, child, strip_number, body_order, trace):
     if title:
         if trace:
             print(f"{type}: citation={my_citation} -> {title=}")
-        create_paragraph(title, 0, obj)
+        create_paragraph(title, 0, obj, trace=trace)
         obj.has_title = True
         obj.save()
 

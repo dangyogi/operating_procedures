@@ -5,6 +5,8 @@ from django.db import models
 from itertools import chain, product
 from operator import attrgetter, methodcaller
 
+from django.db.models import Q
+
 from operating_procedures.chunks import (
     chunkify_text, chunk_item, chunkify_item_body, chunk_paragraph, chunk_table
 )
@@ -81,10 +83,12 @@ class Item(models.Model):
                     raise Annotation.DoesNotExist(f"note {number=} in {self.citation}")
                 i = i.parent
 
-    def get_block(self, with_body=True, def_as_link=False):
-        return chunk_item(self, with_body, def_as_link)
+    def get_block(self, with_body=True, def_as_link=False, with_references=False, top=False,
+                        alone=False):
+        return chunk_item(self, with_body, def_as_link, with_references, top, alone)
 
     def get_body_blocks(self):
+        # FIX: Not used...
         #print(f"{self}.get_body_blocks()")
         return chunkify_item_body(self)
 
@@ -102,7 +106,9 @@ class Paragraph(models.Model):
     text = models.CharField(max_length=4000)
 
     def as_str(self):
-        return f"<Paragraph({self.id}) {self.item.as_str()} {self.text[:25]!r}>"
+        if self.item_id is not None:
+            return f"<Paragraph({self.id}) {self.item.as_str()} {self.text[:25]!r}>"
+        return f"<Paragraph({self.id}) {self.cell.as_str()} {self.text[:25]!r}>"
 
     def __repr__(self):
         return self.as_str()
@@ -114,7 +120,7 @@ class Paragraph(models.Model):
             return self.item
         return self.cell.table.item
 
-    def get_block(self, wordrefs=(), def_as_link=False):
+    def get_block(self, wordrefs=(), def_as_link=False, with_references=False):
         return chunk_paragraph(self, wordrefs=wordrefs, def_as_link=def_as_link)
 
     def with_annotations(self, wordrefs=(), def_as_link=False):
@@ -131,7 +137,9 @@ class Paragraph(models.Model):
         ordering = ['body_order']
         constraints = [
             models.UniqueConstraint(fields=['item', 'body_order'],
-                                    name='unique_paragraph'),
+                                    name='unique_paragraph_in_item'),
+            models.UniqueConstraint(fields=['cell', 'body_order'],
+                                    name='unique_paragraph_in_cell'),
         ]
 
 
@@ -146,7 +154,7 @@ class Annotation(models.Model):
     # 'note_ref' -- a footnote reference in the text.  The footnote number is in
     #               info, the footnote itself is in the related Paragraph with a
     #               'note' Annotation with the same footnote number.
-    # 'definition' -- The citation of the definition is in info.
+    # 'definition' -- The item id of the definition is in info.
     # 'link' -- an <a> tag in the sources.  Info is the href.
     #
     # Wordrefs appear to be 'search_highlight' annotations with
@@ -176,8 +184,39 @@ class Annotation(models.Model):
     def __repr__(self):
         return self.as_str()
 
+    @classmethod
+    def get_references(cls, citation, versions, top=False):
+        r'''Returns sorted list of citations referencing `citation`.
+        '''
+        q = cls.objects.filter(Q(paragraph__item__version_id__in=versions)
+                               | Q(paragraph__cell__table__item__version_id__in=versions),
+                               type='s_cite').select_related('paragraph__item')
+        if top:
+            rest = citation.replace(' ', '')
+            citations = []
+            while True:
+                rdot = rest.rfind('.', 0, -1)
+                pdot = rest.rfind('(', 0, -1)
+                if pdot < 0 and rdot < 0:
+                    if not citations:
+                        citations.append(rest)
+                    break
+                citations.append(rest)
+                rest = rest[: max(pdot, rdot)]
+            print(f"get_references {citation=}, {citations=}")
+            q2 = q.filter(info__in=citations)
+        else:
+            q2 = q.filter(info=citation)
+        ans = sorted(set(a.paragraph.parent_item().citation for a in q2))
+        print(f"get_references {citation=} -> {ans}")
+        return ans
+
     class Meta:
         ordering = ['char_offset']
+        indexes = [
+            models.Index(fields=['type', 'info']),
+        ]
+
 
 class Table(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -190,7 +229,7 @@ class Table(models.Model):
     def __repr__(self):
         return self.as_str()
 
-    def get_block(self, def_as_link=False):
+    def get_block(self, def_as_link=False, with_references=False):
         return chunk_table(self, def_as_link)
 
     class Meta:
@@ -204,6 +243,12 @@ class TableCell(models.Model):
     row = models.PositiveSmallIntegerField()
     col = models.PositiveSmallIntegerField()
   # text is in Paragraph that points back to this TableCell
+
+    def as_str(self):
+        return f"<TableCell({self.id}) {self.table.as_str()} row={self.row} col={self.col}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     def get_blocks(self, def_as_link=False):
         return list(map(methodcaller('get_block', def_as_link=def_as_link),
@@ -244,6 +289,11 @@ class Word(models.Model):
         '''
         return Synonym.get_synonyms(self.id)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['text']),
+        ]
+
 class Synonym(models.Model):
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
     synonym = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='+')
@@ -283,6 +333,12 @@ class WordRef(models.Model):
     word_number = models.PositiveSmallIntegerField()
     char_offset = models.PositiveSmallIntegerField()
     length = models.PositiveSmallIntegerField()
+
+    def as_str(self):
+        return f"<WordRef({self.id}) {self.paragraph.as_str()}>"
+
+    def __repr__(self):
+        return self.as_str()
 
     def get_next_word(self):
         #print(f"get_next_word at {self.paragraph_id=} {self.sentence_number=} "

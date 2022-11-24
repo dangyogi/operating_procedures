@@ -14,14 +14,15 @@ Tags for text chunks (aka "text-chunks" in this description):
     'note_ref': term<[text-chunk]>, note<string>
     'definition': term<[text-chunk]>, definition<[block]> (definition could have items)
     'definition_link': term<[text-chunk]>, link=<url>
-    'search_term': term<text-chunk>, word_group_number<int>
-    'link': term<text-chunk>, href=<url>
-    'citeAs': term<text-chunk>
-    'note': term<text-chunk>, number=<str>
-    'law_implemented': term<text-chunk>
-    'specific_authority': term<text-chunk>
-    'rulemaking_authority': term<text-chunk>
-    'history': term<text-chunk>
+    'search_term': term<[text-chunk]>, word_group_number<int>
+    'link': term<[text-chunk]>, href=<url>
+    'citeAs': term<[text-chunk]>
+    'note': term<[text-chunk]>, number=<str>
+    'law_implemented': term<[text-chunk]>
+    'specific_authority': term<[text-chunk]>
+    'rulemaking_authority': term<[text-chunk]>
+    'history': term<[text-chunk]>
+    'references': term<[text-chunk]>
 
 Tags for larger blocks of text:
     'items': items<[item]>
@@ -29,8 +30,8 @@ Tags for larger blocks of text:
     'paragraph': chunks<[text-chunk]>
                  body_order<int>
                  type<str>      # None, 'note', 'law_implemented',
-                                # 'specific_authority', 'rulemaking_authority',
-                                # or 'history'
+                                # 'specific_authority', 'rulemaking_authority', 'history'
+                                # or 'references'
     'table': has_header<bool>
              rows<[[[block]]]>  # list of rows,
                                 # each row a list of columns,
@@ -41,8 +42,9 @@ Tags for larger blocks of text:
 And finally the item itself!  (only appears in 'items' chunk)
     'item': citation<string>
             number<string>
-            url<string>
+            alone<bool>
             title<[text-chunk]> (may be None),
+            url<string>
             body<[block]> (could have items)
             body_order<int>
 '''
@@ -53,10 +55,12 @@ import re
 
 from django.urls import reverse
 from operating_procedures import models
+from operating_procedures.scripts.sources import *
 
 
-little_stuff = ('note', 'law_implemented', 'specific_authority',
-                'rulemaking_authority', 'history')
+
+Little_stuff = ('note', 'law_implemented', 'specific_authority',
+                'rulemaking_authority', 'history', 'references')
 
 class chunk:
     r'''These represent strings of text, as well as larger blocks of text.
@@ -150,7 +154,7 @@ def chunkify_text(parent_item, text, annotations, start=0, end=None, def_as_link
             assert my_end <= end
 
             if my_annotation.type == 'definition' and \
-               my_annotation.info == parent_item.citation:
+               int(my_annotation.info) == parent_item.id:
                 del annotations[0]
                 if trace:
                     print(f"{' ' * 2 * ct_depth}!make_annotation: "
@@ -264,15 +268,14 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
                       note=parent_item.get_note(annotation.info),
                       term=text_chunks)]
     if annotation.type == 'definition':
+        def_item = models.Item.objects.get(id=int(annotation.info))
         if def_as_link:
             return [chunk('definition_link', term=text_chunks,
-                          link=reverse('cite', args=[annotation.info]))]
+                          link=reverse('cite', args=[def_item.citation]))]
         else:
             return [chunk('definition', term=text_chunks,
                           # FIX: getting definition, calling chunkify_item_body
-                          definition=chunkify_item_body(
-                                       models.Item.objects.get(citation=annotation.info),
-                                       def_as_link=True))]
+                          definition=chunkify_item_body(def_item, def_as_link=True))]
     if annotation.type == 'link':
         return [chunk('link', term=text_chunks, href=annotation.info)]
     if annotation.type == 'search_highlight':
@@ -286,11 +289,13 @@ def make_chunk(parent_item, annotation, text_chunks, def_as_link=False):
         raise AssertionError(f"Unknown annotation type {annotation.type!r}")
 
 
-def chunk_item(item, with_body=True, def_as_link=False):
+def chunk_item(item, with_body=True, def_as_link=False, with_references=False, top=False,
+                     alone=False):
     #print(f"chunk_item({item.as_str()}, {with_body=}, {def_as_link=})")
     ans = chunk('item',
                 citation=item.citation,
                 number=item.number,
+                alone=alone,
                 title=None,
                 url=reverse('cite', args=[item.citation]),
                 body=[],
@@ -300,7 +305,7 @@ def chunk_item(item, with_body=True, def_as_link=False):
     if item.parent_id is None or item.parent.citation.startswith('PART '): # or \
        #item.parent.citation.startswith('61B-') or item.parent.citation.startswith('GG '):
         ans.parent_citation = None
-        if item.citation.startswith('719'):
+        if item.citation.startswith('719') or item.citation.startswith('PART '):
             ans.parent_url = reverse('toc', args=['719'])
         elif item.citation.startswith('61B'):
             ans.parent_url = reverse('toc', args=['61B'])
@@ -310,15 +315,32 @@ def chunk_item(item, with_body=True, def_as_link=False):
         ans.parent_citation = item.parent.citation
         ans.parent_url = reverse('cite', args=[item.parent.citation])
     if with_body:
-        ans.body = chunkify_item_body(item, def_as_link=def_as_link)
+        ans.body = chunkify_item_body(item, def_as_link=def_as_link,
+                                            with_references=with_references)
+    if with_references:
+        versions = [models.Version.latest(source) for source in Sources]
+        references = models.Annotation.get_references(item.citation, versions, top=top)
+        text_chunks = [chunk('references', term=[chunk('text', text='References:')]),
+                       chunk('text', text=' ')]
+        for i, r in enumerate(references):
+            if i:
+                text_chunks.append(chunk('text', text=', '))
+            text_chunks.append(chunk('cite', citation=r, url=reverse('cite', args=[r]),
+                                             chunks=[chunk('text', text=r)]))
+        if len(text_chunks) > 2:
+            ans.body.append(chunk('paragraph', type='references',
+                                  body_order=item.num_elements + 1,
+                                  chunks=text_chunks))
     return ans
 
 
-def chunkify_item_body(item, def_as_link=False):
+def chunkify_item_body(item, def_as_link=False, with_references=False):
     r'''Returns a list of blocks.
     '''
     #print(f"chunkify_item_body({item.as_str()}, {def_as_link=})")
-    items = sorted(map(methodcaller('get_block', def_as_link=def_as_link), item.get_body()),
+    items = sorted(map(methodcaller('get_block', def_as_link=def_as_link,
+                                                 with_references=with_references),
+                       item.get_body()),
                    key=attrgetter('body_order'))
     #print(f"chunkify_item_body: body is {items})")
 
@@ -353,7 +375,7 @@ def chunkify_item_body(item, def_as_link=False):
 
 def chunk_paragraph(paragraph, wordrefs=(), def_as_link=False):
     chunks = paragraph.with_annotations(wordrefs=wordrefs, def_as_link=def_as_link)
-    if chunks[0].tag in little_stuff:
+    if chunks[0].tag in Little_stuff:
         type = chunks[0].tag
         #print("chunk_paragraph got type", type)
     else:

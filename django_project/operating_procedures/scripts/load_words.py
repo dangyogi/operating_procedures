@@ -91,7 +91,7 @@ def is_word(w):
 
 def load_words(version):
     ver_obj = models.Version.objects.get(id=version)
-    print("loading words for {ver_obj.source!r} {version=}")
+    print(f"loading words for {ver_obj.source!r} {version=}")
     if ver_obj.wordrefs_loaded:
         print("ERROR: load_words already run on version", version)
     else:

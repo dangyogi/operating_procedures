@@ -26,4 +26,5 @@ urlpatterns = [
     path('cite', views.cite, name='cite'),
     path('cite/<citation>', views.cite, name='cite'),
     path('search/<words>', views.search, name='search'),
+    path('synonyms/<word>', views.synonyms, name='synonyms'),
 ]

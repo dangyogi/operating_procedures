@@ -19,6 +19,8 @@ term_re = re.compile(r'''
 or_re = re.compile(r' +or +')
 
 def annotate(anno_version, definition, base_citation=None):
+    r'''`definition` is an item.
+    '''
     print(f"annotate: {definition.citation} id={definition.id}")
     def_text = definition.paragraph_set.get(body_order=1).text
     assert def_text[0] in ('"', '\u201c'), \
@@ -28,10 +30,12 @@ def annotate(anno_version, definition, base_citation=None):
     terms = or_re.split(terms_text)
     print(f"  {terms=}")
     for term in terms:
-        annotate_term(anno_version, definition.citation, term[1:-1].split(), base_citation)
+        annotate_term(anno_version, definition, term[1:-1].split(), base_citation)
 
-def annotate_term(anno_version, definition_citation, words, base_citation):
-    print(f"annotate_term {anno_version=} {definition_citation=} {words=} {base_citation=}")
+def annotate_term(anno_version, definition, words, base_citation):
+    r'''`definition` is an item.
+    '''
+    print(f"annotate_term {anno_version=} {definition.id=} {words=} {base_citation=}")
     w = words[0]
     first_words = [models.Word.objects.get(id=id)
                    for id in models.Word.lookup_word(w).get_synonyms()]
@@ -68,10 +72,12 @@ def annotate_term(anno_version, definition_citation, words, base_citation):
         else:
             print(f"creating annotation paragraph_id={ref.paragraph_id} {char_offset=} "
                   f"length={ref.char_offset + ref.length - char_offset}")
-            models.Annotation(paragraph_id=ref.paragraph_id, type="definition",
-                              char_offset=char_offset,
-                              length=ref.char_offset + ref.length - char_offset,
-                              info=definition_citation).save()
+            models.Annotation.objects.create(
+              paragraph_id=ref.paragraph_id,
+              type="definition",
+              char_offset=char_offset,
+              length=ref.char_offset + ref.length - char_offset,
+              info=str(definition.id))
 
 
 def load_definitions(def_version, anno_versions):

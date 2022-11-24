@@ -10,7 +10,7 @@ from django.views.decorators.http import require_GET, require_safe
 from django.db.models import Q
 
 from operating_procedures import models
-from operating_procedures.chunks import chunk
+from operating_procedures.chunks import chunk, Little_stuff
 from operating_procedures.scripts.sources import *
 
 
@@ -71,7 +71,12 @@ def cite(request, citation='719'):
     citation = citation.replace(' ', '')
     def add_space(cite):
         if cite.upper().startswith("GG"):
-            return cite[:2] + ' ' + cite[2:]
+            cite = cite[:2] + ' ' + cite[2:]
+            if cite.upper().startswith("GG ARTICLE"):
+                cite = cite[:10] + ' ' + cite[10:]
+            return cite
+        if cite.upper().startswith('PART'):
+            return cite[:4] + ' ' + cite[4:]
         if '(' in cite:
             i = cite.index('(')
             return cite[:i] + ' ' + cite[i:]
@@ -88,30 +93,35 @@ def cite(request, citation='719'):
         last = add_space(citation[hyphen + 1:])
         first_item = models.Item.objects.get(version_id=latest_law, citation=first)
         parent = first_item.parent
-        items = [item.get_block()
+        items = [item.get_block(with_references=True, top=True)
                  for item in parent.item__set
                   if first <= item.citation <= last]
     else:
         first = add_space(citation)
         last = first
-        items = [models.Item.objects.get(version_id=latest_law, citation=first).get_block()]
+        items = [models.Item.objects.get(version_id=latest_law, citation=first)
+                                    .get_block(with_references=True, top=True)]
 
     print(f"cite: {first=!r}, {last=!r} {latest_law=} got {len(items)} items")
+
+    if len(items) == 1:
+        items[0].alone = True
 
     blocks = [chunk('items', items=items, body_order=0)]
     #blocks[0].dump(depth=3)
     return render(request, 'opp/cite.html',
-                  context=dict(citation=citation, blocks=blocks,
-                               little_tags=('note', 'law_implemented', 'specific_authority',
-                                            'rulemaking_authority', 'history')))
+                  context=dict(citation=citation, blocks=blocks, little_tags=Little_stuff))
 
 
 @require_safe
 def search(request, words):
-    trace = False
+    trace = True
 
-    words = list(map(methodcaller('lower'), map(methodcaller('strip'), words.split(','))))
+    # stripped, lowercase
+    words = list(map(methodcaller('lower'),
+                     map(methodcaller('strip'), words.split(','))))
 
+    # list of sets of synonyms: [set(word.id)]
     word_groups = list(map(methodcaller('get_synonyms'),
                            models.Word.objects.filter(text__in=words).all()))
 
@@ -129,7 +139,7 @@ def search(request, words):
                                     .select_related('paragraph__item')
                                     .filter(
                                        Q(paragraph__item__version_id=latest_version)
-                                     | Q(paragraph__cell__table__item__version_id=latest_version),
+                      ,  # FIX:      | Q(paragraph__cell__table__item__version_id=latest_version),
                                        word_id__in=words)
                                     .order_by('paragraph__id'),
                                   key=attrgetter('paragraph'))]
@@ -140,13 +150,17 @@ def search(request, words):
         para_list1.sort(key=lambda x: (x[0].parent_item().item_order, x[0].body_order))
 
         def check_para_list1():
+            if not para_list1:
+                return
             last_p = para_list1[0][0]
-            for p, _, _ in para_list1[1:]:
+            for p, wordrefs, word_group_index in para_list1[1:]:
                 assert p.parent_item().item_order >= last_p.parent_item().item_order, \
                        f"check_para_list1: ERROR {p.item.item_order=} < {last_p.item.item_order}"
                 if p.parent_item().item_order == last_p.parent_item().item_order:
                     assert p.body_order >= last_p.body_order, \
                            f"check_para_list1: ERROR {p.body_order=} < {last_p.body_order}"
+                assert wordrefs, f"check_para_list1: {para.text[:20]!r} has no wordrefs " \
+                                 f"for {word_group_index=}"
                 last_p = p
 
         check_para_list1()
@@ -169,32 +183,44 @@ def search(request, words):
             new_paras = []
             for para, para_wordrefs in groupby(paras, key=itemgetter(0)):
                 para_wordrefs = list(para_wordrefs)
-                new_paras.append((para, list(chain.from_iterable(map(itemgetter(1),
-                                                                     para_wordrefs)))))
+                wrs = list(chain.from_iterable(map(itemgetter(1),
+                                                   para_wordrefs)))
+                assert wrs
+                new_paras.append((para, wrs))
                 item_word_groups.update(map(itemgetter(2), para_wordrefs))
+            assert new_paras
+            print(f"adding {item.citation} {item_word_groups=} {len(new_paras)=}")
             wordrefs.append((item, item_word_groups, new_paras))
 
         def check_wordrefs(wordrefs):
             last_item = wordrefs[0][0]
             def check_paras(item, paras):
+                if not paras:
+                    return
                 last_p = paras[0][0]
                 for p, _ in paras[1:]:
-                    assert p.id != last_p.id, f"check_wordrefs: ERROR {p.id=} == {last_p.id}"
+                    assert p.id != last_p.id, \
+                           f"check_wordrefs: {item.as_str()} ERROR " \
+                           f"{p.id=} == {last_p.id}"
                     assert p.body_order > last_p.body_order, \
-                           f"check_wordrefs: ERROR {p.body_order=} <= {last_p.body_order}"
+                           f"check_wordrefs: {item.as_str()} ERROR " \
+                           f"{p.id=} {p.body_order=} <= " \
+                           f"{last_p.id} {last_p.body_order}"
                     last_p = p
             check_paras(last_item, wordrefs[0][2])
             for item, _, paras in wordrefs[1:]:
                 assert item.id != last_item.id, \
-                       f"check_wordrefs: ERROR {item.id=} == {last_item.id=}"
+                       f"check_wordrefs: {item.as_str()} ERROR " \
+                       f"{item.id=} == {last_item.id=}"
                 assert item.item_order > last_item.item_order, \
-                       f"check_wordrefs: ERROR {item.item_order=} <= {last_item.item_order=}"
+                       f"check_wordrefs: {item.as_str()} ERROR " \
+                       f"{item.item_order=} <= {last_item.item_order=}"
                 check_paras(item, paras)
                 last_item = item
 
         check_wordrefs(wordrefs)
 
-        if trace:
+        if trace and False:
             print("wordrefs:")
             for item, item_word_groups, paras in wordrefs:
                 print(f"  {item=}, {item_word_groups=}, {paras=}")
@@ -371,6 +397,11 @@ def search(request, words):
 
     #blocks[0].dump(depth=10)
     return render(request, 'opp/search.html',
-                  context=dict(words=words, blocks=blocks,
-                               little_tags=('note', 'law_implemented', 'specific_authority',
-                                            'rulemaking_authority', 'history')))
+                  context=dict(words=words, blocks=blocks, little_tags=Little_stuff))
+
+
+def synonyms(request, word):
+    w = models.Word.objects.get(text=word)
+    syns = sorted(models.Word.get_text(syn) for syn in w.get_synonyms())
+    return render(request, 'opp/synonyms.html',
+                  context=dict(word=w.text, syns=syns))
