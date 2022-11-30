@@ -1,0 +1,24 @@
+{% extends "opp/base.html" %}
+
+{% block title %}{{ paragraph.id }} Paragraph Debug{% endblock %}
+
+{% block content %}
+<h2>{{ paragraph.id }} Paragraph Debug</h2>
+
+<p>{{ paragraph.text }}</p>
+
+<h3>Annotations:</h3>
+<table>
+<thead>
+<tr><td>Annotation ID</td><td>Type</td><td>Char Offset</td><td>Length</td>
+    <td>Info</td><td>Referenced Text</td></tr>
+</thead>
+<tbody>
+{% for anno in annotations %}
+<tr><td>{{ anno.id }}</td><td>{{ anno.type }}</a></td><td>{{ anno.char_offset }}</td>
+    <td>{{ anno.length }}</td><td>{{ anno.info }}</td><td>{{ anno.text }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

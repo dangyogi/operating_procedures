@@ -1,0 +1,19 @@
+{% extends "opp/base.html" %}
+
+{% block title %}Versions{% endblock %}
+
+{% block content %}
+<h2>Versions</h2>
+<table>
+<thead>
+<tr><td>Version ID</td><td>Upload Date</td><td>Source</td><td>Wordrefs Loaded</td>
+    <td>Definitions Loaded</td></tr>
+</thead>
+<tbody>
+{% for version in versions %}
+<tr><td>{{ version.id }}</td><td>{{ version.upload_date }}</td><td>{{ version.source }}</td>
+    <td>{{ version.wordrefs_loaded }}</td><td>{{ version.definitions_loaded }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

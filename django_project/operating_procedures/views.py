@@ -405,3 +405,49 @@ def synonyms(request, word):
     syns = sorted(models.Word.get_text(syn) for syn in w.get_synonyms())
     return render(request, 'opp/synonyms.html',
                   context=dict(word=w.text, syns=syns))
+
+
+def versions(request):
+    versions = models.Version.objects.order_by('-upload_date').all()
+    return render(request, 'opp/versions.html',
+                  context=dict(versions=versions))
+
+
+def item_debug(request, version_id, citation=None):
+    if citation is None:
+        item = models.Item.objects.get(id=version_id)
+        version_id = item.version_id
+    else:
+        try:
+            item = models.Item.objects.get(version_id=version_id, citation=citation)
+        except models.Item.DoesNotExist:
+            item = None
+    if item is not None:
+        return render(request, 'opp/item_debug.html',
+                      context=dict(item=item,
+                        paragraphs=models.Paragraph.objects.filter(item_id=item.id).all(),
+                        tables=models.Table.objects.filter(item_id=item.id).all(),
+                        subitems=models.Item.objects.filter(parent_id=item.id)
+                                                    .order_by('body_order').all()))
+    return render(request, 'opp/item_debug.html',
+                  context=dict(
+                    version_id=version_id,
+                    item=None,
+                    paragraphs=[],
+                    tables=[],
+                    subitems=models.Item.objects.filter(version_id=version_id,
+                                                        citation__startswith=citation)
+                                                .order_by('item_order').all()))
+
+
+def paragraph_debug(request, paragraph_id):
+    paragraph = models.Paragraph.objects.get(id=paragraph_id)
+    annotations = models.Annotation.objects.filter(paragraph_id=paragraph.id) \
+                                           .order_by('char_offset', 'length') \
+                                           .all()
+    for anno in annotations:
+        anno.text = paragraph.text[anno.char_offset: anno.char_offset + anno.length]
+    return render(request, 'opp/paragraph_debug.html',
+                  context=dict(
+                    paragraph=paragraph,
+                    annotations=annotations))

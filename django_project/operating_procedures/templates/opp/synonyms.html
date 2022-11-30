@@ -1,0 +1,12 @@
+{% extends "opp/base.html" %}
+
+{% block title %}{{ word|capfirst }} Synonyms{% endblock %}
+
+{% block content %}
+<h2>{{ word|capfirst }} Synonyms</h2>
+<ul>
+{% for syn in syns %}
+<li>{{ syn }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

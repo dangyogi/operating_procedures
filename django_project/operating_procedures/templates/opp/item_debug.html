@@ -1,0 +1,64 @@
+{% extends "opp/base.html" %}
+
+{% block title %}{{ item.citation }} Item Debug{% endblock %}
+
+{% block content %}
+<h2>{{ item.citation }} Item Debug</h2>
+
+<h3>Items:</h3>
+<table>
+<thead>
+<tr><td>Item ID</td><td>Version</td><td>Citation</td>
+    <td>Number</td><td>Parent</td><td>Item_order</td>
+    <td>Body_order</td><td>Num_elements</td>
+    <td>Has_title</td></tr>
+</thead>
+<tbody>
+{% if item is not None %}
+<tr><td>{{ item.id }}</td><td>{{ item.version_id }}</td><td>{{ item.citation }}</td>
+    <td>{{ item.number }}</td><td>{{ item.parent_id }}</td><td>{{ item.item_order }}</td>
+    <td>{{ item.body_order }}</td><td>{{ item.num_elements }}</td>
+    <td>{{ item.has_title }}</td></tr>
+{% endif %}
+{% for subitem in subitems %}
+<tr><td><a href="{% url 'item_debug' subitem.id %}">{{ subitem.id }}</a></td><td>{{ subitem.version_id }}</td><td>{{ subitem.citation }}</td>
+    <td>{{ subitem.number }}</td><td>{{ subitem.parent_id }}</td><td>{{ subitem.item_order }}</td>
+    <td>{{ subitem.body_order }}</td><td>{{ subitem.num_elements }}</td>
+    <td>{{ subitem.has_title }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if paragraphs %}
+<h3>Paragraphs:</h3>
+<table>
+<thead>
+<tr><td>Item ID</td><td>Paragraph ID</td><td>Body_order</td><td>Text</td></tr>
+</thead>
+<tbody>
+{% for paragraph in paragraphs %}
+<tr><td>{{ paragraph.item_id }}</td>
+    <td><a href="{% url 'paragraph_debug' paragraph.id %}">{{ paragraph.id }}</a></td>
+    <td>{{ paragraph.body_order }}</td>
+    <td>{{ paragraph.text|slice:':100' }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% if tables %}
+<h3>Tables:</h3>
+<table>
+<thead>
+<tr><td>Item ID</td><td>Body_order</td><td>Has_header</td></tr>
+</thead>
+<tbody>
+{% for table in tables %}
+<tr><td>{{ table.item_id }}</td><td>{{ table.body_order }}</td>
+    <td>{{ table.has_header }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% endblock %}
